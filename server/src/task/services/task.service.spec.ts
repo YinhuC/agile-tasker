@@ -158,7 +158,6 @@ describe('TaskService', () => {
         3,
         generateMockCategory(categoryId)
       );
-      const nextIndex = existingTasks.length + 1;
 
       const category: Category = generateMockCategory(
         categoryId,
@@ -193,7 +192,7 @@ describe('TaskService', () => {
       expect(taskRepository.create).toHaveBeenCalledWith({
         ...categoryData,
         category,
-        index: nextIndex,
+        index: 3,
       });
       expect(taskRepository.save).toHaveBeenCalledWith(task);
     });

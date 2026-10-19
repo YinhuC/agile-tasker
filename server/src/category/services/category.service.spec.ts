@@ -186,6 +186,36 @@ describe('CategoryService', () => {
       expect(categoryRepository.save).toHaveBeenCalledWith(category);
     });
 
+    it('should index a new category after the existing ones', async () => {
+      const user: User = generateMockUser(1);
+      const createCategoryDto: CreateCategoryDto = generateMockCategoryDto(1);
+      const { projectId, ...projectData } = createCategoryDto;
+      const category: Category = generateMockCategory(
+        4,
+        generateMockProject(projectId)
+      );
+
+      jest.spyOn(projectService, 'isMember').mockResolvedValue(true);
+      jest
+        .spyOn(service, 'getAllCategoriesByProjectId')
+        .mockResolvedValue(generateMockCategories(3));
+      jest
+        .spyOn(projectService, 'getProjectById')
+        .mockResolvedValue(category.project);
+      jest.spyOn(categoryRepository, 'create').mockReturnValue(category);
+      jest.spyOn(categoryRepository, 'save').mockResolvedValue(category);
+
+      const result = await service.createCategory(user, createCategoryDto);
+
+      expect(result).toBe(category);
+      expect(categoryRepository.create).toHaveBeenCalledWith({
+        ...projectData,
+        project: category.project,
+        index: 3,
+      });
+      expect(categoryRepository.save).toHaveBeenCalledWith(category);
+    });
+
     it('should throw a ForbiddenException if the user is not a member of the project', async () => {
       const user: User = generateMockUser(1);
       const projectId = 1;

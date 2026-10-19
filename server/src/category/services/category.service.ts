@@ -73,8 +73,7 @@ export class CategoryService {
       user,
       projectId
     );
-    const nextIndex =
-      existingCategories.length > 0 ? existingCategories.length + 1 : 0;
+    const nextIndex = existingCategories.length;
 
     const project = await this.projectService.getProjectById(projectId);
 

@@ -68,7 +68,7 @@ export class TaskService {
     }
 
     const existingTasks = await this.getAllTasksByCategoryId(user, categoryId);
-    const nextIndex = existingTasks.length > 0 ? existingTasks.length + 1 : 0;
+    const nextIndex = existingTasks.length;
 
     const category = await this.categoryService.getCategoryById(categoryId);
     const task = {
