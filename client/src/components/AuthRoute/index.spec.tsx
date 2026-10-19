@@ -1,16 +1,18 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { renderWithMantine } from '../../utils/test.utils';
+import { BrowserRouter, Route, Routes } from 'react-router';
 import AuthRoute from '.';
 import { screen } from '@testing-library/react';
 import LoginPage from '../../pages/LoginPage';
+import type { Mock } from 'vitest';
+import { useAuth } from '../../hooks/useAuth';
 
-jest.mock('../../hooks/useAuth', () => ({
-  useAuth: jest.fn(),
+vi.mock('../../hooks/useAuth', () => ({
+  useAuth: vi.fn(),
 }));
 
 describe('AuthRoute', () => {
-  const useAuthmodule = require('../../hooks/useAuth').useAuth;
+  const useAuthmodule = useAuth as Mock;
 
   beforeEach(() => {
     useAuthmodule.mockClear();
@@ -22,7 +24,7 @@ describe('AuthRoute', () => {
       loading: false,
     });
 
-    render(
+    renderWithMantine(
       <BrowserRouter>
         <Routes>
           <Route path='/login' element={<LoginPage />} />
@@ -43,7 +45,7 @@ describe('AuthRoute', () => {
       loading: false,
     });
 
-    render(
+    renderWithMantine(
       <BrowserRouter>
         <Routes>
           <Route path='/login' element={<div>Login.</div>} />

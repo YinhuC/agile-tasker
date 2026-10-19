@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router';
 import { useAuth } from '../../hooks/useAuth';
 
 const AuthRoute: FC = () => {

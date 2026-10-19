@@ -3,7 +3,7 @@ import { Divider, Flex, Stack, StackProps, Title } from '@mantine/core';
 import TaskCard from '../TaskCard';
 import { Category } from '../../types/category.types';
 import { fetchAllTasksThunk } from '../../store/task/task.thunks';
-import { Draggable, Droppable } from 'react-beautiful-dnd';
+import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { sortByIndex } from '../../utils/sort.utils';
 import TaskModal from '../TaskModal';
 import CategoryModal from '../CategoryModal';
@@ -42,12 +42,12 @@ function CategoryGrid({
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          spacing={20}
+          gap={20}
           p={20}
           mx={10}
           miw={322}
-          sx={{
-            backgroundColor: 'white',
+          bg='white'
+          style={{
             borderRadius: '0.5rem',
             height: 'fit-content',
             overflow: 'visible',
@@ -73,10 +73,8 @@ function CategoryGrid({
               <Stack
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                spacing={10}
-                sx={{
-                  minHeight: 60,
-                }}
+                gap={10}
+                mih={60}
               >
                 {tasks.map((task, index) => (
                   <TaskCard

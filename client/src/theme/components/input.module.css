@@ -1,0 +1,8 @@
+.wrapper {
+  --input-padding: 20px;
+}
+
+.label {
+  margin-bottom: 7px;
+  color: #6b6f76;
+}

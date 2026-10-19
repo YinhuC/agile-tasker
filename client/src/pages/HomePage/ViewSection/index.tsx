@@ -7,56 +7,37 @@ import {
   Button,
   BoxProps,
   Box,
-  useMantineTheme,
   Card,
 } from '@mantine/core';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import Task from '../../../assets/images/checklist.png';
 import Deadline from '../../../assets/images/time.png';
 import ContentBlock from '../../../components/ContentBlock';
 
 function ViewSection({ ...props }: BoxProps) {
-  const theme = useMantineTheme();
-
   return (
     <Box
-      sx={{
-        background: theme.fn.linearGradient(
-          90,
-          theme.colors.blue[9],
-          theme.colors.cyan[5]
-        ),
-        maxHeight: 950,
-        [theme.fn.smallerThan('lg')]: {
-          maxHeight: 850,
-        },
-        [theme.fn.smallerThan('md')]: {
-          maxHeight: 800,
-        },
-        [theme.fn.smallerThan('sm')]: {
-          maxHeight: 1300,
-        },
-
-        [theme.fn.smallerThan('xxs')]: {
-          maxHeight: 1300,
-        },
+      mah={{ base: 1300, sm: 800, md: 850, lg: 950 }}
+      style={{
+        background:
+          'linear-gradient(90deg, var(--mantine-color-blue-9) 0%, var(--mantine-color-cyan-5) 100%)',
       }}
       {...props}
     >
       <Container
         size='lg'
-        sx={{
+        style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
         }}
         pt={50}
       >
-        <Stack justify='center' align='center' sx={{ width: '100%' }} mx={10}>
-          <Title align='center' order={1} color='white' weight={600}>
+        <Stack justify='center' align='center' w='100%' mx={10}>
+          <Title ta='center' order={1} c='white' fw={600}>
             Experience work through a fresh lens.
           </Title>
-          <Text align='center' mb={10} size='lg' color='white'>
+          <Text ta='center' mb={10} size='lg' c='white'>
             Gain comprehensive insights into your team's projects and approach
             tasks with a renewed perspective.
           </Text>
@@ -79,11 +60,7 @@ function ViewSection({ ...props }: BoxProps) {
             radius='md'
             withBorder
             mb={50}
-            sx={{
-              [theme.fn.smallerThan('sm')]: {
-                maxWidth: 500,
-              },
-            }}
+            maw={{ base: 500, sm: 'none' }}
           >
             <ContentBlock
               title={'Consistently meet deadlines.'}
@@ -102,11 +79,7 @@ function ViewSection({ ...props }: BoxProps) {
             px={10}
             radius='md'
             withBorder
-            sx={{
-              [theme.fn.smallerThan('sm')]: {
-                maxWidth: 500,
-              },
-            }}
+            maw={{ base: 500, sm: 'none' }}
           >
             <ContentBlock
               title={'Stay in control of tasks.'}

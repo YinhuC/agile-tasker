@@ -6,60 +6,46 @@ import {
   Button,
   BoxProps,
   Box,
-  useMantineTheme,
   Flex,
   TextInput,
 } from '@mantine/core';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { MdOutlineAlternateEmail } from 'react-icons/md';
 
 function RegisterSection({ ...props }: BoxProps) {
-  const theme = useMantineTheme();
-
   return (
     <Box
-      sx={{
-        background: theme.fn.linearGradient(
-          90,
-          theme.colors.violet[9],
-          theme.colors.pink[5]
-        ),
+      style={{
+        background:
+          'linear-gradient(90deg, var(--mantine-color-violet-9) 0%, var(--mantine-color-pink-5) 100%)',
       }}
       {...props}
     >
       <Container
         size='lg'
-        sx={{
+        style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
         }}
         py={70}
       >
-        <Stack justify='center' align='center' sx={{ width: '100%' }} mx={10}>
-          <Title align='center' order={1} color='white' weight={600} mb={10}>
+        <Stack justify='center' align='center' w='100%' mx={10}>
+          <Title ta='center' order={1} c='white' fw={600} mb={10}>
             Start your Agile journey today.
           </Title>
           <Flex
-            sx={{
-              [theme.fn.smallerThan('sm')]: {
-                flexDirection: 'column',
-              },
-            }}
+            direction={{ base: 'column', sm: 'row' }}
             align='center'
             justify='center'
           >
             <TextInput
-              icon={<MdOutlineAlternateEmail />}
+              leftSection={<MdOutlineAlternateEmail />}
               placeholder='Your email'
               aria-label='Your email'
               required
-              sx={{
-                marginRight: 10,
-                [theme.fn.smallerThan('sm')]: {
-                  margin: '0 0 10px 0',
-                },
-              }}
+              mr={{ base: 0, sm: 10 }}
+              mb={{ base: 10, sm: 0 }}
             />
             <Button
               component={Link}

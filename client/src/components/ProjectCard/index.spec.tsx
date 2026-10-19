@@ -4,9 +4,11 @@ import ProjectCard from '.';
 import ProjectModal from '../ProjectModal';
 import { renderWithProviders } from '../../utils/redux.utils';
 import { Project } from '../../types/project.types';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router';
 
-jest.mock('../ProjectModal', () => jest.fn(() => <div>ProjectModal</div>));
+vi.mock('../ProjectModal', () => ({
+  default: vi.fn(() => <div>ProjectModal</div>),
+}));
 
 describe('ProjectCard', () => {
   const project: Project = {
@@ -46,6 +48,6 @@ describe('ProjectCard', () => {
       project: project,
     };
 
-    expect(ProjectModal).toHaveBeenCalledWith(ProjectModalProps, {});
+    expect(ProjectModal).toHaveBeenCalledWith(ProjectModalProps, undefined);
   });
 });

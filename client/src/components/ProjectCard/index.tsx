@@ -7,9 +7,8 @@ import {
   Box,
   Flex,
   CardProps,
-  useMantineTheme,
 } from '@mantine/core';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import ProjectModal from '../ProjectModal';
 import { Project } from '../../types/project.types';
 
@@ -20,7 +19,6 @@ type ProjectCardProps = Partial<CardProps> & {
 
 function ProjectCard({ project, groupId, ...props }: ProjectCardProps) {
   const { name, description, id } = project;
-  const theme = useMantineTheme();
 
   return (
     <Card
@@ -28,7 +26,7 @@ function ProjectCard({ project, groupId, ...props }: ProjectCardProps) {
       padding='lg'
       radius='sm'
       withBorder
-      sx={{
+      style={{
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -42,7 +40,7 @@ function ProjectCard({ project, groupId, ...props }: ProjectCardProps) {
           </Title>
           <ProjectModal groupId={groupId} type='edit' project={project} />
         </Flex>
-        <Text mb={15} color={theme.colors.gray[6]} size='sm'>
+        <Text mb={15} c='gray.6' size='sm'>
           {description}
         </Text>
       </Box>

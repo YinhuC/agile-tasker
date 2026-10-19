@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Container,
   Box,
-  useMantineTheme,
   Title,
   Button,
   Stack,
@@ -12,23 +11,19 @@ import PriceSection from './PriceSection';
 import AccordionSection from './AccordionSection';
 
 function PlansPage() {
-  const theme = useMantineTheme();
   return (
     <>
       <PriceSection />
       <AccordionSection />
       <Box
-        sx={{
-          background: theme.fn.linearGradient(
-            180,
-            theme.colors.pink[0],
-            '#fff'
-          ),
+        style={{
+          background:
+            'linear-gradient(180deg, var(--mantine-color-pink-0) 0%, #fff 100%)',
         }}
       >
         <Container size='lg' py={80}>
           <Stack>
-            <Title order={2} weight={500} mb={5} align='center'>
+            <Title order={2} fw={500} mb={5} ta='center'>
               Didn't find what you were after?
             </Title>
             <Button m='auto' size='md'>

@@ -1,12 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import {
-  Box,
-  Container,
-  Flex,
-  Title,
-  useMantineTheme,
-  Text,
-} from '@mantine/core';
+import { Box, Container, Flex, Title, Text } from '@mantine/core';
 import ProjectGrid from '../../components/ProjectGrid';
 import { fetchAllGroupsThunk } from '../../store/group/group.thunks';
 import GroupModal from '../../components/GroupModal';
@@ -14,7 +7,6 @@ import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 
 function BoardPage() {
-  const theme = useMantineTheme();
   const dispatch = useAppDispatch();
   const groups = useAppSelector((state) => state.groups.groups);
 
@@ -42,18 +34,13 @@ function BoardPage() {
           align='center'
           mb={20}
           mx={40}
-          sx={{
-            [theme.fn.smallerThan('md')]: {
-              flexDirection: 'column',
-              alignItems: 'center',
-            },
-          }}
+          direction={{ base: 'column', md: 'row' }}
         >
           <Title order={2} mb={10}>
             Workspaces
           </Title>
-          <Text align='center'>
-            <Text weight={900} mr={5}>
+          <Text ta='center' component='div'>
+            <Text fw={900} mr={5}>
               Note:
             </Text>{' '}
             Due to our free tier hosting, delays will occur.

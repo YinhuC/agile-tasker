@@ -1,18 +1,22 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { screen } from '@testing-library/react';
+import { renderWithMantine } from '../../utils/test.utils';
+import { BrowserRouter as Router } from 'react-router';
 import Header from '.';
+import type { Mock } from 'vitest';
+import { useAuth } from '../../hooks/useAuth';
+import { postAuthLogout } from '../../api/auth.api';
 
-jest.mock('../../hooks/useAuth', () => ({
-  useAuth: jest.fn(),
+vi.mock('../../hooks/useAuth', () => ({
+  useAuth: vi.fn(),
 }));
 
-jest.mock('../../api/auth.api', () => ({
-  postAuthLogout: jest.fn(),
+vi.mock('../../api/auth.api', () => ({
+  postAuthLogout: vi.fn(),
 }));
 
-jest.mock('../../assets/logos/logo-transparent.png', () => 'logo');
-jest.mock('../../assets/logos/small-logo-transparent.png', () => 'small-logo');
+vi.mock('../../assets/logos/logo-transparent.png', () => 'logo');
+vi.mock('../../assets/logos/small-logo-transparent.png', () => 'small-logo');
 
 describe('Header', () => {
   const user = {
@@ -21,23 +25,23 @@ describe('Header', () => {
   };
 
   beforeEach(() => {
-    const useAuthModule = require('../../hooks/useAuth').useAuth;
-    const postAuthLogoutModule = require('../../api/auth.api').postAuthLogout;
+    const useAuthModule = useAuth as Mock;
+    const postAuthLogoutModule = postAuthLogout as Mock;
 
     useAuthModule.mockReturnValue({
       user,
-      removeUser: jest.fn(),
+      removeUser: vi.fn(),
     });
 
     postAuthLogoutModule.mockResolvedValue(null);
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders the logo and navigation links', () => {
-    render(
+    renderWithMantine(
       <Router>
         <Header />
       </Router>
@@ -53,7 +57,7 @@ describe('Header', () => {
   });
 
   it('renders the logout button when a user is authenticated', () => {
-    render(
+    renderWithMantine(
       <Router>
         <Header />
       </Router>
@@ -65,13 +69,13 @@ describe('Header', () => {
   });
 
   it('renders the Sign In button when no user is authenticated', () => {
-    const useAuthModule = require('../../hooks/useAuth').useAuth;
+    const useAuthModule = useAuth as Mock;
     useAuthModule.mockReturnValue({
       user: null,
-      removeUser: jest.fn(),
+      removeUser: vi.fn(),
     });
 
-    render(
+    renderWithMantine(
       <Router>
         <Header />
       </Router>

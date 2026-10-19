@@ -1,4 +1,6 @@
 import React from 'react';
+import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 import { MantineProvider } from '@mantine/core';
 import theme from '../theme';
 
@@ -8,7 +10,7 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
   return (
-    <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
+    <MantineProvider theme={theme} defaultColorScheme='light'>
       {children}
     </MantineProvider>
   );

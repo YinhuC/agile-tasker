@@ -4,15 +4,6 @@ import CategoryModal from '.';
 import { renderWithProviders } from '../../utils/redux.utils';
 import { Category } from '../../types/category.types';
 
-// Mock the ResizeObserver constructor
-const mockResizeObserver = jest.fn();
-mockResizeObserver.mockImplementation(() => ({
-  observe: jest.fn(),
-  unobserve: jest.fn(),
-}));
-// Assign the mock to the global object
-(global as any).ResizeObserver = mockResizeObserver;
-
 describe('CategoryModal', () => {
   const projectId = 1;
   const category: Category = {

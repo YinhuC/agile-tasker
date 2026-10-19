@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Container,
   Box,
-  useMantineTheme,
   Title,
   Text,
   Button,
@@ -19,13 +18,13 @@ import ContentBlock from '../../components/ContentBlock';
 import Footer from '../../components/Footer';
 
 function ViewsPage() {
-  const theme = useMantineTheme();
   return (
     <>
       <Box
         id='views'
-        sx={{
-          background: theme.fn.linearGradient(30, theme.colors.blue[1], '#fff'),
+        style={{
+          background:
+            'linear-gradient(30deg, var(--mantine-color-blue-1) 0%, #fff 100%)',
         }}
       >
         <Container size='lg' py={30}>
@@ -43,7 +42,7 @@ function ViewsPage() {
       </Box>
       <Container size='lg' py={80}>
         <Stack>
-          <Title order={1} weight={500} mb={10} align='center'>
+          <Title order={1} fw={500} mb={10} ta='center'>
             Discover the power of Agile Tasker views.
           </Title>
           <Button m='auto' mb={50} size='md'>
@@ -120,20 +119,17 @@ function ViewsPage() {
         />
       </Container>
       <Box
-        sx={{
-          background: theme.fn.linearGradient(
-            180,
-            theme.colors.pink[0],
-            '#fff'
-          ),
+        style={{
+          background:
+            'linear-gradient(180deg, var(--mantine-color-pink-0) 0%, #fff 100%)',
         }}
       >
         <Container size='lg' py={80}>
           <Stack>
-            <Title order={2} weight={500} mb={5} align='center'>
+            <Title order={2} fw={500} mb={5} ta='center'>
               Introduce dynamic new perspectives to your team's tasks.
             </Title>
-            <Text align='center' size='lg' mb={10}>
+            <Text ta='center' size='lg' mb={10}>
               Begin your free trial today.
             </Text>
             <Button m='auto' size='md'>

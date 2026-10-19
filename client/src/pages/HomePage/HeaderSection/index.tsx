@@ -8,13 +8,11 @@ import {
   Button,
   BoxProps,
   Box,
-  useMantineTheme,
-  MediaQuery,
   Image,
   Skeleton,
 } from '@mantine/core';
-import { Link } from 'react-router-dom';
-import { motion, useAnimation } from 'framer-motion';
+import { Link } from 'react-router';
+import { motion, useAnimation } from 'motion/react';
 import { throttle } from 'lodash';
 
 import MacScreen from '../../../assets/images/parallax/project-parallax.png';
@@ -22,11 +20,11 @@ import PhoneScreen from '../../../assets/images/parallax/phone-parallax.png';
 import DeviceSquare from '../../../assets/images/parallax/device-parallax.png';
 import TeamSquare from '../../../assets/images/parallax/team-parallax.png';
 import IphoneProject from '../../../assets/images/iphone/iphone-project.png';
+import classes from './HeaderSection.module.css';
 
 function HeaderSection({ ...props }: BoxProps) {
   const [loading, setLoading] = useState(true);
 
-  const theme = useMantineTheme();
   const imgAnimate1 = useAnimation();
   const imgAnimate2 = useAnimation();
   const imgAnimate3 = useAnimation();
@@ -58,18 +56,15 @@ function HeaderSection({ ...props }: BoxProps) {
   return (
     <Box
       onMouseMove={(e) => throttledMouseMove(e)}
-      sx={{
-        background: theme.fn.linearGradient(
-          180,
-          theme.colors.pink[7],
-          theme.colors.teal[3]
-        ),
+      style={{
+        background:
+          'linear-gradient(180deg, var(--mantine-color-pink-7) 0%, var(--mantine-color-teal-3) 100%)',
       }}
       {...props}
     >
       <Container
         size='xl'
-        sx={{
+        style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -80,14 +75,14 @@ function HeaderSection({ ...props }: BoxProps) {
         <Stack
           justify='center'
           align='center'
-          sx={{ width: '100%' }}
+          w='100%'
           mb={60}
           mx={10}
         >
-          <Title align='center' order={1} color='white' weight={600}>
+          <Title ta='center' order={1} c='white' fw={600}>
             Unmatched Project Efficiency.
           </Title>
-          <Text align='center' mb={10} size='lg' color='white'>
+          <Text ta='center' mb={10} size='lg' c='white'>
             Seamlessly Manage Projects and Foster Team Collaboration, Regardless
             of Physical Proximity.
           </Text>
@@ -102,24 +97,12 @@ function HeaderSection({ ...props }: BoxProps) {
             Start 14-day free trial
           </Button>
         </Stack>
-        <MediaQuery smallerThan='md' styles={{ display: 'none' }}>
-          <Flex
-            mx={20}
-            sx={{
-              img: {
-                position: 'relative',
-                width: '90%',
-                height: '100%',
-              },
-            }}
-          >
+        <Flex mx={20} visibleFrom='md' className={classes.parallax}>
             <Skeleton
               width={(window.innerWidth / 100) * 90}
               radius={12}
               height={(window.innerHeight / 100) * 75}
-              sx={{
-                display: loading ? 'block' : 'none',
-              }}
+              display={loading ? 'block' : 'none'}
             />
             <motion.img
               animate={imgAnimate1}
@@ -128,33 +111,21 @@ function HeaderSection({ ...props }: BoxProps) {
               onLoad={() => setLoading(false)}
               style={{ display: loading ? 'none' : 'block' }}
             />
-            <Box
-              sx={{
-                position: 'absolute',
-              }}
-            >
+            <Box pos='absolute'>
               <motion.img
                 animate={imgAnimate2}
                 src={PhoneScreen}
                 alt='project screen mobile screen'
               />
             </Box>
-            <Box
-              sx={{
-                position: 'absolute',
-              }}
-            >
+            <Box pos='absolute'>
               <motion.img
                 animate={imgAnimate3}
                 src={DeviceSquare}
                 alt='device info'
               />
             </Box>
-            <Box
-              sx={{
-                position: 'absolute',
-              }}
-            >
+            <Box pos='absolute'>
               <motion.img
                 animate={imgAnimate4}
                 src={TeamSquare}
@@ -162,20 +133,15 @@ function HeaderSection({ ...props }: BoxProps) {
               />
             </Box>
           </Flex>
-        </MediaQuery>
-        <MediaQuery largerThan='md' styles={{ display: 'none' }}>
-          <Image
-            src={IphoneProject}
-            sx={{
-              overflow: 'hidden',
-              width: '100%',
-              minWidth: 250,
-              maxWidth: 500,
-            }}
-            alt='Iphone project page'
-          />
-        </MediaQuery>
-        <Title align='center' order={2} weight={500} mt={100} mx={10}>
+        <Image
+          src={IphoneProject}
+          w='100%'
+          miw={250}
+          maw={500}
+          hiddenFrom='md'
+          alt='Iphone project page'
+        />
+        <Title ta='center' order={2} fw={500} mt={100} mx={10}>
           Join the global community of over 2,000,000 teams leveraging Agile
           Tasker to achieve greater productivity.
         </Title>

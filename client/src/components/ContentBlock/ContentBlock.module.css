@@ -1,0 +1,20 @@
+.text {
+  order: var(--text-order-mobile);
+
+  @media (min-width: $mantine-breakpoint-sm) {
+    order: var(--text-order);
+  }
+}
+
+.image {
+  order: var(--image-order-mobile);
+
+  @media (min-width: $mantine-breakpoint-sm) {
+    order: var(--image-order);
+  }
+
+  img {
+    max-width: 1400px;
+    width: var(--image-size);
+  }
+}

@@ -1,11 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  Button,
-  Group,
-  Modal,
-  TextInput,
-  useMantineTheme,
-} from '@mantine/core';
+import { Button, Group, Modal, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
@@ -29,7 +23,6 @@ type GroupModalProps = {
 };
 
 function GroupModal({ type, group, ...props }: GroupModalProps) {
-  const theme = useMantineTheme();
   const [opened, { open, close }] = useDisclosure(false);
   const dispatch = useAppDispatch();
 
@@ -102,7 +95,7 @@ function GroupModal({ type, group, ...props }: GroupModalProps) {
             aria-label='Group Title'
             {...form.getInputProps('name')}
           />
-          <Group position='right' spacing={10}>
+          <Group justify='flex-end' gap={10}>
             <Button type='submit' h={45} aria-label='Submit'>
               {type === 'add' ? 'Create Group' : 'Edit Group'}
             </Button>
@@ -123,11 +116,7 @@ function GroupModal({ type, group, ...props }: GroupModalProps) {
         <Button
           onClick={open}
           variant='light'
-          sx={{
-            [theme.fn.smallerThan('md')]: {
-              marginTop: 10,
-            },
-          }}
+          mt={{ base: 10, md: 0 }}
           aria-label='Create Group'
         >
           Create Group

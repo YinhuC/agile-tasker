@@ -8,17 +8,15 @@ import {
   Card,
   SimpleGrid,
   Button,
-  useMantineTheme,
   ContainerProps,
 } from '@mantine/core';
 
 function FeatureSection({ ...props }: ContainerProps) {
-  const theme = useMantineTheme();
   return (
     <Container size='lg' py={100} {...props}>
       <Flex>
-        <Stack justify='center' spacing={5} mx={20}>
-          <Text transform='uppercase' weight={700}>
+        <Stack justify='center' gap={5} mx={20}>
+          <Text tt='uppercase' fw={700}>
             Unlock powerful growth strategies.
           </Text>
           <Title order={1} mb={10}>
@@ -30,30 +28,22 @@ function FeatureSection({ ...props }: ContainerProps) {
           </Text>
 
           <SimpleGrid
-            cols={3}
-            spacing='lg'
-            breakpoints={[
-              { maxWidth: theme.breakpoints.md, cols: 3, spacing: 'md' },
-              { maxWidth: theme.breakpoints.sm, cols: 2, spacing: 'sm' },
-              { maxWidth: theme.breakpoints.xs, cols: 1, spacing: 'sm' },
-            ]}
+            cols={{ base: 1, xs: 2, sm: 3 }}
+            spacing={{ base: 'sm', sm: 'md', md: 'lg' }}
             my={30}
           >
             <Card
               padding='lg'
               radius='md'
               withBorder
-              sx={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                backgroundColor: theme.colors.gray[1],
-              }}
+              h='100%'
+              bg='gray.1'
+              style={{ display: 'flex', flexDirection: 'column' }}
             >
               <Title order={2} mb={15}>
                 Integrations
               </Title>
-              <Text color='dimmed' size='sm' mb={20}>
+              <Text c='dimmed' size='sm' mb={20}>
                 Easily integrate the apps your team relies on into your Agile
                 workflow or enhance it with a Power-Up tailored to your unique
                 requirements.
@@ -66,17 +56,14 @@ function FeatureSection({ ...props }: ContainerProps) {
               padding='lg'
               radius='md'
               withBorder
-              sx={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                backgroundColor: theme.colors.gray[1],
-              }}
+              h='100%'
+              bg='gray.1'
+              style={{ display: 'flex', flexDirection: 'column' }}
             >
               <Title order={2} mb={15}>
                 Automation
               </Title>
-              <Text color='dimmed' size='sm' mb={20}>
+              <Text c='dimmed' size='sm' mb={20}>
                 Every Tasker board comes with built-in no-code automation.
                 Concentrate on your most important tasks while letting the
                 robots handle the rest.
@@ -89,17 +76,14 @@ function FeatureSection({ ...props }: ContainerProps) {
               padding='lg'
               radius='md'
               withBorder
-              sx={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                backgroundColor: theme.colors.gray[1],
-              }}
+              h='100%'
+              bg='gray.1'
+              style={{ display: 'flex', flexDirection: 'column' }}
             >
               <Title order={2} mb={15}>
                 Enterprise
               </Title>
-              <Text color='dimmed' size='sm' mb={20}>
+              <Text c='dimmed' size='sm' mb={20}>
                 The beloved productivity tool for teams, equipped with the
                 features and security essential for scalability.
               </Text>

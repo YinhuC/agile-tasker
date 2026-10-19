@@ -1,15 +1,15 @@
 import React from 'react';
-import { Container, BoxProps, Box, useMantineTheme } from '@mantine/core';
+import { Container, BoxProps, Box } from '@mantine/core';
 import PhoneImg from '../../../assets/images/iphone/iphone-all-transparent.png';
 import ContentBlock from '../../../components/ContentBlock';
 
 function PhoneSection({ ...props }: BoxProps) {
-  const theme = useMantineTheme();
   return (
     <Box
       {...props}
-      sx={{
-        background: theme.fn.linearGradient(180, '#fff', theme.colors.cyan[1]),
+      style={{
+        background:
+          'linear-gradient(180deg, #fff 0%, var(--mantine-color-cyan-1) 100%)',
       }}
     >
       <Container size='lg' py={30}>

@@ -4,13 +4,12 @@ import {
   Title,
   Text,
   Stack,
-  useMantineTheme,
   Skeleton,
   FlexProps,
-  Sx,
   TitleOrder,
 } from '@mantine/core';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
+import classes from './ContentBlock.module.css';
 
 type ContentBlockProps = FlexProps & {
   img: string;
@@ -23,7 +22,6 @@ type ContentBlockProps = FlexProps & {
   titleOrder?: TitleOrder;
   titleWeight?: number;
   subtitleSize?: number;
-  sx?: Sx;
 };
 
 function ContentBlock({
@@ -37,63 +35,49 @@ function ContentBlock({
   titleOrder = 1,
   titleWeight,
   subtitleSize,
-  sx,
   ...props
 }: ContentBlockProps) {
   const [loading, setLoading] = useState(true);
-  const theme = useMantineTheme();
   return (
     <Flex
       gap={30}
-      sx={[
-        {
-          [theme.fn.smallerThan('sm')]: {
-            flexDirection: 'column',
-            alignItems: 'center',
-          },
-        },
-        sx,
-      ]}
+      direction={{ base: 'column', sm: 'row' }}
+      align={{ base: 'center', sm: 'stretch' }}
       {...props}
     >
       <Stack
         justify='center'
-        spacing={5}
+        gap={5}
         mx={20}
-        sx={{
-          order: imageLeft ? 1 : 0,
-          [theme.fn.smallerThan('sm')]: {
-            order: imageTop ? 1 : 0,
-          },
+        className={classes.text}
+        style={{
+          '--text-order': imageLeft ? 1 : 0,
+          '--text-order-mobile': imageTop ? 1 : 0,
         }}
       >
         {text && (
-          <Text transform='uppercase' weight={700}>
+          <Text tt='uppercase' fw={700}>
             {text}
           </Text>
         )}
         {title && (
-          <Title order={titleOrder} mb={10} weight={titleWeight}>
+          <Title order={titleOrder} mb={10} fw={titleWeight}>
             {title}
           </Title>
         )}
         {subtitle && (
-          <Text sx={{ lineHeight: '160%' }} mb={20} size={subtitleSize}>
+          <Text lh='160%' mb={20} fz={subtitleSize}>
             {subtitle}
           </Text>
         )}
       </Stack>
 
       <Flex
-        sx={{
-          order: imageLeft ? 0 : 1,
-          [theme.fn.smallerThan('sm')]: {
-            order: imageTop ? 0 : 1,
-          },
-          img: {
-            maxWidth: 1400,
-            width: imageSize,
-          },
+        className={classes.image}
+        style={{
+          '--image-order': imageLeft ? 0 : 1,
+          '--image-order-mobile': imageTop ? 0 : 1,
+          '--image-size': imageSize,
         }}
         justify='center'
       >
@@ -101,9 +85,7 @@ function ContentBlock({
           width={(window.innerWidth / 100) * 40}
           radius={12}
           height={(window.innerHeight / 100) * 50}
-          sx={{
-            display: loading ? 'block' : 'none',
-          }}
+          display={loading ? 'block' : 'none'}
         />
         <motion.img
           src={img}

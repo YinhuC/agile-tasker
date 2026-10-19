@@ -1,11 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  Button,
-  Group,
-  Modal,
-  TextInput,
-  useMantineTheme,
-} from '@mantine/core';
+import { Button, Group, Modal, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
   Category,
@@ -35,7 +29,6 @@ function CategoryModal({
   category,
   ...props
 }: CategoryModalProps) {
-  const theme = useMantineTheme();
   const [opened, { open, close }] = useDisclosure(false);
   const dispatch = useAppDispatch();
 
@@ -111,7 +104,7 @@ function CategoryModal({
             aria-label='Category Title'
             {...form.getInputProps('name')}
           />
-          <Group position='right' spacing={10}>
+          <Group justify='flex-end' gap={10}>
             <Button type='submit' h={45} aria-label='Submit'>
               {type === 'add' ? 'Create Category' : 'Edit Category'}
             </Button>
@@ -131,12 +124,7 @@ function CategoryModal({
       {type === 'add' ? (
         <Button
           onClick={open}
-          sx={{
-            marginTop: 0,
-            [theme.fn.smallerThan('sm')]: {
-              marginTop: 15,
-            },
-          }}
+          mt={{ base: 15, sm: 0 }}
           aria-label='Create Category'
         >
           Create Category

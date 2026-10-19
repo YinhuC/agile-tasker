@@ -11,27 +11,30 @@ import {
   updateTaskThunk,
   deleteTaskThunk,
 } from './task.thunks';
+import API from '../../api';
 
-jest.mock('../../api', () => ({
-  task: {
-    getAllTasks: jest.fn(),
-    createTask: jest.fn(),
-    updateTask: jest.fn(),
-    deleteTask: jest.fn(),
+vi.mock('../../api', () => ({
+  default: {
+    task: {
+      getAllTasks: vi.fn(),
+      createTask: vi.fn(),
+      updateTask: vi.fn(),
+      deleteTask: vi.fn(),
+    },
   },
 }));
 
 describe('Task Thunks', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('dispatches createTaskThunk correctly', async () => {
     const params: CreateTaskParams = { name: 'New Task', categoryId: 1 };
-    const createTaskMock = jest
+    const createTaskMock = vi
       .fn()
       .mockResolvedValue({ data: { id: 1, ...params } });
-    const taskModule = require('../../api').task;
+    const taskModule = vi.mocked(API.task);
     taskModule.createTask.mockImplementation(createTaskMock);
 
     await store.dispatch(createTaskThunk(params));
@@ -49,9 +52,9 @@ describe('Task Thunks', () => {
       name: 'Updated Task',
     };
 
-    const updateTaskMock = jest.fn().mockResolvedValue({ data: updatedTask });
+    const updateTaskMock = vi.fn().mockResolvedValue({ data: updatedTask });
 
-    const taskModule = require('../../api').task;
+    const taskModule = vi.mocked(API.task);
     taskModule.updateTask.mockImplementation(updateTaskMock);
 
     await store.dispatch(updateTaskThunk(updatedTask));
@@ -72,8 +75,8 @@ describe('Task Thunks', () => {
         createdAt: Date.toString(),
       },
     ];
-    const getTasksMock = jest.fn().mockResolvedValue({ data: mockTasks });
-    const taskModule = require('../../api').task;
+    const getTasksMock = vi.fn().mockResolvedValue({ data: mockTasks });
+    const taskModule = vi.mocked(API.task);
     taskModule.getAllTasks.mockImplementation(getTasksMock);
 
     const params: GetTasksParams = { categoryId: 1 };
@@ -86,10 +89,8 @@ describe('Task Thunks', () => {
 
   it('dispatches deleteTaskThunk correctly', async () => {
     const taskId = 1;
-    const deleteTaskMock = jest
-      .fn()
-      .mockResolvedValue({ data: { id: taskId } });
-    const taskModule = require('../../api').task;
+    const deleteTaskMock = vi.fn().mockResolvedValue({ data: { id: taskId } });
+    const taskModule = vi.mocked(API.task);
     taskModule.deleteTask.mockImplementation(deleteTaskMock);
 
     await store.dispatch(deleteTaskThunk(taskId.toString()));

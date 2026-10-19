@@ -5,7 +5,6 @@ import {
   Modal,
   TextInput,
   Textarea,
-  useMantineTheme,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
@@ -31,7 +30,6 @@ type ProjectModalProps = {
 };
 
 function ProjectModal({ groupId, type, project, ...props }: ProjectModalProps) {
-  const theme = useMantineTheme();
   const [opened, { open, close }] = useDisclosure(false);
   const dispatch = useAppDispatch();
 
@@ -123,7 +121,7 @@ function ProjectModal({ groupId, type, project, ...props }: ProjectModalProps) {
             maxRows={5}
             {...form.getInputProps('description')}
           />
-          <Group position='right' spacing={10}>
+          <Group justify='flex-end' gap={10}>
             <Button type='submit' h={45} aria-label='Submit'>
               {type === 'add' ? 'Create Project' : 'Edit Project'}
             </Button>
@@ -143,11 +141,7 @@ function ProjectModal({ groupId, type, project, ...props }: ProjectModalProps) {
       {type === 'add' ? (
         <Button
           onClick={open}
-          sx={{
-            [theme.fn.smallerThan('sm')]: {
-              marginTop: 15,
-            },
-          }}
+          mt={{ base: 15, sm: 0 }}
           aria-label='Create Project'
         >
           Create Project
