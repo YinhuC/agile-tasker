@@ -235,13 +235,17 @@ describe('ProjectService', () => {
         name: 'Updated Project',
       };
 
-      jest.spyOn(service, 'getProjectById').mockResolvedValue(undefined);
+      jest.spyOn(projectRepository, 'findOne').mockResolvedValue(null);
 
       await expect(
         service.updateProject(projectId, updateProjectDto)
       ).rejects.toThrow(NotFoundException);
 
-      expect(service.getProjectById).toHaveBeenCalledWith(projectId);
+      expect(projectRepository.findOne).toHaveBeenCalledWith({
+        where: { id: projectId },
+        relations: ['group'],
+      });
+      expect(projectRepository.save).not.toHaveBeenCalled();
     });
   });
 

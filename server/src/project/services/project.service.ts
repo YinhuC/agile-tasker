@@ -38,12 +38,16 @@ export class ProjectService {
   }
 
   async getProjectById(projectId: number): Promise<Project> {
-    return await this.projectRepository.findOneOrFail({
+    const project = await this.projectRepository.findOne({
       where: { id: projectId },
       relations: {
         group: true,
       },
     });
+    if (!project) {
+      throw new NotFoundException(`Project with ID ${projectId} not found`);
+    }
+    return project;
   }
 
   async createProject(

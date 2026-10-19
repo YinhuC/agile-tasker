@@ -26,7 +26,13 @@ export class GroupService {
   }
 
   async getGroupById(groupId: number): Promise<Group> {
-    return await this.groupRepository.findOneOrFail({ where: { id: groupId } });
+    const group = await this.groupRepository.findOne({
+      where: { id: groupId },
+    });
+    if (!group) {
+      throw new NotFoundException(`Group with ID ${groupId} not found`);
+    }
+    return group;
   }
 
   private async getGroupWithOwner(id: number): Promise<Group> {
