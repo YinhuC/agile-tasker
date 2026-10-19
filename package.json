@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "start": "cd client && yarn start",
     "start:server": "cd server && yarn start:dev",
@@ -10,7 +13,7 @@
     "build:server": "cd server && yarn build",
     "test": "cd client && yarn test",
     "test:server": "cd server && yarn test",
-    "postinstall": "cd client && yarn install --ignore-optional && cd ../server && yarn install --ignore-optional && rm -rf ../node_modules",
+    "postinstall": "cd client && yarn install && cd ../server && yarn install && rm -rf ../node_modules",
     "migration:generate": "cd server && yarn migration:generate",
     "migration:create": "cd server && yarn migration:create",
     "migration:run": "cd server && yarn migration:run",
