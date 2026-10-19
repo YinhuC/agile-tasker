@@ -84,22 +84,32 @@ describe('AuthController', () => {
       } as unknown as Request;
       const res: Response = {
         sendStatus: jest.fn((status) => status),
+        status: jest.fn().mockReturnThis(),
+        clearCookie: jest.fn().mockReturnThis(),
       } as unknown as Response;
 
       controller.logout(req as any, res as any);
 
       expect(req.logout).toHaveBeenCalled();
       expect(res.sendStatus).toHaveBeenCalledWith(200);
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.clearCookie).toHaveBeenCalledWith('SESSION_ID', { path: '/' });
     });
 
     it('should handle errors during logout', async () => {
       const req = { logout: jest.fn((callback) => callback(new Error())) };
-      const res = { sendStatus: jest.fn() };
+      const res = {
+        sendStatus: jest.fn(),
+        status: jest.fn().mockReturnThis(),
+        clearCookie: jest.fn().mockReturnThis(),
+      };
 
       controller.logout(req as any, res as any);
 
       expect(req.logout).toHaveBeenCalled();
       expect(res.sendStatus).toHaveBeenCalledWith(400);
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.clearCookie).toHaveBeenCalledWith('SESSION_ID', { path: '/' });
     });
   });
 });
