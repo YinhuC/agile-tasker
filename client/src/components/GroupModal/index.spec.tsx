@@ -4,15 +4,6 @@ import GroupModal from '.';
 import { renderWithProviders } from '../../utils/redux.utils';
 import { Group } from '../../types/group.types';
 
-// Mock the ResizeObserver constructor
-const mockResizeObserver = jest.fn();
-mockResizeObserver.mockImplementation(() => ({
-  observe: jest.fn(),
-  unobserve: jest.fn(),
-}));
-// Assign the mock to the global object
-(global as any).ResizeObserver = mockResizeObserver;
-
 describe('GroupModal', () => {
   const group: Group = {
     id: 0,

@@ -4,9 +4,9 @@ import TaskCard from '.';
 import TaskModal from '../TaskModal';
 import { Task } from '../../types/task.types';
 import { renderWithProviders } from '../../utils/redux.utils';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 
-jest.mock('../TaskModal', () => jest.fn(() => <div>TaskModal</div>));
+vi.mock('../TaskModal', () => ({ default: vi.fn(() => <div>TaskModal</div>) }));
 
 describe('TaskCard', () => {
   const task: Task = {
@@ -21,7 +21,7 @@ describe('TaskCard', () => {
   const index = 0;
 
   it('renders the task name and description', () => {
-    const dragOnEnd = jest.fn();
+    const dragOnEnd = vi.fn();
     renderWithProviders(
       <DragDropContext onDragEnd={dragOnEnd}>
         <Droppable droppableId='test'>
@@ -42,7 +42,7 @@ describe('TaskCard', () => {
   });
 
   it('renders the TaskModal component with the correct props', () => {
-    const dragOnEnd = jest.fn();
+    const dragOnEnd = vi.fn();
     renderWithProviders(
       <DragDropContext onDragEnd={dragOnEnd}>
         <Droppable droppableId='test'>
@@ -61,6 +61,6 @@ describe('TaskCard', () => {
       task: task,
     };
 
-    expect(TaskModal).toHaveBeenCalledWith(taskModalProps, {});
+    expect(TaskModal).toHaveBeenCalledWith(taskModalProps, undefined);
   });
 });

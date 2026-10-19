@@ -1,0 +1,14 @@
+.features {
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  min-height: 450px;
+
+  @mixin smaller-than $mantine-breakpoint-sm {
+    min-height: auto;
+  }
+}
+
+.highlight {
+  border: 0.125rem solid var(--mantine-color-pink-3);
+}

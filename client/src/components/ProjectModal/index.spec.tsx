@@ -4,15 +4,6 @@ import ProjectModal from '.';
 import { renderWithProviders } from '../../utils/redux.utils';
 import { Project } from '../../types/project.types';
 
-// Mock the ResizeObserver constructor
-const mockResizeObserver = jest.fn();
-mockResizeObserver.mockImplementation(() => ({
-  observe: jest.fn(),
-  unobserve: jest.fn(),
-}));
-// Assign the mock to the global object
-(global as any).ResizeObserver = mockResizeObserver;
-
 describe('ProjectModal', () => {
   const groupId = 1;
   const project: Project = {

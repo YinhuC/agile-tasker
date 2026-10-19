@@ -1,18 +1,22 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithMantine } from '../../utils/test.utils';
 import ProjectGrid from '.';
 import { fetchAllProjectsThunk } from '../../store/project/project.thunks';
 import { Group } from '../../types/group.types';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router';
+import type { Mock } from 'vitest';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { useAppSelector } from '../../hooks/useAppSelector';
 
-jest.mock('../../hooks/useAppDispatch', () => ({
-  useAppDispatch: jest.fn(),
+vi.mock('../../hooks/useAppDispatch', () => ({
+  useAppDispatch: vi.fn(),
 }));
-jest.mock('../../hooks/useAppSelector', () => ({
-  useAppSelector: jest.fn(),
+vi.mock('../../hooks/useAppSelector', () => ({
+  useAppSelector: vi.fn(),
 }));
-jest.mock('../../store/project/project.thunks', () => ({
-  fetchAllProjectsThunk: jest.fn(),
+vi.mock('../../store/project/project.thunks', () => ({
+  fetchAllProjectsThunk: vi.fn(),
 }));
 
 describe('ProjectGrid', () => {
@@ -28,11 +32,9 @@ describe('ProjectGrid', () => {
   ];
 
   beforeEach(() => {
-    const useAppDispatchModule =
-      require('../../hooks/useAppDispatch').useAppDispatch;
-    const useAppSelectorhModule =
-      require('../../hooks/useAppSelector').useAppSelector;
-    useAppDispatchModule.mockReturnValue(jest.fn());
+    const useAppDispatchModule = useAppDispatch as Mock;
+    const useAppSelectorhModule = useAppSelector as Mock;
+    useAppDispatchModule.mockReturnValue(vi.fn());
     useAppSelectorhModule.mockImplementation((selector: any) =>
       selector({
         projects: { projects },
@@ -41,7 +43,7 @@ describe('ProjectGrid', () => {
   });
 
   it('renders the group name', () => {
-    render(
+    renderWithMantine(
       <Router>
         <ProjectGrid group={group} />
       </Router>
@@ -52,7 +54,7 @@ describe('ProjectGrid', () => {
   });
 
   it('dispatches fetchAllProjectsThunk with the correct groupId', () => {
-    render(
+    renderWithMantine(
       <Router>
         <ProjectGrid group={group} />
       </Router>
@@ -62,7 +64,7 @@ describe('ProjectGrid', () => {
   });
 
   it('renders ProjectCard components for each project in the group', () => {
-    render(
+    renderWithMantine(
       <Router>
         <ProjectGrid group={group} />
       </Router>
@@ -78,7 +80,7 @@ describe('ProjectGrid', () => {
   });
 
   it('renders the group name and GroupModal component', () => {
-    render(
+    renderWithMantine(
       <Router>
         <ProjectGrid group={group} />
       </Router>
@@ -92,7 +94,7 @@ describe('ProjectGrid', () => {
   });
 
   it('renders the ProjectModal component', () => {
-    render(
+    renderWithMantine(
       <Router>
         <ProjectGrid group={group} />
       </Router>

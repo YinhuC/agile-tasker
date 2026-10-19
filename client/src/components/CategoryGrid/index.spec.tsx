@@ -1,19 +1,23 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithMantine } from '../../utils/test.utils';
 import CategoryGrid from '.';
 import { fetchAllTasksThunk } from '../../store/task/task.thunks';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router';
 import { Category } from '../../types/category.types';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from '@hello-pangea/dnd';
+import type { Mock } from 'vitest';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { useAppSelector } from '../../hooks/useAppSelector';
 
-jest.mock('../../hooks/useAppDispatch', () => ({
-  useAppDispatch: jest.fn(),
+vi.mock('../../hooks/useAppDispatch', () => ({
+  useAppDispatch: vi.fn(),
 }));
-jest.mock('../../hooks/useAppSelector', () => ({
-  useAppSelector: jest.fn(),
+vi.mock('../../hooks/useAppSelector', () => ({
+  useAppSelector: vi.fn(),
 }));
-jest.mock('../../store/task/task.thunks', () => ({
-  fetchAllTasksThunk: jest.fn(),
+vi.mock('../../store/task/task.thunks', () => ({
+  fetchAllTasksThunk: vi.fn(),
 }));
 
 describe('CategoryGrid', () => {
@@ -32,11 +36,9 @@ describe('CategoryGrid', () => {
   ];
 
   beforeEach(() => {
-    const useAppDispatchModule =
-      require('../../hooks/useAppDispatch').useAppDispatch;
-    const useAppSelectorhModule =
-      require('../../hooks/useAppSelector').useAppSelector;
-    useAppDispatchModule.mockReturnValue(jest.fn());
+    const useAppDispatchModule = useAppDispatch as Mock;
+    const useAppSelectorhModule = useAppSelector as Mock;
+    useAppDispatchModule.mockReturnValue(vi.fn());
     useAppSelectorhModule.mockImplementation((selector: any) =>
       selector({
         tasks: { tasks },
@@ -45,8 +47,8 @@ describe('CategoryGrid', () => {
   });
 
   it('renders the category name', () => {
-    const dragOnEnd = jest.fn();
-    render(
+    const dragOnEnd = vi.fn();
+    renderWithMantine(
       <Router>
         <DragDropContext onDragEnd={dragOnEnd}>
           <Droppable droppableId='test'>
@@ -69,8 +71,8 @@ describe('CategoryGrid', () => {
   });
 
   it('dispatches fetchAllTasksThunk with the correct categoryId', () => {
-    const dragOnEnd = jest.fn();
-    render(
+    const dragOnEnd = vi.fn();
+    renderWithMantine(
       <Router>
         <DragDropContext onDragEnd={dragOnEnd}>
           <Droppable droppableId='test'>
@@ -92,8 +94,8 @@ describe('CategoryGrid', () => {
   });
 
   it('renders TaskCard components for each task in the group', () => {
-    const dragOnEnd = jest.fn();
-    render(
+    const dragOnEnd = vi.fn();
+    renderWithMantine(
       <Router>
         <DragDropContext onDragEnd={dragOnEnd}>
           <Droppable droppableId='test'>
@@ -121,8 +123,8 @@ describe('CategoryGrid', () => {
   });
 
   it('renders the TaskModal component', () => {
-    const dragOnEnd = jest.fn();
-    render(
+    const dragOnEnd = vi.fn();
+    renderWithMantine(
       <Router>
         <DragDropContext onDragEnd={dragOnEnd}>
           <Droppable droppableId='test'>
@@ -146,8 +148,8 @@ describe('CategoryGrid', () => {
   });
 
   it('renders the CategoryModal component', () => {
-    const dragOnEnd = jest.fn();
-    render(
+    const dragOnEnd = vi.fn();
+    renderWithMantine(
       <Router>
         <DragDropContext onDragEnd={dragOnEnd}>
           <Droppable droppableId='test'>

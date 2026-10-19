@@ -1,23 +1,6 @@
-import { MantineThemeOverride } from '@mantine/core';
+import { Button, MantineThemeOverride } from '@mantine/core';
+import classes from './button.module.css';
 
 export const button: MantineThemeOverride['components'] = {
-  Button: {
-    styles: (theme) => ({
-      root: {
-        fontWeight: 500,
-      },
-    }),
-    variants: {
-      light: (theme) => ({
-        root: {
-          backgroundColor: theme.colors.pink[0],
-          color: theme.colors.pink[7],
-          fontSize: 14,
-          '&:hover': {
-            backgroundColor: `${theme.colors.pink[1]} !important`,
-          },
-        },
-      }),
-    },
-  },
+  Button: Button.extend({ classNames: classes }),
 };

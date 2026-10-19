@@ -4,15 +4,6 @@ import TaskModal from '.';
 import { renderWithProviders } from '../../utils/redux.utils';
 import { Task } from '../../types/task.types';
 
-// Mock the ResizeObserver constructor
-const mockResizeObserver = jest.fn();
-mockResizeObserver.mockImplementation(() => ({
-  observe: jest.fn(),
-  unobserve: jest.fn(),
-}));
-// Assign the mock to the global object
-(global as any).ResizeObserver = mockResizeObserver;
-
 describe('TaskModal', () => {
   const categoryId = 1;
   const task: Task = {

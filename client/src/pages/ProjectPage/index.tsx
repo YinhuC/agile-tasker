@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { Flex, useMantineTheme } from '@mantine/core';
+import { Flex } from '@mantine/core';
 import {
   fetchAllCategoriesThunk,
   updateCategoryOrderThunk,
 } from '../../store/category/category.thunks';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import CategoryGrid from '../../components/CategoryGrid';
-import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, DropResult, Droppable } from '@hello-pangea/dnd';
 import HeaderSection from './HeaderSection';
 import {
   Category,
@@ -25,7 +25,6 @@ import { updateAllCategories } from '../../store/category/category.slice';
 import { updateAllTasks } from '../../store/task/task.slice';
 
 function ProjectPage() {
-  const theme = useMantineTheme();
   const categories = useAppSelector((state) => state.categories.categories);
   const tasks = useAppSelector((state) => state.tasks.tasks);
   const location = useLocation();
@@ -126,19 +125,13 @@ function ProjectPage() {
             ref={provided.innerRef}
             {...provided.droppableProps}
             p={30}
-            sx={{
-              background: theme.colors.gray[2],
-              margin: '0 50px',
+            mx={{ base: 15, sm: 30, lg: 50 }}
+            h='73vh'
+            bg='gray.2'
+            style={{
               borderRadius: '0.5rem',
               overflow: 'auto',
               userSelect: 'none',
-              height: '73vh',
-              [theme.fn.smallerThan('lg')]: {
-                margin: '0 30px',
-              },
-              [theme.fn.smallerThan('sm')]: {
-                margin: '0 15px',
-              },
             }}
           >
             {categories.map((category, index) => (

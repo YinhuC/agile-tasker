@@ -1,12 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import {
-  Title,
-  SimpleGrid,
-  Stack,
-  Flex,
-  useMantineTheme,
-  StackProps,
-} from '@mantine/core';
+import { Title, SimpleGrid, Stack, Flex, StackProps } from '@mantine/core';
 import ProjectCard from '../ProjectCard';
 import { Group } from '../../types/group.types';
 import { fetchAllProjectsThunk } from '../../store/project/project.thunks';
@@ -20,7 +13,6 @@ type ProjectGridProps = StackProps & {
 };
 
 function ProjectGrid({ group, ...props }: ProjectGridProps) {
-  const theme = useMantineTheme();
   const { name, id } = group;
   const dispatch = useAppDispatch();
   const allProjects = useAppSelector((state) => state.projects.projects);
@@ -57,22 +49,18 @@ function ProjectGrid({ group, ...props }: ProjectGridProps) {
       px={40}
       pt={30}
       pb={40}
-      sx={{ backgroundColor: theme.colors.gray[0], borderRadius: '0.3rem' }}
+      bg='gray.0'
+      style={{ borderRadius: '0.3rem' }}
       {...props}
     >
       <Flex
         justify='space-between'
         align='center'
         mb={10}
-        sx={{
-          [theme.fn.smallerThan('sm')]: {
-            flexDirection: 'column',
-            alignItems: 'center',
-          },
-        }}
+        direction={{ base: 'column', sm: 'row' }}
       >
         <Flex align='center'>
-          <Title order={3} mx={5} weight={500}>
+          <Title order={3} mx={5} fw={500}>
             {name}
           </Title>
           <GroupModal type='edit' group={group} />
@@ -80,12 +68,8 @@ function ProjectGrid({ group, ...props }: ProjectGridProps) {
         <ProjectModal groupId={id} type='add' />
       </Flex>
       <SimpleGrid
-        cols={3}
-        breakpoints={[
-          { maxWidth: theme.breakpoints.md, cols: 3, spacing: 'md' },
-          { maxWidth: theme.breakpoints.sm, cols: 2, spacing: 'sm' },
-          { maxWidth: theme.breakpoints.xs, cols: 1, spacing: 'sm' },
-        ]}
+        cols={{ base: 1, xs: 2, sm: 3 }}
+        spacing={{ base: 'sm', sm: 'md' }}
       >
         {cards}
       </SimpleGrid>

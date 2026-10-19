@@ -122,7 +122,7 @@ function TaskModal({ categoryId, type, task, ...props }: TaskModalProps) {
             maxRows={5}
             {...form.getInputProps('description')}
           />
-          <Group position='right' spacing={10}>
+          <Group justify='flex-end' gap={10}>
             <Button type='submit' h={45} aria-label='Submit'>
               {type === 'add' ? 'Create Task' : 'Edit Task'}
             </Button>

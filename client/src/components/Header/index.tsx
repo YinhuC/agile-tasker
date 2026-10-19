@@ -1,14 +1,6 @@
 import React from 'react';
-import {
-  Image,
-  Button,
-  Flex,
-  MediaQuery,
-  ContainerProps,
-  Text,
-  useMantineTheme,
-} from '@mantine/core';
-import { Link, useNavigate } from 'react-router-dom';
+import { Box, Image, Button, Flex, FlexProps, Text } from '@mantine/core';
+import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../../hooks/useAuth';
 import { notifications } from '@mantine/notifications';
 import { GeneralErrorObject } from '../../utils/notification.utils';
@@ -16,9 +8,9 @@ import { postAuthLogout } from '../../api/auth.api';
 import LogoDark from '../../assets/logos/logo-dark.png';
 import SmallLogo from '../../assets/logos/logo-small.png';
 import { usePrevious, useWindowScroll } from '@mantine/hooks';
+import classes from './Header.module.css';
 
-const Header: React.FC = ({ ...props }: ContainerProps) => {
-  const theme = useMantineTheme();
+const Header: React.FC<FlexProps> = ({ ...props }) => {
   const { user, removeUser } = useAuth();
   const navigate = useNavigate();
   const [scroll] = useWindowScroll();
@@ -40,71 +32,54 @@ const Header: React.FC = ({ ...props }: ContainerProps) => {
       mx={5}
       justify='space-around'
       align='center'
-      sx={{
-        top: 0,
-        position: 'fixed',
-        zIndex: 9,
-        width: '100vw',
-        overflow: 'hidden',
-        backgroundColor: 'white',
-        borderBottom: '1px solid lightgray',
-        height: 80,
+      className={classes.root}
+      style={{
         marginTop:
           (prevScroll && scroll.y < prevScroll.y) || scroll.y < 50 ? 0 : -100,
-        transition: 'margin-top 0.5s ease-out',
       }}
       {...props}
     >
-      <MediaQuery smallerThan='sm' styles={{ display: 'none' }}>
-        <Flex align='center' justify='center'>
-          <Link to={'/'}>
-            <Image src={LogoDark} width={200} alt='agile-tasker logo' mr={80} />
-          </Link>
-          {!user && (
-            <>
-              <Link to={'/views'} style={{ textDecorationLine: 'none' }}>
-                <Text color={theme.colors.gray[8]} weight={500} mr={40}>
-                  Views
-                </Text>
-              </Link>
-              <Link to={'/plans'} style={{ textDecorationLine: 'none' }}>
-                <Text color={theme.colors.gray[8]} weight={500}>
-                  Pricing
-                </Text>
-              </Link>
-            </>
-          )}
-        </Flex>
-      </MediaQuery>
-      <MediaQuery largerThan='sm' styles={{ display: 'none' }}>
+      <Flex align='center' justify='center' visibleFrom='sm'>
         <Link to={'/'}>
-          <Image
-            src={SmallLogo}
-            width={100}
-            sx={{ overflow: 'hidden' }}
-            alt='a. logo'
-          />
+          <Image src={LogoDark} w={200} alt='agile-tasker logo' mr={80} />
         </Link>
-      </MediaQuery>
+        {!user && (
+          <>
+            <Link to={'/views'} style={{ textDecorationLine: 'none' }}>
+              <Text c='gray.8' fw={500} mr={40}>
+                Views
+              </Text>
+            </Link>
+            <Link to={'/plans'} style={{ textDecorationLine: 'none' }}>
+              <Text c='gray.8' fw={500}>
+                Pricing
+              </Text>
+            </Link>
+          </>
+        )}
+      </Flex>
+      <Box component={Link} to={'/'} hiddenFrom='sm'>
+        <Image src={SmallLogo} w={100} alt='a. logo' />
+      </Box>
       <Flex justify='flex-end' align='center' w={200} mr={20}>
         {user ? (
           <>
-            <MediaQuery smallerThan='sm' styles={{ display: 'none' }}>
-              <Button
-                component={Link}
-                variant='link'
-                to={`/boards/${user.id}`}
-                sx={{ fontWeight: 400 }}
-                mr={40}
-                aria-label='Board'
-              >
-                Board
-              </Button>
-            </MediaQuery>
+            <Button
+              component={Link}
+              variant='transparent'
+              color='dark'
+              to={`/boards/${user.id}`}
+              fw={400}
+              mr={40}
+              visibleFrom='sm'
+              aria-label='Board'
+            >
+              Board
+            </Button>
             <Button
               onClick={logout}
               variant='outline'
-              compact
+              size='compact-sm'
               radius='xs'
               aria-label='Logout'
             >

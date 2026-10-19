@@ -7,10 +7,10 @@ import {
   TextInput,
   PasswordInput,
   Box,
-  useMantineTheme,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { Link, useNavigate } from 'react-router-dom';
+import classes from '../../theme/styles/auth-link.module.css';
+import { Link, useNavigate } from 'react-router';
 import { MESSAGES, REGEXES } from '../../utils/regex.utils';
 import { RegisterParams } from '../../types/auth.types';
 import { postAuthRegister } from '../../api/auth.api';
@@ -21,7 +21,6 @@ import { MdOutlineAlternateEmail, MdError } from 'react-icons/md';
 import { FaCircleCheck } from 'react-icons/fa6';
 
 function RegisterPage() {
-  const theme = useMantineTheme();
   const form = useForm({
     initialValues: {
       firstname: '',
@@ -90,13 +89,10 @@ function RegisterPage() {
       justify='center'
       align='center'
       direction='column'
-      sx={{
-        minHeight: '100vh',
-        background: theme.fn.linearGradient(
-          225,
-          theme.colors.pink[0],
-          theme.colors.teal[0]
-        ),
+      mih='100vh'
+      style={{
+        background:
+          'linear-gradient(225deg, var(--mantine-color-pink-0) 0%, var(--mantine-color-teal-0) 100%)',
       }}
       py={50}
       px={20}
@@ -104,7 +100,7 @@ function RegisterPage() {
       <Title order={2} mb={20}>
         Create your account.
       </Title>
-      <Text mb={50} align='center'>
+      <Text mb={50} ta='center'>
         Create your account today and embark on a collaborative journey.
       </Text>
       <Box miw={300} w='24%' mb={60}>
@@ -129,7 +125,7 @@ function RegisterPage() {
           />
           <TextInput
             mb={20}
-            icon={<MdOutlineAlternateEmail />}
+            leftSection={<MdOutlineAlternateEmail />}
             placeholder='Your email'
             aria-label='Your email'
             required
@@ -137,7 +133,7 @@ function RegisterPage() {
           />
           <PasswordInput
             mb={20}
-            icon={<TbPassword />}
+            leftSection={<TbPassword />}
             placeholder='Password'
             aria-label='Password'
             required
@@ -145,7 +141,7 @@ function RegisterPage() {
           />
           <PasswordInput
             mb={30}
-            icon={<TbPassword />}
+            leftSection={<TbPassword />}
             placeholder='Confirm Password'
             aria-label='Confirm Password'
             required
@@ -156,13 +152,7 @@ function RegisterPage() {
           </Button>
         </form>
       </Box>
-      <Box
-        sx={{
-          'a:visited': {
-            color: 'blue',
-          },
-        }}
-      >
+      <Box className={classes.link}>
         <Text size='sm'>
           Already have an acocunt? <Link to={'/login'}>Sign in</Link>
         </Text>

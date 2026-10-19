@@ -1,8 +1,4 @@
-import {
-  combineReducers,
-  configureStore,
-  PreloadedState,
-} from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import groupReducer from './group/group.slice';
 import projectReducer from './project/project.slice';
 import categoryReducer from './category/category.slice';
@@ -15,7 +11,7 @@ export const rootReducer = combineReducers({
   tasks: taskReducer,
 });
 
-export function setupStore(preloadedState?: PreloadedState<RootState>) {
+export function setupStore(preloadedState?: Partial<RootState>) {
   return configureStore({
     reducer: rootReducer,
     preloadedState,

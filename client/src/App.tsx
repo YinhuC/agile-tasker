@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useState } from 'react';
-import { useLocation, Route, Routes } from 'react-router-dom';
+import { useLocation, Route, Routes } from 'react-router';
 import { ThemeProvider } from './providers/ThemeProvider';
 import Header from './components/Header';
 import LoginPage from './pages/LoginPage';
@@ -44,7 +44,7 @@ function App() {
     <Providers user={user} setUser={setUser}>
       <Notifications />
       {!isLoginPage && !isRegisterPage && (
-        <Flex justify='center' sx={{ width: '100%' }} mb={80}>
+        <Flex justify='center' w='100%' mb={80}>
           <Header />
         </Flex>
       )}

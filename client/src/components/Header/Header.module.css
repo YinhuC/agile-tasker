@@ -1,0 +1,11 @@
+.root {
+  top: 0;
+  position: fixed;
+  z-index: 9;
+  width: 100vw;
+  overflow: hidden;
+  background-color: white;
+  border-bottom: 1px solid lightgray;
+  height: 80px;
+  transition: margin-top 0.5s ease-out;
+}

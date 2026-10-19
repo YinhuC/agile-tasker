@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Flex,
   Text,
-  useMantineTheme,
   Container,
   Box,
   Divider,
@@ -10,7 +9,7 @@ import {
   SimpleGrid,
   Image,
 } from '@mantine/core';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import {
   FaInstagram,
   FaFacebook,
@@ -19,87 +18,55 @@ import {
   FaYoutube,
 } from 'react-icons/fa';
 import LogoLight from '../../assets/logos/logo-light.png';
+import classes from './Footer.module.css';
 
 function Footer({ ...props }: BoxProps) {
-  const theme = useMantineTheme();
   return (
-    <Box
-      sx={{
-        background: theme.colors.gray[9],
-      }}
-      {...props}
-    >
+    <Box bg='gray.9' {...props}>
       <Container size='lg' py={10}>
-        <SimpleGrid
-          cols={3}
-          breakpoints={[
-            { maxWidth: theme.breakpoints.md, cols: 1, spacing: 'sm' },
-          ]}
-        >
-          <Image src={LogoLight} width={200} />
+        <SimpleGrid cols={{ base: 1, md: 3 }} spacing={{ base: 'sm', md: 'md' }}>
+          <Image src={LogoLight} w={200} />
         </SimpleGrid>
       </Container>
 
-      <Divider mx={30} color={theme.colors.gray[5]} />
+      <Divider mx={30} color='gray.5' />
 
-      <Container
-        size='lg'
-        py={20}
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          [theme.fn.smallerThan('md')]: {
-            flexDirection: 'column',
-            gap: 15,
-          },
-        }}
-      >
+      <Container size='lg' py={20} className={classes.bottom}>
         <Flex
           gap={15}
-          sx={{
-            [theme.fn.smallerThan('md')]: {
-              flexDirection: 'column',
-              margin: '0 30px',
-            },
-          }}
+          direction={{ base: 'column', md: 'row' }}
+          mx={{ base: 30, md: 0 }}
         >
-          <Text color={theme.colors.gray[5]} size='sm' mr={20}>
+          <Text c='gray.5' size='sm' mr={20}>
             Copyright © 2024 Agile Tasker.
           </Text>
           <Link to={''} style={{ textDecorationLine: 'none' }}>
-            <Text color={theme.colors.gray[5]} size='sm'>
+            <Text c='gray.5' size='sm'>
               Privacy Policy
             </Text>
           </Link>
           <Link to={''} style={{ textDecorationLine: 'none' }}>
-            <Text color={theme.colors.gray[5]} size='sm'>
+            <Text c='gray.5' size='sm'>
               Terms and Conditions
             </Text>
           </Link>
         </Flex>
 
-        <Flex
-          gap={30}
-          sx={{
-            [theme.fn.smallerThan('md')]: {
-              margin: '0 30px',
-            },
-          }}
-        >
+        <Flex gap={30} mx={{ base: 30, md: 0 }}>
           <Link to={''}>
-            <FaInstagram size={16} color={theme.colors.gray[5]} />
+            <FaInstagram size={16} color='var(--mantine-color-gray-5)' />
           </Link>
           <Link to={''}>
-            <FaFacebook size={16} color={theme.colors.gray[5]} />
+            <FaFacebook size={16} color='var(--mantine-color-gray-5)' />
           </Link>
           <Link to={''}>
-            <FaLinkedin size={16} color={theme.colors.gray[5]} />
+            <FaLinkedin size={16} color='var(--mantine-color-gray-5)' />
           </Link>
           <Link to={''}>
-            <FaTwitter size={16} color={theme.colors.gray[5]} />
+            <FaTwitter size={16} color='var(--mantine-color-gray-5)' />
           </Link>
           <Link to={''}>
-            <FaYoutube size={16} color={theme.colors.gray[5]} />
+            <FaYoutube size={16} color='var(--mantine-color-gray-5)' />
           </Link>
         </Flex>
       </Container>

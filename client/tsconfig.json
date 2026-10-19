@@ -1,7 +1,19 @@
 {
-  "extends": "../tsconfig.json",
+  "include": ["src", "vite.config.ts"],
   "compilerOptions": {
-    "jsx": "react"
-  },
-  "include": ["src", "tests"]
+    "target": "es2023",
+    "lib": ["es2023", "dom", "dom.iterable"],
+    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true
+  }
 }

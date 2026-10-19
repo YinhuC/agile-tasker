@@ -1,0 +1,9 @@
+.bottom {
+  display: flex;
+  justify-content: space-between;
+
+  @mixin smaller-than $mantine-breakpoint-md {
+    flex-direction: column;
+    gap: 15px;
+  }
+}

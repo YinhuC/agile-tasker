@@ -12,14 +12,14 @@ function AccordionSection({ ...props }: ContainerProps) {
   return (
     <Container size='lg' mt={30} mb={100} {...props}>
       <Stack>
-        <Title order={2} weight={500} mb={5} align='center'>
+        <Title order={2} fw={500} mb={5} ta='center'>
           Frequently asked questions
         </Title>
 
         <Accordion multiple={true}>
           <Accordion.Item value='trial'>
             <Accordion.Control>
-              <Text size='lg' weight={500}>
+              <Text size='lg' fw={500}>
                 Does Agile Tasker provide a Premium trial period at no cost?
               </Text>
             </Accordion.Control>
@@ -34,7 +34,7 @@ function AccordionSection({ ...props }: ContainerProps) {
 
           <Accordion.Item value='discounts'>
             <Accordion.Control>
-              <Text size='lg' weight={500}>
+              <Text size='lg' fw={500}>
                 Are there any discounted plans available?
               </Text>
             </Accordion.Control>
@@ -46,7 +46,7 @@ function AccordionSection({ ...props }: ContainerProps) {
 
           <Accordion.Item value='payments'>
             <Accordion.Control>
-              <Text size='lg' weight={500}>
+              <Text size='lg' fw={500}>
                 Which payment methods are accepted?
               </Text>
             </Accordion.Control>
@@ -61,7 +61,7 @@ function AccordionSection({ ...props }: ContainerProps) {
 
           <Accordion.Item value='cancellation'>
             <Accordion.Control>
-              <Text size='lg' weight={500}>
+              <Text size='lg' fw={500}>
                 How can I terminate my Agile Tasker Standard or Premium
                 subscription?
               </Text>
@@ -79,7 +79,7 @@ function AccordionSection({ ...props }: ContainerProps) {
 
           <Accordion.Item value='billing'>
             <Accordion.Control>
-              <Text size='lg' weight={500}>
+              <Text size='lg' fw={500}>
                 How are users calculated for billing purposes?
               </Text>
             </Accordion.Control>
@@ -97,7 +97,7 @@ function AccordionSection({ ...props }: ContainerProps) {
 
           <Accordion.Item value='version'>
             <Accordion.Control>
-              <Text size='lg' weight={500}>
+              <Text size='lg' fw={500}>
                 Is there an on-premises version of Agile Tasker?
               </Text>
             </Accordion.Control>
@@ -109,7 +109,7 @@ function AccordionSection({ ...props }: ContainerProps) {
 
           <Accordion.Item value='subscription'>
             <Accordion.Control>
-              <Text size='lg' weight={500}>
+              <Text size='lg' fw={500}>
                 Can I subscribe to Agile Tasker Standard or Premium for just my
                 individual account?
               </Text>

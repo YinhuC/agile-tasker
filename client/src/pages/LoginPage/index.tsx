@@ -7,12 +7,12 @@ import {
   TextInput,
   PasswordInput,
   Box,
-  useMantineTheme,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import classes from '../../theme/styles/auth-link.module.css';
 import { TbPassword } from 'react-icons/tb';
 import { MdOutlineAlternateEmail, MdError } from 'react-icons/md';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router';
 import { postAuthLogin } from '../../api/auth.api';
 import { LoginParams } from '../../types/auth.types';
 import { AxiosError } from 'axios';
@@ -22,7 +22,6 @@ import { GeneralErrorObject } from '../../utils/notification.utils';
 import { useAuth } from '../../hooks/useAuth';
 
 function LoginPage() {
-  const theme = useMantineTheme();
   const form = useForm({
     initialValues: {
       email: 'johndoe@example.com',
@@ -68,13 +67,10 @@ function LoginPage() {
       justify='center'
       align='center'
       direction='column'
-      sx={{
-        minHeight: '100vh',
-        background: theme.fn.linearGradient(
-          45,
-          theme.colors.pink[0],
-          theme.colors.teal[0]
-        ),
+      mih='100vh'
+      style={{
+        background:
+          'linear-gradient(45deg, var(--mantine-color-pink-0) 0%, var(--mantine-color-teal-0) 100%)',
       }}
       py={50}
       px={20}
@@ -89,7 +85,7 @@ function LoginPage() {
         >
           <TextInput
             mb={20}
-            icon={<MdOutlineAlternateEmail />}
+            leftSection={<MdOutlineAlternateEmail />}
             placeholder='Email'
             aria-label='Email'
             required
@@ -97,7 +93,7 @@ function LoginPage() {
           />
           <PasswordInput
             mb={30}
-            icon={<TbPassword />}
+            leftSection={<TbPassword />}
             placeholder='Password'
             aria-label='Password'
             required
@@ -108,13 +104,7 @@ function LoginPage() {
           </Button>
         </form>
       </Box>
-      <Box
-        sx={{
-          'a:visited': {
-            color: 'blue',
-          },
-        }}
-      >
+      <Box className={classes.link}>
         <Text size='sm'>
           Not registered? <Link to={'/register'}>Create account</Link>
         </Text>

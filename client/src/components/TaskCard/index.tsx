@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Title, Text, Flex, CardProps } from '@mantine/core';
 import { Task } from '../../types/task.types';
-import { Draggable } from 'react-beautiful-dnd';
+import { Draggable } from '@hello-pangea/dnd';
 import TaskModal from '../TaskModal';
 
 type TaskCardProps = Partial<CardProps> & {
@@ -24,10 +24,8 @@ function TaskCard({ task, index, ...props }: TaskCardProps) {
           radius='sm'
           withBorder
           w={280}
-          sx={{
-            height: '100%',
-            overflow: 'visible',
-          }}
+          h='100%'
+          style={{ overflow: 'visible' }}
           {...props}
         >
           <Flex justify='space-between' align='center'>
@@ -40,7 +38,7 @@ function TaskCard({ task, index, ...props }: TaskCardProps) {
               task={task}
             />
           </Flex>
-          <Text size='sm' color='dimmed'>
+          <Text size='sm' c='dimmed'>
             {description}
           </Text>
         </Card>

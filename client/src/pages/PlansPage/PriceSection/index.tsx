@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Container,
   Box,
-  useMantineTheme,
   Title,
   Stack,
   Text,
@@ -12,27 +11,24 @@ import {
 } from '@mantine/core';
 import { FaCheck } from 'react-icons/fa';
 import PriceCard from '../../../components/PriceCard';
+import classes from './PriceSection.module.css';
 
 function PriceSection() {
-  const theme = useMantineTheme();
   return (
     <>
       <Box
         id='views'
-        sx={{
-          background: theme.fn.linearGradient(
-            180,
-            theme.colors.blue[0],
-            '#fff'
-          ),
+        style={{
+          background:
+            'linear-gradient(180deg, var(--mantine-color-blue-0) 0%, #fff 100%)',
         }}
       >
         <Container size='lg' pt={80}>
           <Stack align='center'>
-            <Title order={1} weight={500} align='center'>
+            <Title order={1} fw={500} ta='center'>
               Agile Tasker, tailored to you.
             </Title>
-            <Text align='center' size='lg' maw={800}>
+            <Text ta='center' size='lg' maw={800}>
               Trusted by millions worldwide, Agile Tasker empowers teams across
               the globe. Explore the options to find the perfect fit for you.
             </Text>
@@ -42,19 +38,12 @@ function PriceSection() {
 
       <Container size='lg' py={80}>
         <SimpleGrid
-          cols={4}
-          sx={{
-            height: '100%',
-            gap: 0,
-            [theme.fn.smallerThan('sm')]: {
-              gap: 30,
-            },
-          }}
-          breakpoints={[
-            { maxWidth: theme.breakpoints.sm, cols: 1, spacing: 'sm' },
-          ]}
+          cols={{ base: 1, sm: 4 }}
+          spacing={{ base: 30, sm: 0 }}
+          verticalSpacing={{ base: 30, sm: 0 }}
+          h='100%'
         >
-          <Stack spacing={0}>
+          <Stack gap={0}>
             <PriceCard
               tier={'Free'}
               amount={0}
@@ -67,24 +56,16 @@ function PriceSection() {
             <Card
               withBorder
               radius={0}
-              sx={{
-                backgroundColor: 'transparent',
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: 450,
-                [theme.fn.smallerThan('sm')]: {
-                  minHeight: 'auto',
-                },
-              }}
+              className={classes.features}
             >
-              <Text transform='uppercase' mb={10} size='sm' weight={600}>
+              <Text tt='uppercase' mb={10} size='sm' fw={600}>
                 Included in free:
               </Text>
               <List
                 spacing='xs'
                 size='sm'
                 center
-                icon={<FaCheck size='1rem' color={theme.colors.green[6]} />}
+                icon={<FaCheck size='1rem' color='var(--mantine-color-green-6)' />}
               >
                 <List.Item>Unlimited cards</List.Item>
                 <List.Item>Up to 10 boards per Workspace</List.Item>
@@ -100,7 +81,7 @@ function PriceSection() {
             </Card>
           </Stack>
 
-          <Stack spacing={0}>
+          <Stack gap={0}>
             <PriceCard
               tier={'Standard'}
               amount={10}
@@ -116,24 +97,16 @@ function PriceSection() {
               withBorder
               padding='lg'
               radius={0}
-              sx={{
-                backgroundColor: 'transparent',
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: 450,
-                [theme.fn.smallerThan('sm')]: {
-                  minHeight: 'auto',
-                },
-              }}
+              className={classes.features}
             >
-              <Text transform='uppercase' mb={10} size='sm' weight={600}>
+              <Text tt='uppercase' mb={10} size='sm' fw={600}>
                 Everything in free, plus:
               </Text>
               <List
                 spacing='xs'
                 size='sm'
                 center
-                icon={<FaCheck size='1rem' color={theme.colors.green[6]} />}
+                icon={<FaCheck size='1rem' color='var(--mantine-color-green-6)' />}
               >
                 <List.Item>Unlimited boards</List.Item>
                 <List.Item>Advanced checklists</List.Item>
@@ -146,7 +119,7 @@ function PriceSection() {
             </Card>
           </Stack>
 
-          <Stack spacing={0}>
+          <Stack gap={0}>
             <PriceCard
               tier={'Premium'}
               amount={20}
@@ -162,25 +135,16 @@ function PriceSection() {
             <Card
               padding='lg'
               radius={0}
-              sx={{
-                border: `0.125rem solid ${theme.colors.pink[3]}`,
-                backgroundColor: 'transparent',
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: 450,
-                [theme.fn.smallerThan('sm')]: {
-                  minHeight: 'auto',
-                },
-              }}
+              className={`${classes.features} ${classes.highlight}`}
             >
-              <Text transform='uppercase' mb={10} size='sm' weight={600}>
+              <Text tt='uppercase' mb={10} size='sm' fw={600}>
                 Everything in standard, plus:
               </Text>
               <List
                 spacing='xs'
                 size='sm'
                 center
-                icon={<FaCheck size='1rem' color={theme.colors.green[6]} />}
+                icon={<FaCheck size='1rem' color='var(--mantine-color-green-6)' />}
               >
                 <List.Item>
                   Views: Calendar, Timeline, Table, Dashboard, and Map
@@ -197,7 +161,7 @@ function PriceSection() {
             </Card>
           </Stack>
 
-          <Stack spacing={0}>
+          <Stack gap={0}>
             <PriceCard
               tier={'Enterprise'}
               amount={30}
@@ -213,24 +177,16 @@ function PriceSection() {
               withBorder
               padding='lg'
               radius={0}
-              sx={{
-                backgroundColor: 'transparent',
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: 450,
-                [theme.fn.smallerThan('sm')]: {
-                  minHeight: 'auto',
-                },
-              }}
+              className={classes.features}
             >
-              <Text transform='uppercase' mb={10} size='sm' weight={600}>
+              <Text tt='uppercase' mb={10} size='sm' fw={600}>
                 Everything in premium, plus:
               </Text>
               <List
                 spacing='xs'
                 size='sm'
                 center
-                icon={<FaCheck size='1rem' color={theme.colors.green[6]} />}
+                icon={<FaCheck size='1rem' color='var(--mantine-color-green-6)' />}
               >
                 <List.Item>Unlimited Workspaces</List.Item>
                 <List.Item>Organization-wide permissions</List.Item>
