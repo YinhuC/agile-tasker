@@ -37,7 +37,7 @@ function Footer({ ...props }: BoxProps) {
             A portfolio project. Open source under the MIT licence.
           </Text>
           <Text size='sm' className={classes.muted}>
-            © {new Date().getFullYear()} agile tasker
+            © 2023 agile tasker
           </Text>
         </Box>
       </Container>
