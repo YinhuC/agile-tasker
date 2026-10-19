@@ -40,7 +40,9 @@ export class ProjectService {
   async getProjectById(projectId: number): Promise<Project> {
     return await this.projectRepository.findOneOrFail({
       where: { id: projectId },
-      relations: ['group'],
+      relations: {
+        group: true,
+      },
     });
   }
 

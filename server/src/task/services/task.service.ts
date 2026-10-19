@@ -38,14 +38,18 @@ export class TaskService {
     }
     return await this.taskRepository.find({
       where: { category: { id: categoryId } },
-      relations: ['category'],
+      relations: {
+        category: true,
+      },
     });
   }
 
   async getTaskById(taskId: number): Promise<Task> {
     const task = await this.taskRepository.findOne({
       where: { id: taskId },
-      relations: ['category'],
+      relations: {
+        category: true,
+      },
     });
     if (!task) {
       throw new NotFoundException(`Task with ID ${taskId} not found`);
@@ -110,9 +114,8 @@ export class TaskService {
       const oldCategory = await this.categoryService.getCategoryById(
         task.category.id
       );
-      const newCategory = await this.categoryService.getCategoryById(
-        categoryId
-      );
+      const newCategory =
+        await this.categoryService.getCategoryById(categoryId);
       if (oldCategory.project.id !== newCategory.project.id) {
         throw new BadRequestException(
           'Cannot move to different to category in different project'

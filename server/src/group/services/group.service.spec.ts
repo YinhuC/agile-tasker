@@ -102,7 +102,7 @@ describe('GroupService', () => {
 
       jest.spyOn(groupRepository, 'findOne').mockResolvedValue(undefined);
 
-      await expect(service.getGroupById(groupId)).rejects.toThrowError(
+      await expect(service.getGroupById(groupId)).rejects.toThrow(
         NotFoundException
       );
       expect(groupRepository.findOne).toHaveBeenCalledWith({
@@ -182,7 +182,7 @@ describe('GroupService', () => {
 
       await expect(
         service.updateGroup(groupId, updateGroupDto)
-      ).rejects.toThrowError(NotFoundException);
+      ).rejects.toThrow(NotFoundException);
       expect(service['getGroupWithUsers']).toHaveBeenCalledWith(groupId);
     });
   });

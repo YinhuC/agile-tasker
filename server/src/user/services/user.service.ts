@@ -30,7 +30,9 @@ export class UserService {
   async getUserGroups(id: number): Promise<Group[]> {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['groups'],
+      relations: {
+        groups: true,
+      },
     });
     if (!user) {
       throw new NotFoundException('User not found');

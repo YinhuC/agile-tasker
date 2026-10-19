@@ -97,7 +97,7 @@ describe('CategoryService', () => {
       expect(projectService.isMember).toHaveBeenCalledWith(user, projectId);
       expect(categoryRepository.find).toHaveBeenCalledWith({
         where: { project: { id: projectId } },
-        relations: ['project'],
+        relations: { project: true },
       });
     });
 
@@ -109,7 +109,7 @@ describe('CategoryService', () => {
 
       await expect(
         service.getAllCategoriesByProjectId(user, projectId)
-      ).rejects.toThrowError(ForbiddenException);
+      ).rejects.toThrow(ForbiddenException);
 
       expect(projectService.isMember).toHaveBeenCalledWith(user, projectId);
       expect(categoryRepository.find).not.toHaveBeenCalled();
@@ -131,7 +131,7 @@ describe('CategoryService', () => {
       expect(result).toBe(category);
       expect(categoryRepository.findOne).toHaveBeenCalledWith({
         where: { id: categoryId },
-        relations: ['project'],
+        relations: { project: true },
       });
     });
 
@@ -140,13 +140,13 @@ describe('CategoryService', () => {
 
       jest.spyOn(categoryRepository, 'findOne').mockResolvedValue(undefined);
 
-      await expect(service.getCategoryById(categoryId)).rejects.toThrowError(
+      await expect(service.getCategoryById(categoryId)).rejects.toThrow(
         NotFoundException
       );
 
       expect(categoryRepository.findOne).toHaveBeenCalledWith({
         where: { id: categoryId },
-        relations: ['project'],
+        relations: { project: true },
       });
     });
   });
@@ -195,7 +195,7 @@ describe('CategoryService', () => {
 
       await expect(
         service.createCategory(user, createCategoryDto)
-      ).rejects.toThrowError(ForbiddenException);
+      ).rejects.toThrow(ForbiddenException);
 
       expect(projectService.isMember).toHaveBeenCalledWith(user, projectId);
       expect(categoryRepository.create).not.toHaveBeenCalled();
@@ -252,7 +252,7 @@ describe('CategoryService', () => {
 
       await expect(
         service.updateCategory(user, categoryId, updateCategoryDto)
-      ).rejects.toThrowError(BadRequestException);
+      ).rejects.toThrow(BadRequestException);
 
       expect(service.getCategoryById).toHaveBeenCalledWith(categoryId);
       expect(service.getAllCategoriesByProjectId).toHaveBeenCalledWith(
@@ -302,7 +302,7 @@ describe('CategoryService', () => {
 
       await expect(
         service.deleteCategory(user, categoryId)
-      ).rejects.toThrowError(NotFoundException);
+      ).rejects.toThrow(NotFoundException);
 
       expect(service.getCategoryById).toHaveBeenCalledWith(categoryId);
       expect(categoryRepository.save).not.toHaveBeenCalled();
