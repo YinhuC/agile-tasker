@@ -111,7 +111,7 @@ describe('ProjectService', () => {
 
       await expect(
         service.getAllProjectsByGroupId(user, groupId)
-      ).rejects.toThrowError(ForbiddenException);
+      ).rejects.toThrow(ForbiddenException);
 
       expect(groupService.isMember).toHaveBeenCalledWith(user, groupId);
     });
@@ -132,7 +132,7 @@ describe('ProjectService', () => {
       expect(result).toBe(project);
       expect(projectRepository.findOne).toHaveBeenCalledWith({
         where: { id: projectId },
-        relations: ['group'],
+        relations: { group: true },
       });
     });
 
@@ -141,13 +141,13 @@ describe('ProjectService', () => {
 
       jest.spyOn(projectRepository, 'findOne').mockResolvedValue(undefined);
 
-      await expect(service.getProjectById(projectId)).rejects.toThrowError(
+      await expect(service.getProjectById(projectId)).rejects.toThrow(
         NotFoundException
       );
 
       expect(projectRepository.findOne).toHaveBeenCalledWith({
         where: { id: projectId },
-        relations: ['group'],
+        relations: { group: true },
       });
     });
   });
@@ -195,7 +195,7 @@ describe('ProjectService', () => {
 
       await expect(
         service.createProject(user, createProjectDto)
-      ).rejects.toThrowError(ForbiddenException);
+      ).rejects.toThrow(ForbiddenException);
 
       expect(groupService.isMember).toHaveBeenCalledWith(
         user,
@@ -239,7 +239,7 @@ describe('ProjectService', () => {
 
       await expect(
         service.updateProject(projectId, updateProjectDto)
-      ).rejects.toThrowError(NotFoundException);
+      ).rejects.toThrow(NotFoundException);
 
       expect(service.getProjectById).toHaveBeenCalledWith(projectId);
     });
@@ -269,7 +269,7 @@ describe('ProjectService', () => {
 
       jest.spyOn(service, 'getProjectById').mockResolvedValue(undefined);
 
-      await expect(service.deleteProject(projectId)).rejects.toThrowError(
+      await expect(service.deleteProject(projectId)).rejects.toThrow(
         NotFoundException
       );
 

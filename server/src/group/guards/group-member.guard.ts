@@ -13,7 +13,7 @@ export class GroupMemberGuard implements CanActivate {
   constructor(private groupService: GroupService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request: Request = context.switchToHttp().getRequest();
+    const request: Request<{ id: string }> = context.switchToHttp().getRequest();
     const user: Partial<User> = request.user;
     const isMember = await this.groupService.isMember(
       user,

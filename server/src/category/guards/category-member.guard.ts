@@ -13,7 +13,7 @@ export class CategoryMemberGuard implements CanActivate {
   constructor(private categoryService: CategoryService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request: Request = context.switchToHttp().getRequest();
+    const request: Request<{ id: string }> = context.switchToHttp().getRequest();
     const user: Partial<User> = request.user;
     const isMember = await this.categoryService.isMember(
       user,

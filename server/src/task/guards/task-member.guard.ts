@@ -13,7 +13,7 @@ export class TaskMemberGuard implements CanActivate {
   constructor(private taskService: TaskService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request: Request = context.switchToHttp().getRequest();
+    const request: Request<{ id: string }> = context.switchToHttp().getRequest();
     const user: Partial<User> = request.user;
     const isMember = await this.taskService.isMember(
       user,

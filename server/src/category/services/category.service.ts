@@ -37,14 +37,18 @@ export class CategoryService {
     }
     return await this.categoryRepository.find({
       where: { project: { id: projectId } },
-      relations: ['project'],
+      relations: {
+        project: true,
+      },
     });
   }
 
   async getCategoryById(categoryId: number): Promise<Category> {
     return await this.categoryRepository.findOneOrFail({
       where: { id: categoryId },
-      relations: ['project'],
+      relations: {
+        project: true,
+      },
     });
   }
 

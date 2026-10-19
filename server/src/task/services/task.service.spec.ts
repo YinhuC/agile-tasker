@@ -98,7 +98,7 @@ describe('TaskService', () => {
       expect(categoryService.isMember).toHaveBeenCalledWith(user, categoryId);
       expect(taskRepository.find).toHaveBeenCalledWith({
         where: { category: { id: categoryId } },
-        relations: ['category'],
+        relations: { category: true },
       });
     });
 
@@ -110,7 +110,7 @@ describe('TaskService', () => {
 
       await expect(
         service.getAllTasksByCategoryId(user, categoryId)
-      ).rejects.toThrowError('You have no access to projects from this group');
+      ).rejects.toThrow('You have no access to projects from this group');
 
       expect(categoryService.isMember).toHaveBeenCalledWith(user, categoryId);
     });
@@ -128,7 +128,7 @@ describe('TaskService', () => {
       expect(result).toBe(task);
       expect(taskRepository.findOne).toHaveBeenCalledWith({
         where: { id: taskId },
-        relations: ['category'],
+        relations: { category: true },
       });
     });
 
@@ -137,13 +137,13 @@ describe('TaskService', () => {
 
       jest.spyOn(taskRepository, 'findOne').mockResolvedValue(undefined);
 
-      await expect(service.getTaskById(taskId)).rejects.toThrowError(
+      await expect(service.getTaskById(taskId)).rejects.toThrow(
         `Task with ID ${taskId} not found`
       );
 
       expect(taskRepository.findOne).toHaveBeenCalledWith({
         where: { id: taskId },
-        relations: ['category'],
+        relations: { category: true },
       });
     });
   });
@@ -207,7 +207,7 @@ describe('TaskService', () => {
 
       await expect(
         service.createTask(user, createTaskDto)
-      ).rejects.toThrowError(ForbiddenException);
+      ).rejects.toThrow(ForbiddenException);
 
       expect(categoryService.isMember).toHaveBeenCalledWith(
         user,
@@ -256,7 +256,7 @@ describe('TaskService', () => {
 
       await expect(
         service.updateTask(user, taskId, updateTaskDto)
-      ).rejects.toThrowError(BadRequestException);
+      ).rejects.toThrow(BadRequestException);
 
       expect(service.getTaskById).toHaveBeenCalledWith(taskId);
       expect(service.getAllTasksByCategoryId).toHaveBeenCalledWith(
@@ -278,7 +278,7 @@ describe('TaskService', () => {
 
       await expect(
         service.updateTask(user, taskId, updateTaskDto)
-      ).rejects.toThrowError(ForbiddenException);
+      ).rejects.toThrow(ForbiddenException);
 
       expect(service.getTaskById).toHaveBeenCalledWith(taskId);
       expect(categoryService.isMember).toHaveBeenCalledWith(
@@ -318,7 +318,7 @@ describe('TaskService', () => {
       jest.spyOn(service, 'getTaskById').mockResolvedValue(task);
       jest.spyOn(categoryService, 'isMember').mockResolvedValue(false);
 
-      await expect(service.deleteTask(user, taskId)).rejects.toThrowError(
+      await expect(service.deleteTask(user, taskId)).rejects.toThrow(
         ForbiddenException
       );
 

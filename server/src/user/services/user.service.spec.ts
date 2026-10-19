@@ -78,7 +78,7 @@ describe('UserService', () => {
       const userId = 1;
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(undefined);
 
-      await expect(service.findUserById(userId)).rejects.toThrowError(
+      await expect(service.findUserById(userId)).rejects.toThrow(
         NotFoundException
       );
       expect(userRepository.findOne).toHaveBeenCalledWith({
@@ -99,7 +99,7 @@ describe('UserService', () => {
       expect(result).toEqual(user.groups);
       expect(userRepository.findOne).toHaveBeenCalledWith({
         where: { id: userId },
-        relations: ['groups'],
+        relations: { groups: true },
       });
     });
 
@@ -107,12 +107,12 @@ describe('UserService', () => {
       const userId = 1;
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(undefined);
 
-      await expect(service.getUserGroups(userId)).rejects.toThrowError(
+      await expect(service.getUserGroups(userId)).rejects.toThrow(
         NotFoundException
       );
       expect(userRepository.findOne).toHaveBeenCalledWith({
         where: { id: userId },
-        relations: ['groups'],
+        relations: { groups: true },
       });
     });
   });
@@ -133,7 +133,7 @@ describe('UserService', () => {
       const email = 'test@example.com';
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(undefined);
 
-      await expect(service.findUserByEmail(email)).rejects.toThrowError(
+      await expect(service.findUserByEmail(email)).rejects.toThrow(
         NotFoundException
       );
       expect(userRepository.findOne).toHaveBeenCalledWith({ where: { email } });
@@ -179,7 +179,7 @@ describe('UserService', () => {
 
       await expect(
         service.updateUser(userId, updateUserDto)
-      ).rejects.toThrowError(NotFoundException);
+      ).rejects.toThrow(NotFoundException);
       expect(service.findUserById).toHaveBeenCalledWith(userId);
       expect(userRepository.save).not.toHaveBeenCalled();
     });
