@@ -34,9 +34,7 @@ function RegisterPage() {
           ? null
           : MESSAGES.PASSWORD_REGEX_MESSAGE,
       confirmPassword: (value, values) =>
-        value === values.password
-          ? null
-          : `Passwords Don't Match. Please Try Again.`,
+        value === values.password ? null : 'The passwords don’t match.',
     },
   });
 
@@ -47,10 +45,9 @@ function RegisterPage() {
       navigate('/login');
       notifications.cleanQueue();
       notifications.show({
-        title: 'Account Created Successfully!',
-        message:
-          'Congratulations! Your user account has been successfully created. Welcome to our platform and get ready to explore!',
-        color: 'green',
+        title: 'Account created.',
+        message: 'Sign in with your new email and password.',
+        color: 'dark',
         icon: <FaCircleCheck />,
       });
     } catch (err) {
@@ -58,17 +55,16 @@ function RegisterPage() {
       notifications.cleanQueue();
       if (axiosError.response?.status === 400) {
         notifications.show({
-          title: 'Email Already Registered.',
-          message: 'Please use a different email to register and try again.',
-          color: 'red',
+          title: 'That email is already registered.',
+          message: 'Sign in instead, or use a different email.',
+          color: 'signal',
           icon: <MdError />,
         });
       } else {
         notifications.show({
-          title: 'Account Creation Error',
-          message:
-            'An error occurred during the account creation process. Please double-check the provided information and try again.',
-          color: 'red',
+          title: 'The account couldn’t be created.',
+          message: 'Check the details and try again in a moment.',
+          color: 'signal',
           icon: <MdError />,
         });
       }
@@ -77,8 +73,8 @@ function RegisterPage() {
 
   return (
     <AuthLayout
-      title='Create your account.'
-      subtitle='Create your account today and embark on a collaborative journey.'
+      title='Create an account.'
+      subtitle='Make your own workspaces, projects and boards. It takes a minute.'
       image={IphoneRegister}
       imageAlt='Agile Tasker sign up screen on iPhone'
       footer={
@@ -96,15 +92,15 @@ function RegisterPage() {
         <Group grow gap='md' mb='md' align='flex-start'>
           <TextInput
             size='md'
-            placeholder='First Name'
-            aria-label='First Name'
+            placeholder='First name'
+            aria-label='First name'
             required
             {...form.getInputProps('firstname')}
           />
           <TextInput
             size='md'
-            placeholder='Last Name'
-            aria-label='Last Name'
+            placeholder='Last name'
+            aria-label='Last name'
             required
             {...form.getInputProps('lastname')}
           />
@@ -113,8 +109,8 @@ function RegisterPage() {
           mb='md'
           size='md'
           leftSection={<MdOutlineAlternateEmail />}
-          placeholder='Your email'
-          aria-label='Your email'
+          placeholder='Email'
+          aria-label='Email'
           required
           {...form.getInputProps('email')}
         />
@@ -131,13 +127,13 @@ function RegisterPage() {
           mb='xl'
           size='md'
           leftSection={<TbPassword />}
-          placeholder='Confirm Password'
-          aria-label='Confirm Password'
+          placeholder='Confirm password'
+          aria-label='Confirm password'
           required
           {...form.getInputProps('confirmPassword')}
         />
-        <Button type='submit' fullWidth size='md' aria-label='Submit'>
-          Submit
+        <Button type='submit' fullWidth size='lg'>
+          Create account
         </Button>
       </form>
     </AuthLayout>

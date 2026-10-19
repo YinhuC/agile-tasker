@@ -17,7 +17,7 @@ describe('ProjectModal', () => {
   it('renders Add new project button in add mode', () => {
     renderWithProviders(<ProjectModal groupId={groupId} type='add' />);
 
-    const addButton = screen.getByRole('button', { name: 'Create Project' });
+    const addButton = screen.getByRole('button', { name: 'New project' });
     expect(addButton).toBeInTheDocument();
   });
 
@@ -26,18 +26,18 @@ describe('ProjectModal', () => {
       <ProjectModal groupId={groupId} type='edit' project={project} />
     );
 
-    const editButton = screen.getByRole('button', { name: 'Edit Project' });
+    const editButton = screen.getByRole('button', { name: 'Edit project' });
     expect(editButton).toBeInTheDocument();
   });
 
   it('opens modal on Add new project button click', () => {
     renderWithProviders(<ProjectModal groupId={groupId} type='add' />);
 
-    const addButton = screen.getByRole('button', { name: 'Create Project' });
+    const addButton = screen.getByRole('button', { name: 'New project' });
     fireEvent.click(addButton);
 
     const modalTitle = screen.getByRole('heading', {
-      name: 'Create New Project',
+      name: 'New project',
     });
     expect(modalTitle).toBeInTheDocument();
   });
@@ -47,10 +47,10 @@ describe('ProjectModal', () => {
       <ProjectModal groupId={groupId} type='edit' project={project} />
     );
 
-    const editButton = screen.getByRole('button', { name: 'Edit Project' });
+    const editButton = screen.getByRole('button', { name: 'Edit project' });
     fireEvent.click(editButton);
 
-    const modalTitle = screen.getByRole('heading', { name: 'Edit Project' });
+    const modalTitle = screen.getByRole('heading', { name: 'Edit project' });
     expect(modalTitle).toBeInTheDocument();
   });
 });

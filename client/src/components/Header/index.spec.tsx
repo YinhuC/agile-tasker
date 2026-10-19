@@ -44,7 +44,7 @@ describe('Header', () => {
       </Router>
     );
 
-    const logoLink = screen.getByAltText('agile-tasker logo');
+    const logoLink = screen.getByRole('link', { name: 'agile tasker home' });
     const boardLink = screen.getByLabelText('Board');
 
     expect(logoLink).toBeInTheDocument();

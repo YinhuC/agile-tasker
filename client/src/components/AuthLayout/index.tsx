@@ -1,10 +1,9 @@
 import React, { PropsWithChildren } from 'react';
-import { Box, Image, Text, Title } from '@mantine/core';
-import { Link } from 'react-router';
+import { Box, Text, Title } from '@mantine/core';
 import { motion } from 'motion/react';
-import LogoDark from '../../assets/logos/logo-dark.png';
-import marketing from '../../theme/styles/marketing.module.css';
-import { childRoot, enterRoot, settle, stagger } from '../../theme/motion';
+import StockCard from '../StockCard';
+import Wordmark from '../Wordmark';
+import { enter, rise, settle, stagger } from '../../theme/motion';
 import classes from './AuthLayout.module.css';
 
 type AuthLayoutProps = PropsWithChildren & {
@@ -15,7 +14,7 @@ type AuthLayoutProps = PropsWithChildren & {
   footer: React.ReactNode;
 };
 
-/** Split auth screen: form column on the left, phone screenshot on the hero gradient from md up. */
+/** Auth screen on the steel rack: the form is a white printed card, the phone shot sits in a sleeve from md up. */
 function AuthLayout({
   title,
   subtitle,
@@ -25,40 +24,30 @@ function AuthLayout({
   children,
 }: AuthLayoutProps) {
   return (
-    <Box
-      className={`${marketing.page} ${classes.root}`}
-      renderRoot={enterRoot(stagger(0.15))}
-    >
+    <motion.div className={classes.root} {...enter} variants={stagger(0.12)}>
       <Box className={classes.formSide}>
-        <Link to={'/'} className={classes.logoLink}>
-          <Image
-            src={LogoDark}
-            alt='agile-tasker home'
-            className={classes.logo}
-          />
-        </Link>
-        <Box className={classes.form} renderRoot={childRoot()}>
-          <Title order={1} className={classes.title}>
-            {title}
-          </Title>
-          <Text c='gray.7' mt='sm' mb={40}>
-            {subtitle}
-          </Text>
-          {children}
-          <Text size='sm' mt={32} c='gray.7' className={classes.footer}>
-            {footer}
-          </Text>
-        </Box>
+        <Wordmark to='/' size={24} />
+        <motion.div className={classes.formSlot} variants={rise}>
+          <StockCard stock='white' className={classes.card}>
+            <div className={classes.head}>
+              <Title order={1} className={classes.title}>
+                {title}
+              </Title>
+              <Text className={classes.subtitle}>{subtitle}</Text>
+            </div>
+            {children}
+            <Text size='sm' className={classes.footer}>
+              {footer}
+            </Text>
+          </StockCard>
+        </motion.div>
       </Box>
       <Box className={classes.visual} visibleFrom='md'>
-        <motion.img
-          src={image}
-          alt={imageAlt}
-          className={classes.phone}
-          variants={settle}
-        />
+        <motion.div className={classes.sleeve} variants={settle}>
+          <img src={image} alt={imageAlt} className={classes.phone} />
+        </motion.div>
       </Box>
-    </Box>
+    </motion.div>
   );
 }
 

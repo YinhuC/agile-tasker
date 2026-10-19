@@ -1,92 +1,44 @@
 import React from 'react';
-import {
-  Text,
-  Container,
-  Box,
-  BoxProps,
-  Group,
-  Image,
-  Anchor,
-} from '@mantine/core';
+import { Text, Container, Box, BoxProps, Group } from '@mantine/core';
 import { Link } from 'react-router';
-import {
-  FaInstagram,
-  FaFacebook,
-  FaLinkedin,
-  FaTwitter,
-  FaYoutube,
-} from 'react-icons/fa';
-import LogoLight from '../../assets/logos/logo-light.png';
+import { FaGithub } from 'react-icons/fa';
+import Wordmark from '../Wordmark';
+import { GITHUB_URL } from '../../utils/links';
 import classes from './Footer.module.css';
-
-const socials = [
-  { label: 'Instagram', icon: FaInstagram },
-  { label: 'Facebook', icon: FaFacebook },
-  { label: 'LinkedIn', icon: FaLinkedin },
-  { label: 'Twitter', icon: FaTwitter },
-  { label: 'YouTube', icon: FaYoutube },
-];
 
 function Footer({ ...props }: BoxProps) {
   return (
     <Box component='footer' className={classes.root} {...props}>
-      <Container size='lg' py={{ base: 48, sm: 64 }}>
+      <Container size='xl' py={{ base: 48, sm: 64 }}>
         <Box className={classes.top}>
-          <Link to={'/'}>
-            <Image
-              src={LogoLight}
-              alt='agile-tasker'
-              className={classes.logo}
-            />
-          </Link>
+          <Wordmark to='/' size={28} />
           <Group gap='xl' component='nav'>
-            <Anchor component={Link} to='/views' className={classes.link}>
-              Views
-            </Anchor>
-            <Anchor component={Link} to='/plans' className={classes.link}>
-              Pricing
-            </Anchor>
-            <Anchor component={Link} to='/login' className={classes.link}>
+            <Link to='/#how' className={classes.link}>
+              How it works
+            </Link>
+            <Link to='/#build' className={classes.link}>
+              The build
+            </Link>
+            <Link to='/login' className={classes.link}>
               Sign in
-            </Anchor>
+            </Link>
+            <a
+              href={GITHUB_URL}
+              target='_blank'
+              rel='noreferrer'
+              className={classes.link}
+            >
+              <FaGithub aria-hidden /> Source
+            </a>
           </Group>
         </Box>
-
         <Box className={classes.bottom}>
-          <Group gap='lg'>
-            <Text size='sm' className={classes.muted}>
-              Copyright © 2024 Agile Tasker.
-            </Text>
-            <Anchor
-              component={Link}
-              to={''}
-              size='sm'
-              className={classes.muted}
-            >
-              Privacy Policy
-            </Anchor>
-            <Anchor
-              component={Link}
-              to={''}
-              size='sm'
-              className={classes.muted}
-            >
-              Terms and Conditions
-            </Anchor>
-          </Group>
-          <Group gap='lg'>
-            {socials.map((social) => (
-              <Anchor
-                key={social.label}
-                component={Link}
-                to={''}
-                aria-label={social.label}
-                className={classes.muted}
-              >
-                <social.icon size={16} />
-              </Anchor>
-            ))}
-          </Group>
+          <Text size='sm' className={classes.muted}>
+            A portfolio project. Open source under the MIT licence.
+          </Text>
+          <Text size='sm' className={classes.muted}>
+            © {new Date().getFullYear()} agile tasker
+          </Text>
         </Box>
       </Container>
     </Box>

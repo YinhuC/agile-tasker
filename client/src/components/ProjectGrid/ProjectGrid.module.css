@@ -1,0 +1,49 @@
+.root {
+  margin-bottom: 28px;
+  padding: clamp(16px, 2vw, 24px);
+  border-radius: var(--mantine-radius-lg);
+  background:
+    radial-gradient(
+        circle at 12px 12px,
+        var(--mantine-color-steel-4) 1.8px,
+        transparent 2.2px
+      )
+      0 0 / 24px 24px,
+    var(--mantine-color-steel-2);
+  border: 1.5px solid var(--mantine-color-steel-4);
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px 20px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.title {
+  font-size: 1.6rem;
+  overflow-wrap: anywhere;
+}
+
+.count {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--mantine-color-dark-8);
+  color: var(--mantine-color-white);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 11px;
+}
+
+.empty {
+  padding: 8px 0 4px;
+  color: var(--mantine-color-steel-8);
+}

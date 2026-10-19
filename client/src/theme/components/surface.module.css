@@ -1,0 +1,40 @@
+.title {
+  font-stretch: 86%;
+  letter-spacing: -0.02em;
+  color: var(--mantine-color-dark-8);
+
+  &:where(h1, h2) {
+    letter-spacing: -0.03em;
+  }
+}
+
+.card {
+  border: 1.5px solid var(--mantine-color-steel-4);
+}
+
+.modalContent {
+  background: var(--mantine-color-white);
+  border: 1.5px solid var(--mantine-color-dark-8);
+}
+
+.modalHeader {
+  background: var(--mantine-color-stock-5);
+  border-bottom: 2px solid var(--mantine-color-dark-8);
+  margin-bottom: var(--mantine-spacing-lg);
+}
+
+.modalTitle {
+  font-size: 1.35rem;
+  font-weight: 800;
+  font-stretch: 86%;
+  letter-spacing: -0.02em;
+}
+
+.notification {
+  border: 1.5px solid var(--mantine-color-dark-8);
+  box-shadow: var(--mantine-shadow-md);
+}
+
+.notificationTitle {
+  font-weight: 800;
+}

@@ -1,13 +1,13 @@
 import React from 'react';
-import { Box, Image, Button, Container, Group, BoxProps } from '@mantine/core';
+import { Box, Button, Container, Group, BoxProps } from '@mantine/core';
 import { Link, NavLink, useNavigate } from 'react-router';
 import { useAuth } from '../../hooks/useAuth';
 import { notifications } from '@mantine/notifications';
 import { GeneralErrorObject } from '../../utils/notification.utils';
 import { postAuthLogout } from '../../api/auth.api';
-import LogoDark from '../../assets/logos/logo-dark.png';
-import SmallLogo from '../../assets/logos/logo-small.png';
+import { GITHUB_URL } from '../../utils/links';
 import { usePrevious, useWindowScroll } from '@mantine/hooks';
+import Wordmark from '../Wordmark';
 import classes from './Header.module.css';
 
 const Header: React.FC<BoxProps> = ({ ...props }) => {
@@ -35,31 +35,29 @@ const Header: React.FC<BoxProps> = ({ ...props }) => {
       data-hidden={isVisible ? undefined : true}
       {...props}
     >
-      <Container size='lg' className={classes.inner}>
-        <Group gap={48} wrap='nowrap'>
-          <Link to={'/'}>
-            <Image
-              src={LogoDark}
-              alt='agile-tasker logo'
-              className={classes.logo}
-              visibleFrom='sm'
-            />
-            <Box className={classes.logoSmall} hiddenFrom='sm'>
-              <Image src={SmallLogo} alt='a. logo' />
-            </Box>
-          </Link>
+      <Container size='xl' className={classes.inner}>
+        <Group gap={40} wrap='nowrap'>
+          <Wordmark to={user ? `/boards/${user.id}` : '/'} />
           {!user && (
             <nav className={classes.nav}>
-              <NavLink to={'/views'} className={classes.link}>
-                Views
-              </NavLink>
-              <NavLink to={'/plans'} className={classes.link}>
-                Pricing
-              </NavLink>
+              <Link to={'/#how'} className={classes.link}>
+                How it works
+              </Link>
+              <Link to={'/#build'} className={classes.link}>
+                The build
+              </Link>
+              <a
+                href={GITHUB_URL}
+                target='_blank'
+                rel='noreferrer'
+                className={classes.link}
+              >
+                GitHub
+              </a>
             </nav>
           )}
         </Group>
-        <Group gap='lg' wrap='nowrap'>
+        <Group gap='sm' wrap='nowrap'>
           {user ? (
             <>
               <NavLink
@@ -72,16 +70,34 @@ const Header: React.FC<BoxProps> = ({ ...props }) => {
               <Button
                 onClick={logout}
                 variant='outline'
-                size='compact-sm'
+                color='steel.3'
+                size='compact-md'
                 aria-label='Logout'
               >
-                Logout
+                Sign out
               </Button>
             </>
           ) : (
-            <Button component={Link} to={'/login'} aria-label='Sign In'>
-              Sign In
-            </Button>
+            <>
+              <Button
+                component={Link}
+                to={'/login'}
+                variant='outline'
+                color='steel.3'
+                size='compact-md'
+                aria-label='Sign In'
+              >
+                Sign in
+              </Button>
+              <Button
+                component={Link}
+                to={'/login'}
+                size='compact-md'
+                visibleFrom='xs'
+              >
+                Try the demo
+              </Button>
+            </>
           )}
         </Group>
       </Container>

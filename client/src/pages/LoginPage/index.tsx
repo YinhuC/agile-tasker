@@ -42,9 +42,9 @@ function LoginPage() {
       notifications.cleanQueue();
       if (axiosError.response?.status === 401) {
         notifications.show({
-          title: 'Invalid email or password.',
-          message: 'Please check your credentials and try again.',
-          color: 'red',
+          title: 'That email and password don’t match.',
+          message: 'Check both and try again.',
+          color: 'signal',
           icon: <MdError />,
         });
       } else {
@@ -55,14 +55,15 @@ function LoginPage() {
 
   return (
     <AuthLayout
-      title='Login.'
-      subtitle='Access your team projects by logging in.'
+      title='Sign in.'
+      subtitle='The demo account is already filled in. Press sign in to open its board.'
       image={IphoneLogin}
       imageAlt='Agile Tasker login screen on iPhone'
       footer={
         <>
-          {'Not registered? '}
-          <Link to={'/register'}>Create account</Link>
+          {'No account yet? '}
+          <Link to={'/register'}>Create one</Link>
+          {'. The free server can take about 30 seconds to wake up.'}
         </>
       }
     >
@@ -85,8 +86,8 @@ function LoginPage() {
           required
           {...form.getInputProps('password')}
         />
-        <Button type='submit' fullWidth size='md' aria-label='Submit'>
-          Submit
+        <Button type='submit' fullWidth size='lg'>
+          Sign in
         </Button>
       </form>
     </AuthLayout>

@@ -3,7 +3,30 @@ body {
   height: 100%;
 }
 
+body {
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
 ::selection {
-  background: var(--mantine-color-pink-2);
-  color: var(--mantine-color-dark-9);
+  background: var(--mantine-color-stock-3);
+  color: var(--mantine-color-dark-8);
+}
+
+:focus-visible,
+.mantine-focus-auto:focus-visible {
+  outline: 2px solid var(--mantine-color-dark-8);
+  outline-offset: 3px;
+}
+
+html {
+  scrollbar-color: var(--mantine-color-steel-5) transparent;
+  scrollbar-width: thin;
+  caret-color: var(--mantine-color-dark-8);
+}
+
+a {
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1.5px;
 }

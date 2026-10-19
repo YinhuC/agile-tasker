@@ -1,16 +1,13 @@
 import React, { useEffect, useMemo } from 'react';
-import {
-  Container,
-  Title,
-  Text,
-  Flex,
-  Box,
-  ContainerProps,
-} from '@mantine/core';
+import { Container, Title, Text, Box, ContainerProps } from '@mantine/core';
+import { Link } from 'react-router';
+import { TbArrowLeft } from 'react-icons/tb';
 import { fetchProjectThunk } from '../../../store/project/project.thunks';
 import CategoryModal from '../../../components/CategoryModal';
 import { useAppDispatch } from '../../../hooks/useAppDispatch';
 import { useAppSelector } from '../../../hooks/useAppSelector';
+import { useAuth } from '../../../hooks/useAuth';
+import classes from './HeaderSection.module.css';
 
 type HeaderSectionProps = ContainerProps & {
   projectId: string;
@@ -18,6 +15,7 @@ type HeaderSectionProps = ContainerProps & {
 
 function HeaderSection({ projectId, ...props }: HeaderSectionProps) {
   const dispatch = useAppDispatch();
+  const { user } = useAuth();
   const projects = useAppSelector((state) => state.projects.projects);
 
   const project = useMemo(
@@ -30,27 +28,24 @@ function HeaderSection({ projectId, ...props }: HeaderSectionProps) {
   }, [dispatch, projectId]);
 
   return (
-    <Container
-      size='xl'
-      mb={30}
-      px={40}
-      pt={20}
-      style={{ userSelect: 'none' }}
-      {...props}
-    >
-      <Flex
-        justify='space-between'
-        direction={{ base: 'column', sm: 'row' }}
-        align={{ base: 'center', sm: 'end' }}
-      >
-        <Box mr={{ base: 0, sm: 50 }} ta={{ base: 'center', sm: 'left' }}>
-          <Title order={2} mb={10}>
+    <Container size='xl' className={classes.root} {...props}>
+      {user && (
+        <Link to={`/boards/${user.id}`} className={classes.back}>
+          <TbArrowLeft aria-hidden />
+          Workspaces
+        </Link>
+      )}
+      <div className={classes.row}>
+        <Box>
+          <Title order={1} className={classes.title}>
             {project?.name}
           </Title>
-          <Text ml={2}>{project?.description}</Text>
+          {project?.description && (
+            <Text className={classes.description}>{project.description}</Text>
+          )}
         </Box>
         {project && <CategoryModal type='add' projectId={project.id} />}
-      </Flex>
+      </div>
     </Container>
   );
 }

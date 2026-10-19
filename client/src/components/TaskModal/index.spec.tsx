@@ -17,7 +17,7 @@ describe('TaskModal', () => {
   it('renders Add new task button in add mode', () => {
     renderWithProviders(<TaskModal categoryId={categoryId} type='add' />);
 
-    const addButton = screen.getByRole('button', { name: 'Create Task' });
+    const addButton = screen.getByRole('button', { name: 'New card' });
     expect(addButton).toBeInTheDocument();
   });
 
@@ -26,17 +26,17 @@ describe('TaskModal', () => {
       <TaskModal categoryId={categoryId} type='edit' task={task} />
     );
 
-    const editButton = screen.getByRole('button', { name: 'Edit Task' });
+    const editButton = screen.getByRole('button', { name: 'Edit card' });
     expect(editButton).toBeInTheDocument();
   });
 
   it('opens modal on Add new task button click', () => {
     renderWithProviders(<TaskModal categoryId={categoryId} type='add' />);
 
-    const addButton = screen.getByRole('button', { name: 'Create Task' });
+    const addButton = screen.getByRole('button', { name: 'New card' });
     fireEvent.click(addButton);
 
-    const modalTitle = screen.getByRole('heading', { name: 'Create New Task' });
+    const modalTitle = screen.getByRole('heading', { name: 'New card' });
     expect(modalTitle).toBeInTheDocument();
   });
 
@@ -45,10 +45,10 @@ describe('TaskModal', () => {
       <TaskModal categoryId={categoryId} type='edit' task={task} />
     );
 
-    const editButton = screen.getByRole('button', { name: 'Edit Task' });
+    const editButton = screen.getByRole('button', { name: 'Edit card' });
     fireEvent.click(editButton);
 
-    const modalTitle = screen.getByRole('heading', { name: 'Edit Task' });
+    const modalTitle = screen.getByRole('heading', { name: 'Edit card' });
     expect(modalTitle).toBeInTheDocument();
   });
 });

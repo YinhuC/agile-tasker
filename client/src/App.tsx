@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useState } from 'react';
-import { useLocation, Route, Routes } from 'react-router';
+import { useLocation, Navigate, Route, Routes } from 'react-router';
 import { ThemeProvider } from './providers/ThemeProvider';
 import Header from './components/Header';
 import LoginPage from './pages/LoginPage';
@@ -14,8 +14,6 @@ import { User } from './types/user.types';
 import AuthRoute from './components/AuthRoute';
 import ProjectPage from './pages/ProjectPage';
 import { Flex } from '@mantine/core';
-import ViewsPage from './pages/ViewsPage';
-import PlansPage from './pages/PlansPage';
 
 type Props = {
   user?: User;
@@ -44,20 +42,19 @@ function App() {
     <Providers user={user} setUser={setUser}>
       <Notifications />
       {!isLoginPage && !isRegisterPage && (
-        <Flex justify='center' w='100%' mb={80}>
+        <Flex justify='center' w='100%' mb={64}>
           <Header />
         </Flex>
       )}
       <Routes>
         <Route path='/' element={<HomePage />} />
-        <Route path='/views' element={<ViewsPage />} />
-        <Route path='/plans' element={<PlansPage />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/register' element={<RegisterPage />} />
         <Route element={<AuthRoute />}>
           <Route path='/boards/:id' element={<BoardPage />} />
           <Route path='/project/:id' element={<ProjectPage />} />
         </Route>
+        <Route path='*' element={<Navigate to='/' replace />} />
       </Routes>
     </Providers>
   );

@@ -142,7 +142,7 @@ describe('CategoryGrid', () => {
       </Router>
     );
 
-    const taskModal = screen.getByLabelText('Create Task');
+    const taskModal = screen.getByLabelText('New card');
 
     expect(taskModal).toBeInTheDocument();
   });
@@ -167,7 +167,7 @@ describe('CategoryGrid', () => {
       </Router>
     );
 
-    const categoryModal = screen.getByLabelText('Edit Category');
+    const categoryModal = screen.getByLabelText('Edit list');
 
     expect(categoryModal).toBeInTheDocument();
   });

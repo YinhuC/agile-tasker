@@ -1,0 +1,63 @@
+.root {
+  padding: clamp(24px, 3vw, 48px) 0 clamp(64px, 8vw, 112px);
+  overflow: hidden;
+}
+
+.copy {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  gap: 24px 64px;
+  align-items: end;
+  margin-bottom: clamp(32px, 4vw, 56px);
+
+  @mixin smaller-than $mantine-breakpoint-md {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.lede {
+  font-size: 18px;
+  line-height: 1.55;
+  max-width: 44ch;
+}
+
+.rack {
+  display: grid;
+  gap: 14px;
+}
+
+.rail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: var(--mantine-radius-sm);
+  background: var(--mantine-color-dark-8);
+  color: var(--mantine-color-white);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+
+  span {
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 12px;
+    color: var(--mantine-color-stock-5);
+  }
+}
+
+.sleeve {
+  border-radius: var(--mantine-radius-lg);
+  padding: clamp(16px, 3vw, 40px);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1.5px solid var(--mantine-color-steel-4);
+  box-shadow: var(--mantine-shadow-md);
+}
+
+.image {
+  display: block;
+  width: 100%;
+  max-width: 1100px;
+  height: auto;
+  margin: 0 auto;
+}

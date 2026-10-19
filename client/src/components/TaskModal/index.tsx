@@ -1,9 +1,16 @@
 import React, { useEffect } from 'react';
-import { Button, Group, Modal, TextInput, Textarea } from '@mantine/core';
+import {
+  ActionIcon,
+  Button,
+  Group,
+  Modal,
+  TextInput,
+  Textarea,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { FaEdit } from 'react-icons/fa';
+import { TbPencil, TbPlus } from 'react-icons/tb';
 import {
   CreateTaskParams,
   Task,
@@ -94,7 +101,7 @@ function TaskModal({ categoryId, type, task, ...props }: TaskModalProps) {
         padding='xl'
         opened={opened}
         onClose={close}
-        title={type === 'add' ? 'Create New Task' : 'Edit Task'}
+        title={type === 'add' ? 'New card' : 'Edit card'}
         centered
         size='lg'
         {...props}
@@ -106,34 +113,34 @@ function TaskModal({ categoryId, type, task, ...props }: TaskModalProps) {
         >
           <TextInput
             mb={10}
-            label='Title'
-            placeholder='Title'
-            aria-label='Task Title'
+            label='Name'
+            placeholder='Name'
+            aria-label='Card name'
             required
             {...form.getInputProps('name')}
           />
           <Textarea
             mb={30}
             label='Description'
-            placeholder='Description'
-            aria-label='Task Description'
+            placeholder='Optional'
+            aria-label='Card description'
             autosize
             minRows={3}
             maxRows={5}
             {...form.getInputProps('description')}
           />
-          <Group justify='flex-end' gap={10}>
-            <Button type='submit' h={45} aria-label='Submit'>
-              {type === 'add' ? 'Create Task' : 'Edit Task'}
+          <Group justify='flex-end' gap={10} mt='lg'>
+            <Button type='submit' size='md'>
+              {type === 'add' ? 'Create card' : 'Save changes'}
             </Button>
             {type === 'edit' && (
               <Button
-                h={45}
-                color='dark'
+                size='md'
+                variant='outline'
                 onClick={onDelete}
-                aria-label='Delete Task'
+                aria-label='Delete card'
               >
-                Delete Task
+                Delete card
               </Button>
             )}
           </Group>
@@ -143,23 +150,17 @@ function TaskModal({ categoryId, type, task, ...props }: TaskModalProps) {
         <Button
           fullWidth
           onClick={open}
-          variant='outline'
-          aria-label='Create Task'
+          variant='subtle'
+          justify='flex-start'
+          leftSection={<TbPlus aria-hidden />}
+          aria-label='New card'
         >
-          Create Task
+          New card
         </Button>
       ) : (
-        <Button
-          onClick={open}
-          size='xs'
-          variant='subtle'
-          mb={5}
-          p={5}
-          radius='50%'
-          aria-label='Edit Task'
-        >
-          <FaEdit size={20} />
-        </Button>
+        <ActionIcon onClick={open} size='md' aria-label='Edit card'>
+          <TbPencil size={18} />
+        </ActionIcon>
       )}
     </>
   );

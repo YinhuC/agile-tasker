@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Flex } from '@mantine/core';
+import { Flex, Text } from '@mantine/core';
 import {
   fetchAllCategoriesThunk,
   updateCategoryOrderThunk,
@@ -8,6 +8,7 @@ import { useLocation } from 'react-router';
 import CategoryGrid from '../../components/CategoryGrid';
 import { DragDropContext, DropResult, Droppable } from '@hello-pangea/dnd';
 import HeaderSection from './HeaderSection';
+import classes from './ProjectPage.module.css';
 import {
   Category,
   UpdateCategoryOrderParams,
@@ -124,15 +125,7 @@ function ProjectPage() {
           <Flex
             ref={provided.innerRef}
             {...provided.droppableProps}
-            p={30}
-            mx={{ base: 15, sm: 30, lg: 50 }}
-            h='73vh'
-            bg='gray.2'
-            style={{
-              borderRadius: '0.5rem',
-              overflow: 'auto',
-              userSelect: 'none',
-            }}
+            className={classes.rack}
           >
             {categories.map((category, index) => (
               <CategoryGrid
@@ -143,6 +136,11 @@ function ProjectPage() {
               />
             ))}
             {provided.placeholder}
+            {categories.length === 0 && (
+              <Text className={classes.empty}>
+                No lists yet. Add one to start placing cards.
+              </Text>
+            )}
           </Flex>
         )}
       </Droppable>

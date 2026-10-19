@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { Divider, Flex, Stack, StackProps, Title } from '@mantine/core';
+import { Box, BoxProps, Title } from '@mantine/core';
 import TaskCard from '../TaskCard';
 import { Category } from '../../types/category.types';
 import { fetchAllTasksThunk } from '../../store/task/task.thunks';
@@ -9,13 +9,15 @@ import TaskModal from '../TaskModal';
 import CategoryModal from '../CategoryModal';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
+import classes from './CategoryGrid.module.css';
 
-type CategoryGridProps = StackProps & {
+type CategoryGridProps = BoxProps & {
   category: Category;
   projectId: number;
   index: number;
 };
 
+/** One list as a rack slot: ink header with its card count, cards below, add card at the foot. */
 function CategoryGrid({
   category,
   index,
@@ -37,44 +39,34 @@ function CategoryGrid({
 
   return (
     <Draggable draggableId={`cat-drag-${id}`} index={index}>
-      {(provided) => (
-        <Stack
+      {(provided, snapshot) => (
+        <Box
           ref={provided.innerRef}
           {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          gap={20}
-          p={20}
-          mx={10}
-          miw={322}
-          bg='white'
-          style={{
-            borderRadius: '0.5rem',
-            height: 'fit-content',
-            overflow: 'visible',
-            border: '0.0625rem solid #dee2e6',
-            boxShadow:
-              '0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.05), 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.1)',
-          }}
+          className={classes.root}
+          data-dragging={snapshot.isDragging || undefined}
           {...props}
         >
-          <Flex justify='space-between' align='center'>
-            <Title order={4} ml={5}>
+          <div className={classes.head} {...provided.dragHandleProps}>
+            <Title order={2} className={classes.title}>
               {name}
             </Title>
+            <span className={classes.count}>
+              {String(tasks.length).padStart(2, '0')}
+            </span>
             <CategoryModal
               type='edit'
               projectId={projectId}
               category={category}
             />
-          </Flex>
-          <Divider />
+          </div>
           <Droppable droppableId={`task-drop-${id}`} type='TASK'>
-            {(provided) => (
-              <Stack
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                gap={10}
-                mih={60}
+            {(dropProvided, dropSnapshot) => (
+              <div
+                ref={dropProvided.innerRef}
+                {...dropProvided.droppableProps}
+                className={classes.cards}
+                data-over={dropSnapshot.isDraggingOver || undefined}
               >
                 {tasks.map((task, index) => (
                   <TaskCard
@@ -83,12 +75,12 @@ function CategoryGrid({
                     key={`task-card-${task.id}`}
                   />
                 ))}
-                {provided.placeholder}
-              </Stack>
+                {dropProvided.placeholder}
+              </div>
             )}
           </Droppable>
           <TaskModal categoryId={id} type={'add'} />
-        </Stack>
+        </Box>
       )}
     </Draggable>
   );

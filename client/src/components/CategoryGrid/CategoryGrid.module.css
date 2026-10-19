@@ -1,0 +1,67 @@
+.root {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 300px;
+  padding: 8px;
+  border-radius: var(--mantine-radius-md);
+  background: var(--mantine-color-steel-1);
+  border: 1.5px solid var(--mantine-color-steel-4);
+  transition: box-shadow 150ms ease;
+
+  &[data-dragging] {
+    box-shadow: var(--mantine-shadow-lg);
+  }
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px 6px 12px;
+  border-radius: var(--mantine-radius-sm);
+  background: var(--mantine-color-dark-8);
+  color: var(--mantine-color-white);
+  cursor: grab;
+
+  button {
+    color: var(--mantine-color-steel-3);
+  }
+
+  button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--mantine-color-white);
+  }
+}
+
+.title {
+  flex: 1;
+  min-width: 0;
+  color: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.count {
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 11px;
+  color: var(--mantine-color-steel-4);
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 56px;
+  padding: 2px;
+  border-radius: var(--mantine-radius-sm);
+  transition: background-color 150ms ease;
+
+  &[data-over] {
+    background: var(--mantine-color-stock-0);
+  }
+}

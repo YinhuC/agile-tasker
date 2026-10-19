@@ -14,25 +14,25 @@ describe('GroupModal', () => {
   it('renders Add new group button in add mode', () => {
     renderWithProviders(<GroupModal type='add' />);
 
-    const addButton = screen.getByRole('button', { name: 'Create Group' });
+    const addButton = screen.getByRole('button', { name: 'New workspace' });
     expect(addButton).toBeInTheDocument();
   });
 
   it('renders Edit Group button in edit mode', () => {
     renderWithProviders(<GroupModal type='edit' group={group} />);
 
-    const editButton = screen.getByRole('button', { name: 'Edit Group' });
+    const editButton = screen.getByRole('button', { name: 'Edit workspace' });
     expect(editButton).toBeInTheDocument();
   });
 
   it('opens modal on Add new group button click', () => {
     renderWithProviders(<GroupModal type='add' />);
 
-    const addButton = screen.getByRole('button', { name: 'Create Group' });
+    const addButton = screen.getByRole('button', { name: 'New workspace' });
     fireEvent.click(addButton);
 
     const modalTitle = screen.getByRole('heading', {
-      name: 'Create New Group',
+      name: 'New workspace',
     });
     expect(modalTitle).toBeInTheDocument();
   });
@@ -40,10 +40,10 @@ describe('GroupModal', () => {
   it('opens modal on Edit Group button click', () => {
     renderWithProviders(<GroupModal type='edit' group={group} />);
 
-    const editButton = screen.getByRole('button', { name: 'Edit Group' });
+    const editButton = screen.getByRole('button', { name: 'Edit workspace' });
     fireEvent.click(editButton);
 
-    const modalTitle = screen.getByRole('heading', { name: 'Edit Group' });
+    const modalTitle = screen.getByRole('heading', { name: 'Edit workspace' });
     expect(modalTitle).toBeInTheDocument();
   });
 });

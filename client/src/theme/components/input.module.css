@@ -1,8 +1,40 @@
 .wrapper {
-  --input-padding: 20px;
+  --input-radius: var(--mantine-radius-sm);
+  --input-bd: var(--mantine-color-steel-5);
+  --input-bd-focus: var(--mantine-color-dark-8);
+}
+
+.input {
+  background-color: var(--mantine-color-white);
+  border-width: 1.5px;
+  color: var(--mantine-color-dark-8);
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+
+  &::placeholder {
+    color: var(--mantine-color-steel-7);
+  }
+
+  &:focus,
+  &:focus-within {
+    box-shadow: 0 0 0 3px var(--mantine-color-stock-3);
+  }
+
+  &[data-error] {
+    --input-bd: var(--mantine-color-signal-7);
+  }
 }
 
 .label {
-  margin-bottom: 7px;
-  color: #6b6f76;
+  margin-bottom: 6px;
+  color: var(--mantine-color-dark-8);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.error {
+  color: var(--mantine-color-signal-8);
 }

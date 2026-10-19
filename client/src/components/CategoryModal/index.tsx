@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Group, Modal, TextInput } from '@mantine/core';
+import { ActionIcon, Button, Group, Modal, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
   Category,
@@ -8,7 +8,7 @@ import {
 } from '../../types/category.types';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { FaEdit } from 'react-icons/fa';
+import { TbPencil } from 'react-icons/tb';
 import { GeneralErrorObject } from '../../utils/notification.utils';
 import {
   createCategoryThunk,
@@ -38,9 +38,7 @@ function CategoryModal({
     },
     validate: {
       name: (value) =>
-        value.length > 30
-          ? 'Title should not be longer than 30 characters long.'
-          : null,
+        value.length > 30 ? 'Keep the name to 30 characters or fewer.' : null,
     },
   });
 
@@ -86,7 +84,7 @@ function CategoryModal({
         padding='xl'
         opened={opened}
         onClose={close}
-        title={type === 'add' ? 'Create New Category' : 'Edit Category'}
+        title={type === 'add' ? 'New list' : 'Edit list'}
         centered
         size='lg'
         {...props}
@@ -98,49 +96,37 @@ function CategoryModal({
         >
           <TextInput
             mb={10}
-            label='Title'
-            placeholder='Title'
+            label='Name'
+            placeholder='Name'
             required
-            aria-label='Category Title'
+            aria-label='List name'
             {...form.getInputProps('name')}
           />
-          <Group justify='flex-end' gap={10}>
-            <Button type='submit' h={45} aria-label='Submit'>
-              {type === 'add' ? 'Create Category' : 'Edit Category'}
+          <Group justify='flex-end' gap={10} mt='lg'>
+            <Button type='submit' size='md'>
+              {type === 'add' ? 'Create list' : 'Save changes'}
             </Button>
             {type === 'edit' && (
               <Button
-                h={45}
-                color='dark'
+                size='md'
+                variant='outline'
                 onClick={onDelete}
-                aria-label='Delete Category'
+                aria-label='Delete list'
               >
-                Delete Category
+                Delete list
               </Button>
             )}
           </Group>
         </form>
       </Modal>
       {type === 'add' ? (
-        <Button
-          onClick={open}
-          mt={{ base: 15, sm: 0 }}
-          aria-label='Create Category'
-        >
-          Create Category
+        <Button onClick={open} mt={{ base: 15, sm: 0 }} aria-label='New list'>
+          New list
         </Button>
       ) : (
-        <Button
-          onClick={open}
-          size='xs'
-          variant='subtle'
-          mb={5}
-          p={5}
-          radius='50%'
-          aria-label='Edit Category'
-        >
-          <FaEdit size={20} />
-        </Button>
+        <ActionIcon onClick={open} size='md' aria-label='Edit list'>
+          <TbPencil size={18} />
+        </ActionIcon>
       )}
     </>
   );

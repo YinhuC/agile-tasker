@@ -16,7 +16,7 @@ describe('CategoryModal', () => {
   it('renders Create Category button in add mode', () => {
     renderWithProviders(<CategoryModal projectId={projectId} type='add' />);
 
-    const addButton = screen.getByRole('button', { name: 'Create Category' });
+    const addButton = screen.getByRole('button', { name: 'New list' });
     expect(addButton).toBeInTheDocument();
   });
 
@@ -25,18 +25,18 @@ describe('CategoryModal', () => {
       <CategoryModal projectId={projectId} type='edit' category={category} />
     );
 
-    const editButton = screen.getByRole('button', { name: 'Edit Category' });
+    const editButton = screen.getByRole('button', { name: 'Edit list' });
     expect(editButton).toBeInTheDocument();
   });
 
   it('opens modal on Create Category button click', () => {
     renderWithProviders(<CategoryModal projectId={projectId} type='add' />);
 
-    const addButton = screen.getByRole('button', { name: 'Create Category' });
+    const addButton = screen.getByRole('button', { name: 'New list' });
     fireEvent.click(addButton);
 
     const modalTitle = screen.getByRole('heading', {
-      name: 'Create New Category',
+      name: 'New list',
     });
     expect(modalTitle).toBeInTheDocument();
   });
@@ -46,10 +46,10 @@ describe('CategoryModal', () => {
       <CategoryModal projectId={projectId} type='edit' category={category} />
     );
 
-    const editButton = screen.getByRole('button', { name: 'Edit Category' });
+    const editButton = screen.getByRole('button', { name: 'Edit list' });
     fireEvent.click(editButton);
 
-    const modalTitle = screen.getByRole('heading', { name: 'Edit Category' });
+    const modalTitle = screen.getByRole('heading', { name: 'Edit list' });
     expect(modalTitle).toBeInTheDocument();
   });
 });

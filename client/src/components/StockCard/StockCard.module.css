@@ -1,0 +1,46 @@
+.root {
+  --stock-bg: var(--mantine-color-stock-5);
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--mantine-radius-lg);
+  background: var(--stock-bg);
+  color: var(--mantine-color-dark-8);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    var(--mantine-shadow-lg);
+
+  &[data-stock='blue'] {
+    --stock-bg: var(--mantine-color-sleeve-2);
+  }
+
+  &[data-stock='white'] {
+    --stock-bg: var(--mantine-color-white);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(
+      115deg,
+      rgba(255, 255, 255, 0.32) 0%,
+      rgba(255, 255, 255, 0) 30%,
+      rgba(255, 255, 255, 0) 72%,
+      rgba(255, 255, 255, 0.16) 100%
+    );
+  }
+}
+
+.hole {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--mantine-color-steel-2);
+  box-shadow: inset 0 2px 3px rgba(22, 24, 26, 0.4);
+}

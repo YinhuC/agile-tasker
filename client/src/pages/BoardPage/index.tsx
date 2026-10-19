@@ -1,10 +1,12 @@
 import React, { useEffect, useMemo } from 'react';
-import { Box, Container, Flex, Title, Text } from '@mantine/core';
+import { Box, Container, Title, Text } from '@mantine/core';
+import { TbClockHour4 } from 'react-icons/tb';
 import ProjectGrid from '../../components/ProjectGrid';
 import { fetchAllGroupsThunk } from '../../store/group/group.thunks';
 import GroupModal from '../../components/GroupModal';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
+import classes from './BoardPage.module.css';
 
 function BoardPage() {
   const dispatch = useAppDispatch();
@@ -27,26 +29,26 @@ function BoardPage() {
   );
 
   return (
-    <Box py={30}>
+    <Box className={classes.root}>
       <Container size='xl'>
-        <Flex
-          justify='space-between'
-          align='center'
-          mb={20}
-          mx={40}
-          direction={{ base: 'column', md: 'row' }}
-        >
-          <Title order={2} mb={10}>
-            Workspaces
-          </Title>
-          <Text ta='center' component='div'>
-            <Text fw={900} mr={5}>
-              Note:
-            </Text>{' '}
-            Due to our free tier hosting, delays will occur.
-          </Text>
+        <header className={classes.head}>
+          <div>
+            <Title order={1} className={classes.title}>
+              Workspaces
+            </Title>
+            <Text className={classes.note}>
+              <TbClockHour4 aria-hidden />
+              Free hosting: the first load after a quiet spell can take about 30
+              seconds.
+            </Text>
+          </div>
           <GroupModal type='add' />
-        </Flex>
+        </header>
+        {groups?.length === 0 && (
+          <Text className={classes.empty}>
+            No workspaces yet. Make one to start adding projects.
+          </Text>
+        )}
         {grids}
       </Container>
     </Box>

@@ -1,0 +1,13 @@
+.root {
+  color: inherit;
+  font-weight: 800;
+  font-stretch: 92%;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.stop {
+  color: var(--mantine-color-stock-5);
+}

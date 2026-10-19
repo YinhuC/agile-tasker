@@ -1,0 +1,45 @@
+.root {
+  padding: clamp(64px, 8vw, 112px) 0;
+  background:
+    radial-gradient(
+        circle at 14px 14px,
+        var(--mantine-color-steel-4) 2px,
+        transparent 2.5px
+      )
+      0 0 / 28px 28px,
+    var(--mantine-color-steel-2);
+}
+
+.inner {
+  padding: clamp(24px, 4vw, 56px);
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 24px 64px;
+  align-items: end;
+
+  @mixin smaller-than $mantine-breakpoint-md {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.title {
+  font-size: clamp(3rem, 1.6rem + 5vw, 6rem);
+  line-height: 0.9;
+  font-stretch: 78%;
+  letter-spacing: -0.04em;
+}
+
+.lede {
+  font-size: 18px;
+  line-height: 1.55;
+  max-width: 44ch;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid var(--mantine-color-dark-8);
+}

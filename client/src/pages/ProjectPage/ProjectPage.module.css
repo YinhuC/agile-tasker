@@ -1,0 +1,25 @@
+.rack {
+  align-items: flex-start;
+  gap: 14px;
+  min-height: calc(100vh - 240px);
+  margin: 0 clamp(12px, 2.5vw, 40px) 40px;
+  padding: clamp(14px, 1.6vw, 22px);
+  border-radius: var(--mantine-radius-lg);
+  background:
+    radial-gradient(
+        circle at 12px 12px,
+        var(--mantine-color-steel-4) 1.8px,
+        transparent 2.2px
+      )
+      0 0 / 24px 24px,
+    var(--mantine-color-steel-2);
+  border: 1.5px solid var(--mantine-color-steel-4);
+  overflow-x: auto;
+  user-select: none;
+}
+
+.empty {
+  align-self: center;
+  margin: 40px auto;
+  color: var(--mantine-color-steel-8);
+}

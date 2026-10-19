@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import {
+  ActionIcon,
   Button,
   Group,
   Modal,
@@ -9,7 +10,7 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { FaEdit } from 'react-icons/fa';
+import { TbPencil } from 'react-icons/tb';
 import { GeneralErrorObject } from '../../utils/notification.utils';
 import {
   CreateProjectParams,
@@ -40,9 +41,7 @@ function ProjectModal({ groupId, type, project, ...props }: ProjectModalProps) {
     },
     validate: {
       name: (value) =>
-        value.length > 30
-          ? 'Title should not be longer than 30 characters long.'
-          : null,
+        value.length > 30 ? 'Keep the name to 30 characters or fewer.' : null,
       description: (value) =>
         value.length > 100
           ? 'Description should not be longer than 100 characters long.'
@@ -93,7 +92,7 @@ function ProjectModal({ groupId, type, project, ...props }: ProjectModalProps) {
         padding='xl'
         opened={opened}
         onClose={close}
-        title={type === 'add' ? 'Create New Project' : 'Edit Project'}
+        title={type === 'add' ? 'New project' : 'Edit project'}
         centered
         size='lg'
         {...props}
@@ -105,34 +104,34 @@ function ProjectModal({ groupId, type, project, ...props }: ProjectModalProps) {
         >
           <TextInput
             mb={10}
-            label='Title'
-            placeholder='Title'
+            label='Name'
+            placeholder='Name'
             required
-            aria-label='Project Title'
+            aria-label='Project name'
             {...form.getInputProps('name')}
           />
           <Textarea
             mb={30}
             label='Description'
-            placeholder='Description'
-            aria-label='Project Description'
+            placeholder='Optional'
+            aria-label='Project description'
             autosize
             minRows={3}
             maxRows={5}
             {...form.getInputProps('description')}
           />
-          <Group justify='flex-end' gap={10}>
-            <Button type='submit' h={45} aria-label='Submit'>
-              {type === 'add' ? 'Create Project' : 'Edit Project'}
+          <Group justify='flex-end' gap={10} mt='lg'>
+            <Button type='submit' size='md'>
+              {type === 'add' ? 'Create project' : 'Save changes'}
             </Button>
             {type === 'edit' && (
               <Button
-                h={45}
-                color='dark'
+                size='md'
+                variant='outline'
                 onClick={onDelete}
-                aria-label='Delete Project'
+                aria-label='Delete project'
               >
-                Delete Project
+                Delete project
               </Button>
             )}
           </Group>
@@ -142,22 +141,14 @@ function ProjectModal({ groupId, type, project, ...props }: ProjectModalProps) {
         <Button
           onClick={open}
           mt={{ base: 15, sm: 0 }}
-          aria-label='Create Project'
+          aria-label='New project'
         >
-          Create Project
+          New project
         </Button>
       ) : (
-        <Button
-          onClick={open}
-          size='xs'
-          variant='subtle'
-          mb={5}
-          p={5}
-          radius='50%'
-          aria-label='Edit Project'
-        >
-          <FaEdit size={20} />
-        </Button>
+        <ActionIcon onClick={open} size='lg' aria-label='Edit project'>
+          <TbPencil size={18} />
+        </ActionIcon>
       )}
     </>
   );

@@ -1,9 +1,0 @@
-.page {
-  --mantine-line-height-xs: 1.45;
-  --mantine-line-height-sm: 1.5;
-  --mantine-line-height-md: 1.6;
-  --mantine-line-height-lg: 1.55;
-  --mantine-line-height-xl: 1.5;
-  --mantine-h1-font-size: clamp(2rem, 1.4rem + 2.2vw, 2.75rem);
-  --mantine-h2-font-size: clamp(1.625rem, 1.3rem + 1.2vw, 2rem);
-}

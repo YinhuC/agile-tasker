@@ -87,7 +87,7 @@ describe('ProjectGrid', () => {
     );
 
     const groupName = screen.getByText('Group 1');
-    const groupModal = screen.getByLabelText('Edit Group');
+    const groupModal = screen.getByLabelText('Edit workspace');
 
     expect(groupName).toBeInTheDocument();
     expect(groupModal).toBeInTheDocument();
@@ -100,7 +100,7 @@ describe('ProjectGrid', () => {
       </Router>
     );
 
-    const projectModal = screen.getByLabelText('Create Project');
+    const projectModal = screen.getByLabelText('New project');
 
     expect(projectModal).toBeInTheDocument();
   });
