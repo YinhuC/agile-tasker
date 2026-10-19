@@ -243,7 +243,7 @@ describe('ProjectService', () => {
 
       expect(projectRepository.findOne).toHaveBeenCalledWith({
         where: { id: projectId },
-        relations: ['group'],
+        relations: { group: true },
       });
       expect(projectRepository.save).not.toHaveBeenCalled();
     });
