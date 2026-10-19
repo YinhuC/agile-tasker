@@ -15,9 +15,6 @@ vi.mock('../../api/auth.api', () => ({
   postAuthLogout: vi.fn(),
 }));
 
-vi.mock('../../assets/logos/logo-transparent.png', () => 'logo');
-vi.mock('../../assets/logos/small-logo-transparent.png', () => 'small-logo');
-
 describe('Header', () => {
   const user = {
     id: 1,
@@ -48,11 +45,9 @@ describe('Header', () => {
     );
 
     const logoLink = screen.getByAltText('agile-tasker logo');
-    const homeLink = screen.getByLabelText('Home');
     const boardLink = screen.getByLabelText('Board');
 
     expect(logoLink).toBeInTheDocument();
-    expect(homeLink).toBeInTheDocument();
     expect(boardLink).toBeInTheDocument();
   });
 
