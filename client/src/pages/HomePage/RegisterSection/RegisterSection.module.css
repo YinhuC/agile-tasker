@@ -1,0 +1,29 @@
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+
+  @mixin smaller-than $mantine-breakpoint-md {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.title {
+  text-wrap: balance;
+}
+
+.form {
+  flex: none;
+
+  @mixin smaller-than $mantine-breakpoint-xs {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.input {
+  min-width: 260px;
+}

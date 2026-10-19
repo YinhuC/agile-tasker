@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box, Image, Button, Flex, FlexProps, Text } from '@mantine/core';
-import { Link, useNavigate } from 'react-router';
+import { Box, Image, Button, Container, Group, BoxProps } from '@mantine/core';
+import { Link, NavLink, useNavigate } from 'react-router';
 import { useAuth } from '../../hooks/useAuth';
 import { notifications } from '@mantine/notifications';
 import { GeneralErrorObject } from '../../utils/notification.utils';
@@ -10,11 +10,12 @@ import SmallLogo from '../../assets/logos/logo-small.png';
 import { usePrevious, useWindowScroll } from '@mantine/hooks';
 import classes from './Header.module.css';
 
-const Header: React.FC<FlexProps> = ({ ...props }) => {
+const Header: React.FC<BoxProps> = ({ ...props }) => {
   const { user, removeUser } = useAuth();
   const navigate = useNavigate();
   const [scroll] = useWindowScroll();
   const prevScroll = usePrevious(scroll);
+  const isVisible = (prevScroll && scroll.y < prevScroll.y) || scroll.y < 50;
 
   const logout = async () => {
     try {
@@ -28,76 +29,63 @@ const Header: React.FC<FlexProps> = ({ ...props }) => {
   };
 
   return (
-    <Flex
-      mx={5}
-      justify='space-around'
-      align='center'
+    <Box
+      component='header'
       className={classes.root}
-      style={{
-        marginTop:
-          (prevScroll && scroll.y < prevScroll.y) || scroll.y < 50 ? 0 : -100,
-      }}
+      data-hidden={isVisible ? undefined : true}
       {...props}
     >
-      <Flex align='center' justify='center' visibleFrom='sm'>
-        <Link to={'/'}>
-          <Image src={LogoDark} w={200} alt='agile-tasker logo' mr={80} />
-        </Link>
-        {!user && (
-          <>
-            <Link to={'/views'} style={{ textDecorationLine: 'none' }}>
-              <Text c='gray.8' fw={500} mr={40}>
-                Views
-              </Text>
-            </Link>
-            <Link to={'/plans'} style={{ textDecorationLine: 'none' }}>
-              <Text c='gray.8' fw={500}>
-                Pricing
-              </Text>
-            </Link>
-          </>
-        )}
-      </Flex>
-      <Box component={Link} to={'/'} hiddenFrom='sm'>
-        <Image src={SmallLogo} w={100} alt='a. logo' />
-      </Box>
-      <Flex justify='flex-end' align='center' w={200} mr={20}>
-        {user ? (
-          <>
-            <Button
-              component={Link}
-              variant='transparent'
-              color='dark'
-              to={`/boards/${user.id}`}
-              fw={400}
-              mr={40}
+      <Container size='lg' className={classes.inner}>
+        <Group gap={48} wrap='nowrap'>
+          <Link to={'/'}>
+            <Image
+              src={LogoDark}
+              alt='agile-tasker logo'
+              className={classes.logo}
               visibleFrom='sm'
-              aria-label='Board'
-            >
-              Board
+            />
+            <Box className={classes.logoSmall} hiddenFrom='sm'>
+              <Image src={SmallLogo} alt='a. logo' />
+            </Box>
+          </Link>
+          {!user && (
+            <nav className={classes.nav}>
+              <NavLink to={'/views'} className={classes.link}>
+                Views
+              </NavLink>
+              <NavLink to={'/plans'} className={classes.link}>
+                Pricing
+              </NavLink>
+            </nav>
+          )}
+        </Group>
+        <Group gap='lg' wrap='nowrap'>
+          {user ? (
+            <>
+              <NavLink
+                to={`/boards/${user.id}`}
+                className={classes.link}
+                aria-label='Board'
+              >
+                Board
+              </NavLink>
+              <Button
+                onClick={logout}
+                variant='outline'
+                size='compact-sm'
+                aria-label='Logout'
+              >
+                Logout
+              </Button>
+            </>
+          ) : (
+            <Button component={Link} to={'/login'} aria-label='Sign In'>
+              Sign In
             </Button>
-            <Button
-              onClick={logout}
-              variant='outline'
-              size='compact-sm'
-              radius='xs'
-              aria-label='Logout'
-            >
-              Logout
-            </Button>
-          </>
-        ) : (
-          <Button
-            component={Link}
-            mr='0.5rem'
-            to={'/login'}
-            aria-label='Sign In'
-          >
-            Sign In
-          </Button>
-        )}
-      </Flex>
-    </Flex>
+          )}
+        </Group>
+      </Container>
+    </Box>
   );
 };
 

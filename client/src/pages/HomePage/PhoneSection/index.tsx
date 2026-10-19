@@ -5,20 +5,14 @@ import ContentBlock from '../../../components/ContentBlock';
 
 function PhoneSection({ ...props }: BoxProps) {
   return (
-    <Box
-      {...props}
-      style={{
-        background:
-          'linear-gradient(180deg, #fff 0%, var(--mantine-color-cyan-1) 100%)',
-      }}
-    >
-      <Container size='lg' py={30}>
+    <Box {...props}>
+      <Container size='lg' py={{ base: 72, sm: 112 }}>
         <ContentBlock
           title={'Empower Your Workflow.'}
-          text={'Agile Tasker'}
-          subtitle={`Discover the Power of Simplicity and Flexibility. Achieve Clarity with Boards, Lists, 
+          subtitle={`Discover the Power of Simplicity and Flexibility. Achieve Clarity with Boards, Lists,
             and Cards to Track Tasks and Assignments. Dive into Our Comprehensive Guide for a Seamless Start.`}
           img={PhoneImg}
+          imgAlt='Agile Tasker sign up, project, workspace and login screens on iPhone'
           imageLeft={false}
           imageTop={false}
         />

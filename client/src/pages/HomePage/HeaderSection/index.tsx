@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Container,
-  Flex,
   Stack,
   Title,
   Text,
@@ -12,8 +11,15 @@ import {
   Skeleton,
 } from '@mantine/core';
 import { Link } from 'react-router';
-import { motion, useAnimation } from 'motion/react';
-import { throttle } from 'lodash';
+import {
+  motion,
+  MotionValue,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from 'motion/react';
 
 import MacScreen from '../../../assets/images/parallax/project-parallax.png';
 import PhoneScreen from '../../../assets/images/parallax/phone-parallax.png';
@@ -22,126 +28,183 @@ import TeamSquare from '../../../assets/images/parallax/team-parallax.png';
 import IphoneProject from '../../../assets/images/iphone/iphone-project.png';
 import classes from './HeaderSection.module.css';
 
+type LayerProps = {
+  src: string;
+  alt: string;
+  pointerX: MotionValue<number>;
+  pointerY: MotionValue<number>;
+  scroll: MotionValue<number>;
+  depth: number;
+  lift: number;
+  delay: number;
+  still: boolean;
+  onLoad?: () => void;
+};
+
+const SPRING = { stiffness: 140, damping: 22, mass: 0.5 };
+const EASE_OUT = [0.16, 1, 0.3, 1] as const;
+
+/** One transparent 1438x919 layer; depth is pointer travel in px, lift is scroll travel. */
+function ParallaxLayer({
+  src,
+  alt,
+  pointerX,
+  pointerY,
+  scroll,
+  depth,
+  lift,
+  delay,
+  still,
+  onLoad,
+}: LayerProps) {
+  const x = useTransform(pointerX, (value) => value * depth);
+  const y = useTransform(
+    [pointerY, scroll],
+    ([py, progress]: number[]) => py * depth - progress * lift
+  );
+
+  return (
+    <motion.img
+      className={classes.layer}
+      src={src}
+      alt={alt}
+      onLoad={onLoad}
+      style={still ? undefined : { x, y }}
+      initial={still || delay === 0 ? false : { opacity: 0, scale: 0.94 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.9, delay, ease: EASE_OUT }}
+    />
+  );
+}
+
 function HeaderSection({ ...props }: BoxProps) {
-  const [loading, setLoading] = useState(true);
+  const [loaded, setLoaded] = useState(false);
+  const still = useReducedMotion() ?? false;
+  const stageRef = useRef<HTMLDivElement>(null);
 
-  const imgAnimate1 = useAnimation();
-  const imgAnimate2 = useAnimation();
-  const imgAnimate3 = useAnimation();
-  const imgAnimate4 = useAnimation();
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const pointerX = useSpring(rawX, SPRING);
+  const pointerY = useSpring(rawY, SPRING);
+  const rotateY = useTransform(pointerX, [-0.5, 0.5], [-5, 5]);
+  const rotateX = useTransform(pointerY, [-0.5, 0.5], [4, -4]);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const { clientX, clientY } = e;
-    const moveX = window.innerWidth / 2 - clientX * 2;
-    const moveY = window.innerHeight / 2 - clientY * 2;
-    imgAnimate1.start({
-      x: moveX / 250,
-      y: moveY / 250,
-    });
-    imgAnimate2.start({
-      x: moveX / 80,
-      y: moveY / 80,
-    });
-    imgAnimate3.start({
-      x: moveX / 50,
-      y: moveY / 50,
-    });
-    imgAnimate4.start({
-      x: moveX / 50,
-      y: moveY / 50,
-    });
+  const { scrollYProgress } = useScroll({
+    target: stageRef,
+    offset: ['start end', 'end start'],
+  });
+  const scroll = useTransform(scrollYProgress, [0, 1], [-0.5, 0.5]);
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    rawX.set(e.clientX / window.innerWidth - 0.5);
+    rawY.set(e.clientY / window.innerHeight - 0.5);
   };
-  const throttledMouseMove = throttle(handleMouseMove, 100);
+  const handlePointerLeave = () => {
+    rawX.set(0);
+    rawY.set(0);
+  };
+
+  const layerProps = { pointerX, pointerY, scroll, still };
 
   return (
     <Box
-      onMouseMove={(e) => throttledMouseMove(e)}
-      style={{
-        background:
-          'linear-gradient(180deg, var(--mantine-color-pink-7) 0%, var(--mantine-color-teal-3) 100%)',
-      }}
+      className={classes.root}
+      onPointerMove={still ? undefined : handlePointerMove}
+      onPointerLeave={still ? undefined : handlePointerLeave}
       {...props}
     >
-      <Container
-        size='xl'
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-        pt={100}
-        pb={50}
-      >
-        <Stack
-          justify='center'
-          align='center'
-          w='100%'
-          mb={60}
-          mx={10}
-        >
-          <Title ta='center' order={1} c='white' fw={600}>
+      <Container size='xl' pt={{ base: 64, sm: 96 }} pb={{ base: 64, sm: 96 }}>
+        <Stack align='center' gap='lg' mb={{ base: 48, sm: 72 }}>
+          <Title
+            ta='center'
+            order={1}
+            c='white'
+            fw={600}
+            className={classes.title}
+          >
             Unmatched Project Efficiency.
           </Title>
-          <Text ta='center' mb={10} size='lg' c='white'>
+          <Text ta='center' size='lg' c='white' maw={620}>
             Seamlessly Manage Projects and Foster Team Collaboration, Regardless
             of Physical Proximity.
           </Text>
           <Button
             component={Link}
-            variant='light'
-            size='md'
-            mr='0.5rem'
+            variant='white'
+            size='lg'
+            mt='xs'
             to={'/register'}
             aria-label='Start 14-day free trial'
           >
             Start 14-day free trial
           </Button>
         </Stack>
-        <Flex mx={20} visibleFrom='md' className={classes.parallax}>
-            <Skeleton
-              width={(window.innerWidth / 100) * 90}
-              radius={12}
-              height={(window.innerHeight / 100) * 75}
-              display={loading ? 'block' : 'none'}
-            />
-            <motion.img
-              animate={imgAnimate1}
+
+        <Box visibleFrom='md' className={classes.perspective}>
+          <motion.div
+            ref={stageRef}
+            className={classes.stage}
+            style={still ? undefined : { rotateX, rotateY }}
+          >
+            {!loaded && <Skeleton radius={12} className={classes.skeleton} />}
+            <ParallaxLayer
+              {...layerProps}
               src={MacScreen}
-              alt='project screen wide screen'
-              onLoad={() => setLoading(false)}
-              style={{ display: loading ? 'none' : 'block' }}
+              alt='Agile Tasker project board on desktop'
+              depth={10}
+              lift={0}
+              delay={0}
+              onLoad={() => setLoaded(true)}
             />
-            <Box pos='absolute'>
-              <motion.img
-                animate={imgAnimate2}
-                src={PhoneScreen}
-                alt='project screen mobile screen'
-              />
-            </Box>
-            <Box pos='absolute'>
-              <motion.img
-                animate={imgAnimate3}
-                src={DeviceSquare}
-                alt='device info'
-              />
-            </Box>
-            <Box pos='absolute'>
-              <motion.img
-                animate={imgAnimate4}
-                src={TeamSquare}
-                alt='team info'
-              />
-            </Box>
-          </Flex>
+            {loaded && (
+              <>
+                <ParallaxLayer
+                  {...layerProps}
+                  src={PhoneScreen}
+                  alt=''
+                  depth={28}
+                  lift={70}
+                  delay={0.15}
+                />
+                <ParallaxLayer
+                  {...layerProps}
+                  src={TeamSquare}
+                  alt=''
+                  depth={46}
+                  lift={130}
+                  delay={0.3}
+                />
+                <ParallaxLayer
+                  {...layerProps}
+                  src={DeviceSquare}
+                  alt=''
+                  depth={46}
+                  lift={150}
+                  delay={0.4}
+                />
+              </>
+            )}
+          </motion.div>
+        </Box>
+
         <Image
           src={IphoneProject}
           w='100%'
           miw={250}
-          maw={500}
+          maw={420}
+          mx='auto'
           hiddenFrom='md'
-          alt='Iphone project page'
+          alt='Agile Tasker project board on iPhone'
         />
-        <Title ta='center' order={2} fw={500} mt={100} mx={10}>
+        <Title
+          ta='center'
+          order={2}
+          fw={500}
+          mt={{ base: 64, sm: 112 }}
+          mx='auto'
+          maw={860}
+          className={classes.community}
+        >
           Join the global community of over 2,000,000 teams leveraging Agile
           Tasker to achieve greater productivity.
         </Title>

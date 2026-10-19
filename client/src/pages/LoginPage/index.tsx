@@ -1,15 +1,8 @@
 import React from 'react';
-import {
-  Flex,
-  Text,
-  Title,
-  Button,
-  TextInput,
-  PasswordInput,
-  Box,
-} from '@mantine/core';
+import { Button, TextInput, PasswordInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import classes from '../../theme/styles/auth-link.module.css';
+import AuthLayout from '../../components/AuthLayout';
+import IphoneLogin from '../../assets/images/iphone/iphone-login.png';
 import { TbPassword } from 'react-icons/tb';
 import { MdOutlineAlternateEmail, MdError } from 'react-icons/md';
 import { Link, Navigate, useNavigate } from 'react-router';
@@ -61,55 +54,42 @@ function LoginPage() {
   };
 
   return (
-    <Flex
-      h='100%'
-      w='100%'
-      justify='center'
-      align='center'
-      direction='column'
-      mih='100vh'
-      style={{
-        background:
-          'linear-gradient(45deg, var(--mantine-color-pink-0) 0%, var(--mantine-color-teal-0) 100%)',
-      }}
-      py={50}
-      px={20}
+    <AuthLayout
+      title='Login.'
+      subtitle='Access your team projects by logging in.'
+      image={IphoneLogin}
+      imageAlt='Agile Tasker login screen on iPhone'
+      footer={
+        <>
+          {'Not registered? '}
+          <Link to={'/register'}>Create account</Link>
+        </>
+      }
     >
-      <Title order={2} mb={15}>
-        Login.
-      </Title>
-      <Text mb={50}>Access your team projects by logging in.</Text>
-      <Box miw={300} w='18%' mb={60}>
-        <form
-          onSubmit={form.onSubmit(async (values) => await onSubmit(values))}
-        >
-          <TextInput
-            mb={20}
-            leftSection={<MdOutlineAlternateEmail />}
-            placeholder='Email'
-            aria-label='Email'
-            required
-            {...form.getInputProps('email')}
-          />
-          <PasswordInput
-            mb={30}
-            leftSection={<TbPassword />}
-            placeholder='Password'
-            aria-label='Password'
-            required
-            {...form.getInputProps('password')}
-          />
-          <Button type='submit' fullWidth h={45} aria-label='Submit'>
-            Submit
-          </Button>
-        </form>
-      </Box>
-      <Box className={classes.link}>
-        <Text size='sm'>
-          Not registered? <Link to={'/register'}>Create account</Link>
-        </Text>
-      </Box>
-    </Flex>
+      <form onSubmit={form.onSubmit(async (values) => await onSubmit(values))}>
+        <TextInput
+          mb='md'
+          size='md'
+          leftSection={<MdOutlineAlternateEmail />}
+          placeholder='Email'
+          aria-label='Email'
+          required
+          {...form.getInputProps('email')}
+        />
+        <PasswordInput
+          mb='xl'
+          size='md'
+          leftSection={<TbPassword />}
+          placeholder='Password'
+          aria-label='Password'
+          required
+          {...form.getInputProps('password')}
+        />
+        <Button type='submit' fullWidth size='md' aria-label='Submit'>
+          Submit
+        </Button>
+      </form>
+    </AuthLayout>
   );
 }
 

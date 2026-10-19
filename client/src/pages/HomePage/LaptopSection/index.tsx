@@ -15,21 +15,23 @@ function LaptopSection({ ...props }: ContainerProps) {
 
   return (
     <BackgroundImage src={BackgroundWaveImage}>
-      <Container size='xl' py={30} {...props}>
+      <Container size='xl' py={{ base: 32, sm: 48 }} {...props}>
         <Center>
-          <Skeleton
-            width={(window.innerWidth / 100) * 70}
-            radius={12}
-            height={(window.innerWidth / 100) * 45}
-            display={loading ? 'block' : 'none'}
-          />
+          {loading && (
+            <Skeleton
+              radius={12}
+              w='100%'
+              maw={1100}
+              style={{ aspectRatio: '1114 / 670' }}
+            />
+          )}
           <Image
             src={LaptopImage}
             w='100%'
             miw={300}
             maw={1100}
             display={loading ? 'none' : 'block'}
-            alt='agiler tasker on laptop'
+            alt='Agile Tasker workspaces on a MacBook'
             onLoad={() => setLoading(false)}
           />
         </Center>

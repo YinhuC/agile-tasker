@@ -1,19 +1,10 @@
-import React, { useState } from 'react';
-import {
-  Flex,
-  Title,
-  Text,
-  Stack,
-  Skeleton,
-  FlexProps,
-  TitleOrder,
-} from '@mantine/core';
-import { motion } from 'motion/react';
+import React from 'react';
+import { Flex, Title, Text, Stack, FlexProps, TitleOrder } from '@mantine/core';
 import classes from './ContentBlock.module.css';
 
 type ContentBlockProps = FlexProps & {
   img: string;
-  text?: string;
+  imgAlt?: string;
   title?: string;
   subtitle?: string;
   imageLeft?: boolean;
@@ -25,10 +16,10 @@ type ContentBlockProps = FlexProps & {
 };
 
 function ContentBlock({
-  text,
   title,
   subtitle,
   img,
+  imgAlt = '',
   imageLeft = true,
   imageTop = true,
   imageSize = '100%',
@@ -37,36 +28,29 @@ function ContentBlock({
   subtitleSize,
   ...props
 }: ContentBlockProps) {
-  const [loading, setLoading] = useState(true);
   return (
     <Flex
-      gap={30}
+      gap={{ base: 32, sm: 48 }}
       direction={{ base: 'column', sm: 'row' }}
-      align={{ base: 'center', sm: 'stretch' }}
+      align='center'
       {...props}
     >
       <Stack
         justify='center'
-        gap={5}
-        mx={20}
+        gap='sm'
         className={classes.text}
         style={{
           '--text-order': imageLeft ? 1 : 0,
           '--text-order-mobile': imageTop ? 1 : 0,
         }}
       >
-        {text && (
-          <Text tt='uppercase' fw={700}>
-            {text}
-          </Text>
-        )}
         {title && (
-          <Title order={titleOrder} mb={10} fw={titleWeight}>
+          <Title order={titleOrder} fw={titleWeight} className={classes.title}>
             {title}
           </Title>
         )}
         {subtitle && (
-          <Text lh='160%' mb={20} fz={subtitleSize}>
+          <Text fz={subtitleSize} c='gray.8' maw='62ch'>
             {subtitle}
           </Text>
         )}
@@ -81,20 +65,7 @@ function ContentBlock({
         }}
         justify='center'
       >
-        <Skeleton
-          width={(window.innerWidth / 100) * 40}
-          radius={12}
-          height={(window.innerHeight / 100) * 50}
-          display={loading ? 'block' : 'none'}
-        />
-        <motion.img
-          src={img}
-          alt='agile tasker on mobile'
-          style={{
-            display: loading ? 'none' : 'block',
-          }}
-          onLoad={() => setLoading(false)}
-        />
+        <img src={img} alt={imgAlt} loading='lazy' decoding='async' />
       </Flex>
     </Flex>
   );

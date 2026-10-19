@@ -10,20 +10,20 @@ import {
 
 function AccordionSection({ ...props }: ContainerProps) {
   return (
-    <Container size='lg' mt={30} mb={100} {...props}>
-      <Stack>
-        <Title order={2} fw={500} mb={5} ta='center'>
+    <Container size={860} pb={{ base: 72, sm: 112 }} {...props}>
+      <Stack gap='xl'>
+        <Title order={2} fw={500} ta='center'>
           Frequently asked questions
         </Title>
 
-        <Accordion multiple={true}>
+        <Accordion multiple={true} variant='separated' radius='md'>
           <Accordion.Item value='trial'>
             <Accordion.Control>
-              <Text size='lg' fw={500}>
+              <Text fw={500}>
                 Does Agile Tasker provide a Premium trial period at no cost?
               </Text>
             </Accordion.Control>
-            <Accordion.Panel px={20} py={10}>
+            <Accordion.Panel c='gray.7'>
               Absolutely! All users can initiate a free trial of Agile Tasker
               Premium for their Workspace. During this trial, your Workspace
               will unlock unlimited Trello boards, extensive automation
@@ -34,11 +34,9 @@ function AccordionSection({ ...props }: ContainerProps) {
 
           <Accordion.Item value='discounts'>
             <Accordion.Control>
-              <Text size='lg' fw={500}>
-                Are there any discounted plans available?
-              </Text>
+              <Text fw={500}>Are there any discounted plans available?</Text>
             </Accordion.Control>
-            <Accordion.Panel px={20} py={10}>
+            <Accordion.Panel c='gray.7'>
               Indeed! Agile Tasker provides discounts for both non-profit
               organizations within the community and educational institutions.
             </Accordion.Panel>
@@ -46,11 +44,9 @@ function AccordionSection({ ...props }: ContainerProps) {
 
           <Accordion.Item value='payments'>
             <Accordion.Control>
-              <Text size='lg' fw={500}>
-                Which payment methods are accepted?
-              </Text>
+              <Text fw={500}>Which payment methods are accepted?</Text>
             </Accordion.Control>
-            <Accordion.Panel px={20} py={10}>
+            <Accordion.Panel c='gray.7'>
               You can buy a monthly or annual Agile Tasker Standard or Premium
               subscription using any major credit card. Additional options are
               available for Enterprise customers. If you're keen on discovering
@@ -61,12 +57,12 @@ function AccordionSection({ ...props }: ContainerProps) {
 
           <Accordion.Item value='cancellation'>
             <Accordion.Control>
-              <Text size='lg' fw={500}>
+              <Text fw={500}>
                 How can I terminate my Agile Tasker Standard or Premium
                 subscription?
               </Text>
             </Accordion.Control>
-            <Accordion.Panel px={20} py={10}>
+            <Accordion.Panel c='gray.7'>
               If you're not completely satisfied with Agile Tasker Standard or
               Premium, you can downgrade at any moment. Upon downgrading, your
               team retains its Standard or Premium features and unlimited boards
@@ -79,11 +75,11 @@ function AccordionSection({ ...props }: ContainerProps) {
 
           <Accordion.Item value='billing'>
             <Accordion.Control>
-              <Text size='lg' fw={500}>
+              <Text fw={500}>
                 How are users calculated for billing purposes?
               </Text>
             </Accordion.Control>
-            <Accordion.Panel px={20} py={10}>
+            <Accordion.Panel c='gray.7'>
               A user on Agile Tasker who is added as a member to a
               Workspace—whether as a regular member or a team admin—is
               considered a billable team member included in the cost of Agile
@@ -97,11 +93,11 @@ function AccordionSection({ ...props }: ContainerProps) {
 
           <Accordion.Item value='version'>
             <Accordion.Control>
-              <Text size='lg' fw={500}>
+              <Text fw={500}>
                 Is there an on-premises version of Agile Tasker?
               </Text>
             </Accordion.Control>
-            <Accordion.Panel px={20} py={10}>
+            <Accordion.Panel c='gray.7'>
               Agile Tasker is proudly a cloud-only product. We provide access
               through the web, desktop, and our fantastic mobile apps.
             </Accordion.Panel>
@@ -109,12 +105,12 @@ function AccordionSection({ ...props }: ContainerProps) {
 
           <Accordion.Item value='subscription'>
             <Accordion.Control>
-              <Text size='lg' fw={500}>
+              <Text fw={500}>
                 Can I subscribe to Agile Tasker Standard or Premium for just my
                 individual account?
               </Text>
             </Accordion.Control>
-            <Accordion.Panel px={20} py={10}>
+            <Accordion.Panel c='gray.7'>
               Agile Tasker Standard and Premium are designed to accommodate all
               teams, including solo users! To upgrade to Standard or Premium,
               you'll need to create a Workspace and then upgrade that Workspace.

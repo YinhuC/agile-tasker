@@ -2,3 +2,8 @@ html,
 body {
   height: 100%;
 }
+
+::selection {
+  background: var(--mantine-color-pink-2);
+  color: var(--mantine-color-dark-9);
+}

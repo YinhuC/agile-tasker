@@ -1,5 +1,7 @@
 import React from 'react';
-import { Text, Button, Card, CardProps } from '@mantine/core';
+import { Text, Button, Card, CardProps, Group, Divider } from '@mantine/core';
+import { Link } from 'react-router';
+import classes from './PriceCard.module.css';
 
 type PriceCardProps = Omit<CardProps, 'children'> & {
   tier: string;
@@ -7,48 +9,75 @@ type PriceCardProps = Omit<CardProps, 'children'> & {
   amountDescription: string;
   tierDescription: string;
   buttonText: string;
+  to?: string;
   highlight?: boolean;
   backgroundColor?: string;
+  children?: React.ReactNode;
 };
 
+/** Pricing tier card; rows sit on a subgrid so sibling cards align row by row. */
 function PriceCard({
   tier,
   amount,
   amountDescription,
   tierDescription,
   buttonText,
+  to,
   highlight = false,
-  backgroundColor = 'transparent',
+  backgroundColor = 'var(--mantine-color-white)',
+  children,
   ...props
 }: PriceCardProps) {
   return (
     <Card
-      radius={0}
-      h={{ base: 'auto', sm: '100%' }}
-      mih={{ base: 450, sm: 0 }}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: backgroundColor,
-        border: highlight
-          ? '0.125rem solid var(--mantine-color-pink-3)'
-          : '0.0625rem solid #dee2e6',
-      }}
+      radius='md'
+      padding='lg'
+      withBorder
+      className={classes.root}
+      data-highlight={highlight || undefined}
+      style={{ backgroundColor, gridRow: `span ${children ? 5 : 4}` }}
       {...props}
     >
-      <Text tt='uppercase' fw={700} mb={30} mt={20}>
+      <Text
+        tt='uppercase'
+        fw={700}
+        size='sm'
+        lts='0.06em'
+        c={highlight ? 'pink.7' : undefined}
+      >
         {tier}
       </Text>
-      <Text fz={36} mb={5}>
-        ${amount} USD
-      </Text>
-      <Text c='dimmed' size='xs' mb={40} h={28.8}>
-        {amountDescription}
-      </Text>
-      <Text mb={80}>{tierDescription}</Text>
-      <Button mt='auto' variant='outline'>
-        {buttonText}
-      </Button>
+      <div>
+        <Group gap={6} align='baseline'>
+          <Text fz={40} fw={600} lh={1}>
+            ${amount}
+          </Text>
+          <Text c='dimmed' size='sm'>
+            USD
+          </Text>
+        </Group>
+        <Text c='gray.7' size='xs' mt={8}>
+          {amountDescription}
+        </Text>
+      </div>
+      <Text size='sm'>{tierDescription}</Text>
+      {to ? (
+        <Button
+          component={Link}
+          to={to}
+          variant={highlight ? 'filled' : 'outline'}
+        >
+          {buttonText}
+        </Button>
+      ) : (
+        <Button variant={highlight ? 'filled' : 'outline'}>{buttonText}</Button>
+      )}
+      {children && (
+        <div>
+          <Divider mb='lg' />
+          {children}
+        </div>
+      )}
     </Card>
   );
 }

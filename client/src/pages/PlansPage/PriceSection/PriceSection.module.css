@@ -1,14 +1,24 @@
-.features {
-  background-color: transparent;
-  display: flex;
-  flex-direction: column;
-  min-height: 450px;
-
-  @mixin smaller-than $mantine-breakpoint-sm {
-    min-height: auto;
-  }
+.hero {
+  background: linear-gradient(
+    180deg,
+    var(--mantine-color-pink-0) 0%,
+    var(--mantine-color-white) 100%
+  );
 }
 
-.highlight {
-  border: 0.125rem solid var(--mantine-color-pink-3);
+.title {
+  font-size: clamp(2.25rem, 1.5rem + 3vw, 3.5rem);
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+.check {
+  width: 12px;
+  height: 12px;
+  margin-top: 4px;
+  color: var(--mantine-color-teal-6);
+}
+
+.itemWrapper {
+  align-items: flex-start;
 }

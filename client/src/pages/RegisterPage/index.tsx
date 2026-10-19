@@ -1,15 +1,8 @@
 import React from 'react';
-import {
-  Flex,
-  Text,
-  Title,
-  Button,
-  TextInput,
-  PasswordInput,
-  Box,
-} from '@mantine/core';
+import { Button, Group, TextInput, PasswordInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import classes from '../../theme/styles/auth-link.module.css';
+import AuthLayout from '../../components/AuthLayout';
+import IphoneRegister from '../../assets/images/iphone/iphone-register.png';
 import { Link, useNavigate } from 'react-router';
 import { MESSAGES, REGEXES } from '../../utils/regex.utils';
 import { RegisterParams } from '../../types/auth.types';
@@ -83,81 +76,71 @@ function RegisterPage() {
   };
 
   return (
-    <Flex
-      h='100%'
-      w='100%'
-      justify='center'
-      align='center'
-      direction='column'
-      mih='100vh'
-      style={{
-        background:
-          'linear-gradient(225deg, var(--mantine-color-pink-0) 0%, var(--mantine-color-teal-0) 100%)',
-      }}
-      py={50}
-      px={20}
+    <AuthLayout
+      title='Create your account.'
+      subtitle='Create your account today and embark on a collaborative journey.'
+      image={IphoneRegister}
+      imageAlt='Agile Tasker sign up screen on iPhone'
+      footer={
+        <>
+          {'Already have an account? '}
+          <Link to={'/login'}>Sign in</Link>
+        </>
+      }
     >
-      <Title order={2} mb={20}>
-        Create your account.
-      </Title>
-      <Text mb={50} ta='center'>
-        Create your account today and embark on a collaborative journey.
-      </Text>
-      <Box miw={300} w='24%' mb={60}>
-        <form
-          onSubmit={form.onSubmit(({ confirmPassword, ...values }) =>
-            onSubmit(values)
-          )}
-        >
+      <form
+        onSubmit={form.onSubmit(({ confirmPassword, ...values }) =>
+          onSubmit(values)
+        )}
+      >
+        <Group grow gap='md' mb='md' align='flex-start'>
           <TextInput
-            mb={20}
+            size='md'
             placeholder='First Name'
             aria-label='First Name'
             required
             {...form.getInputProps('firstname')}
           />
           <TextInput
-            mb={20}
+            size='md'
             placeholder='Last Name'
             aria-label='Last Name'
             required
             {...form.getInputProps('lastname')}
           />
-          <TextInput
-            mb={20}
-            leftSection={<MdOutlineAlternateEmail />}
-            placeholder='Your email'
-            aria-label='Your email'
-            required
-            {...form.getInputProps('email')}
-          />
-          <PasswordInput
-            mb={20}
-            leftSection={<TbPassword />}
-            placeholder='Password'
-            aria-label='Password'
-            required
-            {...form.getInputProps('password')}
-          />
-          <PasswordInput
-            mb={30}
-            leftSection={<TbPassword />}
-            placeholder='Confirm Password'
-            aria-label='Confirm Password'
-            required
-            {...form.getInputProps('confirmPassword')}
-          />
-          <Button type='submit' fullWidth h={45} aria-label='Submit'>
-            Submit
-          </Button>
-        </form>
-      </Box>
-      <Box className={classes.link}>
-        <Text size='sm'>
-          Already have an acocunt? <Link to={'/login'}>Sign in</Link>
-        </Text>
-      </Box>
-    </Flex>
+        </Group>
+        <TextInput
+          mb='md'
+          size='md'
+          leftSection={<MdOutlineAlternateEmail />}
+          placeholder='Your email'
+          aria-label='Your email'
+          required
+          {...form.getInputProps('email')}
+        />
+        <PasswordInput
+          mb='md'
+          size='md'
+          leftSection={<TbPassword />}
+          placeholder='Password'
+          aria-label='Password'
+          required
+          {...form.getInputProps('password')}
+        />
+        <PasswordInput
+          mb='xl'
+          size='md'
+          leftSection={<TbPassword />}
+          placeholder='Confirm Password'
+          aria-label='Confirm Password'
+          required
+          {...form.getInputProps('confirmPassword')}
+        />
+        <Button type='submit' fullWidth size='md' aria-label='Submit'>
+          Submit
+        </Button>
+      </form>
+    </AuthLayout>
   );
 }
 

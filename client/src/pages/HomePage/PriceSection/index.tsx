@@ -14,45 +14,23 @@ import PriceCard from '../../../components/PriceCard';
 
 function PriceSection({ ...props }: BoxProps) {
   return (
-    <Box
-      {...props}
-      style={{
-        background:
-          'linear-gradient(180deg, var(--mantine-color-cyan-0) 0%, var(--mantine-color-cyan-1) 100%)',
-      }}
-      pt={80}
-      pb={120}
-    >
-      <Container
-        size='lg'
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Stack
-          justify='center'
-          align='center'
-          w='100%'
-          mx={10}
-          mb={60}
-        >
+    <Box {...props} py={{ base: 72, sm: 112 }}>
+      <Container size='lg'>
+        <Stack align='center' gap='lg' mb={{ base: 40, sm: 56 }}>
           <Title ta='center' order={1} fw={600}>
             Priced to fit your needs.
           </Title>
-          <Text ta='center' mb={10} size='lg'>
+          <Text ta='center' size='lg' c='gray.8'>
             Millions trust Agile Tasker to empower teams globally.
           </Text>
-          <Button size='md' component={Link} to='/plans'>
+          <Button size='md' mt='xs' component={Link} to='/plans'>
             Compare all plans
           </Button>
         </Stack>
         <SimpleGrid
-          cols={{ base: 1, sm: 4 }}
-          spacing={{ base: 20, sm: 0 }}
-          verticalSpacing={{ base: 20, sm: 0 }}
-          h='100%'
+          cols={{ base: 1, xs: 2, md: 4 }}
+          spacing='lg'
+          verticalSpacing='lg'
         >
           <PriceCard
             tier={'Free'}
@@ -61,8 +39,8 @@ function PriceSection({ ...props }: BoxProps) {
             tierDescription={
               'For individuals or teams looking to organize any project.'
             }
-            backgroundColor='var(--mantine-color-gray-0)'
             buttonText={'Try for free'}
+            to='/register'
           />
           <PriceCard
             tier={'Standard'}
@@ -73,8 +51,8 @@ function PriceSection({ ...props }: BoxProps) {
             tierDescription={
               'For small teams seeking to manage tasks and expand collaboration.'
             }
-            backgroundColor='var(--mantine-color-gray-0)'
             buttonText={'Sign up now'}
+            to='/register'
           />
 
           <PriceCard
@@ -86,8 +64,8 @@ function PriceSection({ ...props }: BoxProps) {
             tierDescription={
               'For teams requiring comprehensive project tracking and visualization across various formats like boards, timelines, calendars, and more.'
             }
-            backgroundColor='var(--mantine-color-gray-0)'
             buttonText={'Get started now'}
+            to='/register'
             highlight={true}
           />
           <PriceCard
@@ -99,7 +77,6 @@ function PriceSection({ ...props }: BoxProps) {
             tierDescription={
               'For organizations necessitating secure and controlled connectivity of work across multiple teams.'
             }
-            backgroundColor='var(--mantine-color-gray-0)'
             buttonText={'Contact sales'}
           />
         </SimpleGrid>

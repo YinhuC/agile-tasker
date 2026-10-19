@@ -1,0 +1,67 @@
+.root {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-height: 100vh;
+  background: var(--mantine-color-white);
+
+  @mixin smaller-than $mantine-breakpoint-md {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.formSide {
+  display: flex;
+  flex-direction: column;
+  padding: 32px clamp(20px, 6vw, 80px) 48px;
+}
+
+.logoLink {
+  align-self: flex-start;
+}
+
+.logo {
+  width: 150px;
+  height: 32px;
+  object-fit: cover;
+}
+
+.form {
+  width: 100%;
+  max-width: 380px;
+  margin: 56px auto 0;
+
+  @media (min-width: $mantine-breakpoint-md) {
+    margin: auto;
+    padding-top: 48px;
+  }
+}
+
+.title {
+  font-size: clamp(2.25rem, 1.8rem + 1.5vw, 3rem);
+  line-height: 1.1;
+}
+
+.footer a {
+  color: var(--mantine-color-pink-7);
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+
+.visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(
+    180deg,
+    var(--mantine-color-pink-7) 0%,
+    var(--mantine-color-teal-3) 100%
+  );
+}
+
+.phone {
+  width: min(62%, 380px);
+  height: auto;
+  filter: drop-shadow(0 40px 50px rgba(60, 10, 40, 0.35));
+}

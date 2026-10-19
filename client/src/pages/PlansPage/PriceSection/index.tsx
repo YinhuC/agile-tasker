@@ -6,29 +6,114 @@ import {
   Stack,
   Text,
   SimpleGrid,
-  Card,
   List,
 } from '@mantine/core';
 import { FaCheck } from 'react-icons/fa';
 import PriceCard from '../../../components/PriceCard';
 import classes from './PriceSection.module.css';
 
+const tiers = [
+  {
+    tier: 'Free',
+    amount: 0,
+    amountDescription: 'Free for your entire team.',
+    tierDescription:
+      'For individuals or teams looking to organize any project.',
+    buttonText: 'Try for free',
+    to: '/register',
+    featuresTitle: 'Included in free:',
+    features: [
+      'Unlimited cards',
+      'Up to 10 boards per Workspace',
+      'Unlimited Power-Ups per board',
+      'Unlimited storage (10MB/file)',
+      '250 Workspace command runs per month',
+      'Custom backgrounds & stickers',
+      'Unlimited activity log',
+      'Assignee and due dates',
+      'iOS and Android mobile apps',
+      '2-factor authentication',
+    ],
+  },
+  {
+    tier: 'Standard',
+    amount: 10,
+    amountDescription:
+      'Per user per month when billed annually ($12 when billed monthly).',
+    tierDescription:
+      'For small teams seeking to manage tasks and expand collaboration.',
+    buttonText: 'Sign up now',
+    to: '/register',
+    featuresTitle: 'Everything in free, plus:',
+    features: [
+      'Unlimited boards',
+      'Advanced checklists',
+      'Custom Fields',
+      'Unlimited storage (250MB/file)',
+      '1,000 Workspace command runs per month',
+      'Single board guests',
+      'Saved searches',
+    ],
+  },
+  {
+    tier: 'Premium',
+    amount: 20,
+    amountDescription:
+      'Per user per month when billed annually ($24 when billed monthly).',
+    tierDescription:
+      'For teams requiring comprehensive project tracking and visualization across various formats like boards, timelines, calendars, and more.',
+    buttonText: 'Get started now',
+    to: '/register',
+    highlight: true,
+    featuresTitle: 'Everything in standard, plus:',
+    features: [
+      'Views: Calendar, Timeline, Table, Dashboard, and Map',
+      'Workspace views: Table and Calendar',
+      'Unlimited Workspace command runs',
+      'Agile Intelligence (AI)',
+      'Admin and security features',
+      'Workspace-level templates',
+      'Collections',
+      'Observers',
+      'Simple data export',
+    ],
+  },
+  {
+    tier: 'Enterprise',
+    amount: 30,
+    amountDescription:
+      'Per user per month when billed annually ($39 when billed monthly).',
+    tierDescription:
+      'For organizations necessitating secure and controlled connectivity of work across multiple teams.',
+    buttonText: 'Contact sales',
+    featuresTitle: 'Everything in premium, plus:',
+    features: [
+      'Unlimited Workspaces',
+      'Organization-wide permissions',
+      'Organization-visible boards',
+      'Public board management',
+      'Multi-board guests',
+      'Attachment permissions',
+      'Power-Up administration',
+      'Free SSO and user provisioning with Agile Access',
+    ],
+  },
+];
+
 function PriceSection() {
   return (
     <>
-      <Box
-        id='views'
-        style={{
-          background:
-            'linear-gradient(180deg, var(--mantine-color-blue-0) 0%, #fff 100%)',
-        }}
-      >
-        <Container size='lg' pt={80}>
-          <Stack align='center'>
-            <Title order={1} fw={500} ta='center'>
+      <Box className={classes.hero}>
+        <Container
+          size='lg'
+          pt={{ base: 64, sm: 96 }}
+          pb={{ base: 40, sm: 56 }}
+        >
+          <Stack align='center' gap='lg'>
+            <Title order={1} ta='center' className={classes.title}>
               Agile Tasker, tailored to you.
             </Title>
-            <Text ta='center' size='lg' maw={800}>
+            <Text ta='center' size='lg' c='gray.8' maw={640}>
               Trusted by millions worldwide, Agile Tasker empowers teams across
               the globe. Explore the options to find the perfect fit for you.
             </Text>
@@ -36,171 +121,36 @@ function PriceSection() {
         </Container>
       </Box>
 
-      <Container size='lg' py={80}>
+      <Container size='lg' pb={{ base: 72, sm: 112 }}>
         <SimpleGrid
-          cols={{ base: 1, sm: 4 }}
-          spacing={{ base: 30, sm: 0 }}
-          verticalSpacing={{ base: 30, sm: 0 }}
-          h='100%'
+          cols={{ base: 1, xs: 2, md: 4 }}
+          spacing='lg'
+          verticalSpacing='lg'
         >
-          <Stack gap={0}>
-            <PriceCard
-              tier={'Free'}
-              amount={0}
-              amountDescription={'Free for your entire team.'}
-              tierDescription={
-                'For individuals or teams looking to organize any project.'
-              }
-              buttonText={'Try for free'}
-            />
-            <Card
-              withBorder
-              radius={0}
-              className={classes.features}
-            >
-              <Text tt='uppercase' mb={10} size='sm' fw={600}>
-                Included in free:
+          {tiers.map(({ featuresTitle, features, ...tier }) => (
+            <PriceCard key={tier.tier} {...tier}>
+              <Text
+                tt='uppercase'
+                mb='sm'
+                size='xs'
+                fw={700}
+                lts='0.06em'
+                c='gray.7'
+              >
+                {featuresTitle}
               </Text>
               <List
-                spacing='xs'
+                spacing={8}
                 size='sm'
-                center
-                icon={<FaCheck size='1rem' color='var(--mantine-color-green-6)' />}
+                icon={<FaCheck className={classes.check} aria-hidden />}
+                classNames={{ itemWrapper: classes.itemWrapper }}
               >
-                <List.Item>Unlimited cards</List.Item>
-                <List.Item>Up to 10 boards per Workspace</List.Item>
-                <List.Item>Unlimited Power-Ups per board</List.Item>
-                <List.Item>Unlimited storage (10MB/file)</List.Item>
-                <List.Item>250 Workspace command runs per month</List.Item>
-                <List.Item>Custom backgrounds & stickers</List.Item>
-                <List.Item>Unlimited activity log</List.Item>
-                <List.Item>Assignee and due dates</List.Item>
-                <List.Item>iOS and Android mobile apps</List.Item>
-                <List.Item>2-factor authentication</List.Item>
+                {features.map((feature) => (
+                  <List.Item key={feature}>{feature}</List.Item>
+                ))}
               </List>
-            </Card>
-          </Stack>
-
-          <Stack gap={0}>
-            <PriceCard
-              tier={'Standard'}
-              amount={10}
-              amountDescription={
-                'Per user per month when billed annually ($12 when billed monthly).'
-              }
-              tierDescription={
-                'For small teams seeking to manage tasks and expand collaboration.'
-              }
-              buttonText={'Sign up now'}
-            />
-            <Card
-              withBorder
-              padding='lg'
-              radius={0}
-              className={classes.features}
-            >
-              <Text tt='uppercase' mb={10} size='sm' fw={600}>
-                Everything in free, plus:
-              </Text>
-              <List
-                spacing='xs'
-                size='sm'
-                center
-                icon={<FaCheck size='1rem' color='var(--mantine-color-green-6)' />}
-              >
-                <List.Item>Unlimited boards</List.Item>
-                <List.Item>Advanced checklists</List.Item>
-                <List.Item>Custom Fields</List.Item>
-                <List.Item>Unlimited storage (250MB/file)</List.Item>
-                <List.Item>1,000 Workspace command runs per month</List.Item>
-                <List.Item>Single board guests</List.Item>
-                <List.Item>Saved searches</List.Item>
-              </List>
-            </Card>
-          </Stack>
-
-          <Stack gap={0}>
-            <PriceCard
-              tier={'Premium'}
-              amount={20}
-              amountDescription={
-                'Per user per month when billed annually ($24 when billed monthly).'
-              }
-              tierDescription={
-                'For teams requiring comprehensive project tracking and visualization across various formats like boards, timelines, calendars, and more.'
-              }
-              buttonText={'Get started now'}
-              highlight={true}
-            />
-            <Card
-              padding='lg'
-              radius={0}
-              className={`${classes.features} ${classes.highlight}`}
-            >
-              <Text tt='uppercase' mb={10} size='sm' fw={600}>
-                Everything in standard, plus:
-              </Text>
-              <List
-                spacing='xs'
-                size='sm'
-                center
-                icon={<FaCheck size='1rem' color='var(--mantine-color-green-6)' />}
-              >
-                <List.Item>
-                  Views: Calendar, Timeline, Table, Dashboard, and Map
-                </List.Item>
-                <List.Item>Workspace views: Table and Calendar</List.Item>
-                <List.Item>Unlimited Workspace command runs</List.Item>
-                <List.Item>Agile Intelligence (AI)</List.Item>
-                <List.Item>Admin and security features</List.Item>
-                <List.Item>Workspace-level templates</List.Item>
-                <List.Item>Collections</List.Item>
-                <List.Item>Observers</List.Item>
-                <List.Item>Simple data export</List.Item>
-              </List>
-            </Card>
-          </Stack>
-
-          <Stack gap={0}>
-            <PriceCard
-              tier={'Enterprise'}
-              amount={30}
-              amountDescription={
-                'Per user per month when billed annually ($39 when billed monthly).'
-              }
-              tierDescription={
-                'For organizations necessitating secure and controlled connectivity of work across multiple teams.'
-              }
-              buttonText={'Contact sales'}
-            />
-            <Card
-              withBorder
-              padding='lg'
-              radius={0}
-              className={classes.features}
-            >
-              <Text tt='uppercase' mb={10} size='sm' fw={600}>
-                Everything in premium, plus:
-              </Text>
-              <List
-                spacing='xs'
-                size='sm'
-                center
-                icon={<FaCheck size='1rem' color='var(--mantine-color-green-6)' />}
-              >
-                <List.Item>Unlimited Workspaces</List.Item>
-                <List.Item>Organization-wide permissions</List.Item>
-                <List.Item>Organization-visible boards</List.Item>
-                <List.Item>Public board management</List.Item>
-                <List.Item>Multi-board guests</List.Item>
-                <List.Item>Attachment permissions</List.Item>
-                <List.Item>Power-Up administration</List.Item>
-                <List.Item>
-                  Free SSO and user provisioning with Agile Access
-                </List.Item>
-              </List>
-            </Card>
-          </Stack>
+            </PriceCard>
+          ))}
         </SimpleGrid>
       </Container>
     </>

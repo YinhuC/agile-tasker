@@ -7,92 +7,72 @@ import {
   Button,
   BoxProps,
   Box,
-  Card,
+  SimpleGrid,
+  Image,
 } from '@mantine/core';
 import { Link } from 'react-router';
-import Task from '../../../assets/images/checklist.png';
-import Deadline from '../../../assets/images/time.png';
-import ContentBlock from '../../../components/ContentBlock';
+import { TbCalendarTime, TbChecklist } from 'react-icons/tb';
+import MacProject from '../../../assets/images/mac/mac-project.png';
+import classes from './ViewSection.module.css';
+
+const points = [
+  {
+    title: 'Consistently meet deadlines.',
+    icon: TbCalendarTime,
+    description:
+      "From weekly sprints to yearly strategies, Timeline view ensures tasks stay on course. Easily preview upcoming milestones and spot any potential roadblocks hindering your team's advancement.",
+  },
+  {
+    title: 'Stay in control of tasks.',
+    icon: TbChecklist,
+    description:
+      'Navigate from weekly sprints to yearly plans seamlessly with Timeline view, ensuring all tasks stay on course. Get a quick overview of upcoming milestones and detect any potential gaps.',
+  },
+];
 
 function ViewSection({ ...props }: BoxProps) {
   return (
-    <Box
-      mah={{ base: 1300, sm: 800, md: 850, lg: 950 }}
-      style={{
-        background:
-          'linear-gradient(90deg, var(--mantine-color-blue-9) 0%, var(--mantine-color-cyan-5) 100%)',
-      }}
-      {...props}
-    >
-      <Container
-        size='lg'
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-        pt={50}
-      >
-        <Stack justify='center' align='center' w='100%' mx={10}>
-          <Title ta='center' order={1} c='white' fw={600}>
+    <Box className={classes.root} {...props}>
+      <Container size='lg' py={{ base: 72, sm: 112 }}>
+        <Stack align='center' gap='lg' mb={{ base: 40, sm: 56 }}>
+          <Title ta='center' order={1} className={classes.title}>
             Experience work through a fresh lens.
           </Title>
-          <Text ta='center' mb={10} size='lg' c='white'>
+          <Text ta='center' size='lg' c='gray.8' maw={640}>
             Gain comprehensive insights into your team's projects and approach
             tasks with a renewed perspective.
           </Text>
-          <Button
-            component={Link}
-            size='md'
-            mr='0.5rem'
-            to={'/views'}
-            aria-label='Discover different views'
-            variant='light'
-            mb={40}
-          >
+          <Button component={Link} size='md' to={'/views'} mt='xs'>
             Discover different views
           </Button>
-
-          <Card
-            shadow='md'
-            py={30}
-            px={10}
-            radius='md'
-            withBorder
-            mb={50}
-            maw={{ base: 500, sm: 'none' }}
-          >
-            <ContentBlock
-              title={'Consistently meet deadlines.'}
-              subtitle={`From weekly sprints to yearly strategies, Timeline view ensures tasks stay on course. 
-              Easily preview upcoming milestones and spot any potential roadblocks hindering your team's advancement.`}
-              img={Deadline}
-              imageSize='80%'
-              titleOrder={3}
-              titleWeight={500}
-            />
-          </Card>
-
-          <Card
-            shadow='md'
-            py={30}
-            px={10}
-            radius='md'
-            withBorder
-            maw={{ base: 500, sm: 'none' }}
-          >
-            <ContentBlock
-              title={'Stay in control of tasks.'}
-              subtitle={`Navigate from weekly sprints to yearly plans seamlessly with Timeline view, ensuring all tasks stay on course. 
-              Get a quick overview of upcoming milestones and detect any potential gaps.`}
-              img={Task}
-              imageLeft={false}
-              imageSize='80%'
-              titleOrder={3}
-              titleWeight={500}
-            />
-          </Card>
         </Stack>
+
+        <Image
+          src={MacProject}
+          alt='Agile Tasker project lists and cards on a MacBook'
+          maw={960}
+          mx='auto'
+          loading='lazy'
+          className={classes.device}
+        />
+
+        <SimpleGrid
+          cols={{ base: 1, sm: 2 }}
+          spacing={{ base: 32, sm: 64 }}
+          mt={{ base: 48, sm: 72 }}
+          maw={960}
+          mx='auto'
+        >
+          {points.map((point) => (
+            <Box key={point.title}>
+              <point.icon className={classes.icon} aria-hidden />
+              <Title order={3} mb='xs'>
+                {point.title}
+              </Title>
+              <Text c='gray.7'>{point.description}</Text>
+            </Box>
+          ))}
+        </SimpleGrid>
       </Container>
     </Box>
   );

@@ -2,19 +2,30 @@
   order: var(--text-order-mobile);
 
   @media (min-width: $mantine-breakpoint-sm) {
+    flex: 1 1 0;
+    min-width: 0;
     order: var(--text-order);
   }
 }
 
+.title {
+  text-wrap: balance;
+}
+
 .image {
+  width: 100%;
   order: var(--image-order-mobile);
 
   @media (min-width: $mantine-breakpoint-sm) {
+    flex: 1 1 0;
+    min-width: 0;
     order: var(--image-order);
   }
 
   img {
-    max-width: 1400px;
+    display: block;
+    max-width: 100%;
+    height: auto;
     width: var(--image-size);
   }
 }

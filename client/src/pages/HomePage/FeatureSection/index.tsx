@@ -1,100 +1,66 @@
 import React from 'react';
 import {
+  Box,
+  BoxProps,
   Container,
-  Flex,
   Title,
   Text,
-  Stack,
-  Card,
   SimpleGrid,
-  Button,
-  ContainerProps,
+  Stack,
 } from '@mantine/core';
+import { TbPlugConnected, TbRobot, TbBuildingSkyscraper } from 'react-icons/tb';
+import classes from './FeatureSection.module.css';
 
-function FeatureSection({ ...props }: ContainerProps) {
+const features = [
+  {
+    title: 'Integrations',
+    icon: TbPlugConnected,
+    description:
+      'Easily integrate the apps your team relies on into your Agile workflow or enhance it with a Power-Up tailored to your unique requirements.',
+  },
+  {
+    title: 'Automation',
+    icon: TbRobot,
+    description:
+      'Every Tasker board comes with built-in no-code automation. Concentrate on your most important tasks while letting the robots handle the rest.',
+  },
+  {
+    title: 'Enterprise',
+    icon: TbBuildingSkyscraper,
+    description:
+      'The beloved productivity tool for teams, equipped with the features and security essential for scalability.',
+  },
+];
+
+function FeatureSection({ ...props }: BoxProps) {
   return (
-    <Container size='lg' py={100} {...props}>
-      <Flex>
-        <Stack justify='center' gap={5} mx={20}>
-          <Text tt='uppercase' fw={700}>
-            Unlock powerful growth strategies.
-          </Text>
-          <Title order={1} mb={10}>
+    <Box className={classes.root} {...props}>
+      <Container size='lg' py={{ base: 72, sm: 112 }}>
+        <Stack gap='md' mb={{ base: 48, sm: 72 }} maw={720}>
+          <Title order={1} c='white' className={classes.title}>
             Maximize your potential with Agile Tasker.
           </Title>
-          <Text>
+          <Text c='gray.4' size='lg'>
             Agile Tasker's intuitive features enable any team to swiftly
-            establish and personalize workflows for virtually any task
+            establish and personalize workflows for virtually any task.
           </Text>
-
-          <SimpleGrid
-            cols={{ base: 1, xs: 2, sm: 3 }}
-            spacing={{ base: 'sm', sm: 'md', md: 'lg' }}
-            my={30}
-          >
-            <Card
-              padding='lg'
-              radius='md'
-              withBorder
-              h='100%'
-              bg='gray.1'
-              style={{ display: 'flex', flexDirection: 'column' }}
-            >
-              <Title order={2} mb={15}>
-                Integrations
-              </Title>
-              <Text c='dimmed' size='sm' mb={20}>
-                Easily integrate the apps your team relies on into your Agile
-                workflow or enhance it with a Power-Up tailored to your unique
-                requirements.
-              </Text>
-              <Button mt='auto' variant='outline'>
-                Insepct Integrations
-              </Button>
-            </Card>
-            <Card
-              padding='lg'
-              radius='md'
-              withBorder
-              h='100%'
-              bg='gray.1'
-              style={{ display: 'flex', flexDirection: 'column' }}
-            >
-              <Title order={2} mb={15}>
-                Automation
-              </Title>
-              <Text c='dimmed' size='sm' mb={20}>
-                Every Tasker board comes with built-in no-code automation.
-                Concentrate on your most important tasks while letting the
-                robots handle the rest.
-              </Text>
-              <Button mt='auto' variant='outline'>
-                Analyse Automations
-              </Button>
-            </Card>
-            <Card
-              padding='lg'
-              radius='md'
-              withBorder
-              h='100%'
-              bg='gray.1'
-              style={{ display: 'flex', flexDirection: 'column' }}
-            >
-              <Title order={2} mb={15}>
-                Enterprise
-              </Title>
-              <Text c='dimmed' size='sm' mb={20}>
-                The beloved productivity tool for teams, equipped with the
-                features and security essential for scalability.
-              </Text>
-              <Button mt='auto' variant='outline'>
-                Explore Enterprise
-              </Button>
-            </Card>
-          </SimpleGrid>
         </Stack>
-      </Flex>
-    </Container>
+
+        <SimpleGrid cols={{ base: 1, sm: 3 }} spacing={{ base: 40, sm: 48 }}>
+          {features.map((feature) => (
+            <Box key={feature.title} className={classes.feature}>
+              <feature.icon className={classes.icon} aria-hidden />
+              <Title order={3} c='white' mb='xs'>
+                {feature.title}
+              </Title>
+              <Text c='gray.4' size='sm'>
+                {feature.description}
+              </Text>
+            </Box>
+          ))}
+        </SimpleGrid>
+      </Container>
+    </Box>
   );
 }
 
