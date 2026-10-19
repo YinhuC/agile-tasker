@@ -3,7 +3,7 @@
 
 Welcome to the Agile Tasker App! This application helps you manage your tasks and stay organized in an agile manner.
 
-Sign in with details below to see data and play around OR create your own account and start from scratch - [https://www.agile-tasker.onrender.com](https://agile-tasker.onrender.com)
+Sign in with details below to see data and play around OR create your own account and start from scratch - [https://agile-tasker.onrender.com](https://agile-tasker.onrender.com)
 
     email: johndoe@example.com
     password: Password12345
@@ -22,7 +22,7 @@ Sign in with details below to see data and play around OR create your own accoun
 
 Before getting started, make sure you have the following software installed on your machine:
 
-- Node.js (v14 or later)
+- Node.js 24 LTS or later (run `nvm use` to pick up the version in `.nvmrc`)
 - Yarn package manager
 
       npm install --global yarn
@@ -37,7 +37,7 @@ To run the Agile Task App locally, follow these steps:
 
 **1.**  Clone the repository:
 
-    git clone https://github.com/your-username/agile-tasker.git
+    git clone https://github.com/YinhuC/agile-tasker.git
 
 **2.**  Start PostgreSQL and create a new database
 
@@ -56,6 +56,8 @@ To run the Agile Task App locally, follow these steps:
         
         REACT_APP_API_PORT = 
         REACT_APP_API_URL =
+        REACT_APP_CLIENT_URL =
+        REACT_APP_NODE_ENV =
     
    - `REACT_APP_DB_NAME`: This should be set to the name of the database you created in PostgreSQL.
    - `REACT_APP_DB_USERNAME`: This should be set to the username of your PostgreSQL server. By default, the username is usually set to "postgres".
@@ -65,6 +67,8 @@ To run the Agile Task App locally, follow these steps:
    - `REACT_APP_SECRET`: This should be set to a secret key used for authentication and session management. Just any random string will do.
    - `REACT_APP_API_PORT`: This should be set to the port number on which your Node.js server will run. It can be any available port number of your choice.
    - `REACT_APP_API_URL`: This should be set to the URL of your Node.js server. In a local development environment, it can be set to `http://localhost:<port>`, where `<port>` is the value you set for `REACT_APP_API_PORT`.
+   - `REACT_APP_CLIENT_URL`: The URL the client runs on, allowed through CORS by the server. Locally this is `http://localhost:3000`; separate several URLs with commas.
+   - `REACT_APP_NODE_ENV`: Set to `production` when deployed behind a proxy over HTTPS, otherwise `development`.
 
 
 **5.**  Install dependencies for both the client and server:
