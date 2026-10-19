@@ -11,12 +11,18 @@ import {
 } from '@mantine/core';
 import { Link } from 'react-router';
 import PriceCard from '../../../components/PriceCard';
+import { revealRoot, stagger } from '../../../theme/motion';
 
 function PriceSection({ ...props }: BoxProps) {
   return (
     <Box {...props} py={{ base: 72, sm: 112 }}>
       <Container size='lg'>
-        <Stack align='center' gap='lg' mb={{ base: 40, sm: 56 }}>
+        <Stack
+          align='center'
+          gap='lg'
+          mb={{ base: 40, sm: 56 }}
+          renderRoot={revealRoot()}
+        >
           <Title ta='center' order={1} fw={600}>
             Priced to fit your needs.
           </Title>
@@ -31,6 +37,7 @@ function PriceSection({ ...props }: BoxProps) {
           cols={{ base: 1, xs: 2, md: 4 }}
           spacing='lg'
           verticalSpacing='lg'
+          renderRoot={revealRoot(stagger(0.08))}
         >
           <PriceCard
             tier={'Free'}

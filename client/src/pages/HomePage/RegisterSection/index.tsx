@@ -12,14 +12,15 @@ import {
 import { Link } from 'react-router';
 import { MdOutlineAlternateEmail } from 'react-icons/md';
 import ctaClasses from '../../../components/CtaBand/CtaBand.module.css';
+import { childRoot, revealRoot, stagger } from '../../../theme/motion';
 import classes from './RegisterSection.module.css';
 
 function RegisterSection({ ...props }: BoxProps) {
   return (
     <Box className={ctaClasses.root} {...props}>
       <Container size='lg' py={{ base: 72, sm: 96 }}>
-        <Box className={classes.inner}>
-          <Box>
+        <Box className={classes.inner} renderRoot={revealRoot(stagger(0.12))}>
+          <Box renderRoot={childRoot()}>
             <Title order={1} c='white' className={classes.title}>
               Start your Agile journey today.
             </Title>
@@ -27,7 +28,12 @@ function RegisterSection({ ...props }: BoxProps) {
               Create a free account in under a minute.
             </Text>
           </Box>
-          <Group gap='sm' className={classes.form} wrap='nowrap'>
+          <Group
+            gap='sm'
+            className={classes.form}
+            wrap='nowrap'
+            renderRoot={childRoot()}
+          >
             <TextInput
               leftSection={<MdOutlineAlternateEmail />}
               placeholder='Your email'

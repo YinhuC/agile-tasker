@@ -9,6 +9,7 @@ import {
   Image,
 } from '@mantine/core';
 import { Link } from 'react-router';
+import { motion } from 'motion/react';
 import WorkImg1 from '../../assets/images/work-1.png';
 import WorkImg2 from '../../assets/images/work-2.png';
 import DashboardImg from '../../assets/images/dashboard-1.png';
@@ -20,6 +21,13 @@ import ContentBlock from '../../components/ContentBlock';
 import CtaBand from '../../components/CtaBand';
 import Footer from '../../components/Footer';
 import marketing from '../../theme/styles/marketing.module.css';
+import {
+  childRoot,
+  enterRoot,
+  revealRoot,
+  settle,
+  stagger,
+} from '../../theme/motion';
 import classes from './ViewsPage.module.css';
 
 const views = [
@@ -66,8 +74,11 @@ function ViewsPage() {
     <Box className={marketing.page}>
       <Box className={classes.hero}>
         <Container size='lg' py={{ base: 64, sm: 96 }}>
-          <Box className={classes.heroInner}>
-            <Stack gap='lg'>
+          <Box
+            className={classes.heroInner}
+            renderRoot={enterRoot(stagger(0.15))}
+          >
+            <Stack gap='lg' renderRoot={childRoot()}>
               <Title order={1} className={classes.heroTitle}>
                 Revamp your work with Agile Tasker views.
               </Title>
@@ -87,13 +98,27 @@ function ViewsPage() {
                 Try views for free!
               </Button>
             </Stack>
-            <Image src={WorkImg1} alt='' maw={460} mx='auto' />
+            <Image
+              src={WorkImg1}
+              alt=''
+              maw={460}
+              mx='auto'
+              renderRoot={(rootProps) => (
+                <motion.img {...rootProps} variants={settle} />
+              )}
+            />
           </Box>
         </Container>
       </Box>
 
       <Container size='lg' py={{ base: 72, sm: 112 }}>
-        <Title order={2} ta='center' fw={500} mb={{ base: 48, sm: 80 }}>
+        <Title
+          order={2}
+          ta='center'
+          fw={500}
+          mb={{ base: 48, sm: 80 }}
+          renderRoot={revealRoot()}
+        >
           Discover the power of Agile Tasker views.
         </Title>
         <Box className={classes.views}>

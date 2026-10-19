@@ -1,5 +1,7 @@
 import React from 'react';
 import { Flex, Title, Text, Stack, FlexProps, TitleOrder } from '@mantine/core';
+import { motion } from 'motion/react';
+import { revealRoot, rise, settle, stagger } from '../../theme/motion';
 import classes from './ContentBlock.module.css';
 
 type ContentBlockProps = FlexProps & {
@@ -33,6 +35,7 @@ function ContentBlock({
       gap={{ base: 32, sm: 48 }}
       direction={{ base: 'column', sm: 'row' }}
       align='center'
+      renderRoot={revealRoot(stagger(0.12))}
       {...props}
     >
       <Stack
@@ -45,14 +48,22 @@ function ContentBlock({
         }}
       >
         {title && (
-          <Title order={titleOrder} fw={titleWeight} className={classes.title}>
-            {title}
-          </Title>
+          <motion.div variants={rise}>
+            <Title
+              order={titleOrder}
+              fw={titleWeight}
+              className={classes.title}
+            >
+              {title}
+            </Title>
+          </motion.div>
         )}
         {subtitle && (
-          <Text fz={subtitleSize} c='gray.8' maw='62ch'>
-            {subtitle}
-          </Text>
+          <motion.div variants={rise}>
+            <Text fz={subtitleSize} c='gray.8' maw='62ch'>
+              {subtitle}
+            </Text>
+          </motion.div>
         )}
       </Stack>
 
@@ -65,7 +76,13 @@ function ContentBlock({
         }}
         justify='center'
       >
-        <img src={img} alt={imgAlt} loading='lazy' decoding='async' />
+        <motion.img
+          variants={settle}
+          src={img}
+          alt={imgAlt}
+          loading='lazy'
+          decoding='async'
+        />
       </Flex>
     </Flex>
   );

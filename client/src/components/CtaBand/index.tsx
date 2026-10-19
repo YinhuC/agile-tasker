@@ -9,6 +9,7 @@ import {
   Title,
 } from '@mantine/core';
 import { Link } from 'react-router';
+import { revealRoot } from '../../theme/motion';
 import classes from './CtaBand.module.css';
 
 type CtaBandProps = BoxProps & {
@@ -25,7 +26,7 @@ function CtaBand({ title, text, buttonText, to, ...props }: CtaBandProps) {
   return (
     <Box className={classes.root} {...props}>
       <Container size='lg' py={{ base: 72, sm: 96 }}>
-        <Stack align='center' gap='lg'>
+        <Stack align='center' gap='lg' renderRoot={revealRoot()}>
           <Title order={2} c='white' ta='center' className={classes.title}>
             {title}
           </Title>

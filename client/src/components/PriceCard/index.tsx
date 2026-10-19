@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, Button, Card, CardProps, Group, Divider } from '@mantine/core';
 import { Link } from 'react-router';
+import { childRoot } from '../../theme/motion';
 import classes from './PriceCard.module.css';
 
 type PriceCardProps = Omit<CardProps, 'children'> & {
@@ -36,6 +37,7 @@ function PriceCard({
       className={classes.root}
       data-highlight={highlight || undefined}
       style={{ backgroundColor, gridRow: `span ${children ? 5 : 4}` }}
+      renderRoot={childRoot()}
       {...props}
     >
       <Text

@@ -26,6 +26,14 @@ import PhoneScreen from '../../../assets/images/parallax/phone-parallax.png';
 import DeviceSquare from '../../../assets/images/parallax/device-parallax.png';
 import TeamSquare from '../../../assets/images/parallax/team-parallax.png';
 import IphoneProject from '../../../assets/images/iphone/iphone-project.png';
+import {
+  EASE_OUT,
+  enter,
+  reveal,
+  rise,
+  settle,
+  stagger,
+} from '../../../theme/motion';
 import classes from './HeaderSection.module.css';
 
 type LayerProps = {
@@ -42,7 +50,6 @@ type LayerProps = {
 };
 
 const SPRING = { stiffness: 140, damping: 22, mass: 0.5 };
-const EASE_OUT = [0.16, 1, 0.3, 1] as const;
 
 /** One transparent 1438x919 layer; depth is pointer travel in px, lift is scroll travel. */
 function ParallaxLayer({
@@ -114,31 +121,39 @@ function HeaderSection({ ...props }: BoxProps) {
       {...props}
     >
       <Container size='xl' pt={{ base: 64, sm: 96 }} pb={{ base: 64, sm: 96 }}>
-        <Stack align='center' gap='lg' mb={{ base: 48, sm: 72 }}>
-          <Title
-            ta='center'
-            order={1}
-            c='white'
-            fw={600}
-            className={classes.title}
-          >
-            Unmatched Project Efficiency.
-          </Title>
-          <Text ta='center' size='lg' c='white' maw={620}>
-            Seamlessly Manage Projects and Foster Team Collaboration, Regardless
-            of Physical Proximity.
-          </Text>
-          <Button
-            component={Link}
-            variant='white'
-            size='lg'
-            mt='xs'
-            to={'/register'}
-            aria-label='Start 14-day free trial'
-          >
-            Start 14-day free trial
-          </Button>
-        </Stack>
+        <motion.div {...enter} variants={stagger(0.1)}>
+          <Stack align='center' gap='lg' mb={{ base: 48, sm: 72 }}>
+            <motion.div variants={rise}>
+              <Title
+                ta='center'
+                order={1}
+                c='white'
+                fw={600}
+                className={classes.title}
+              >
+                Unmatched Project Efficiency.
+              </Title>
+            </motion.div>
+            <motion.div variants={rise}>
+              <Text ta='center' size='lg' c='white' maw={620}>
+                Seamlessly Manage Projects and Foster Team Collaboration,
+                Regardless of Physical Proximity.
+              </Text>
+            </motion.div>
+            <motion.div variants={rise}>
+              <Button
+                component={Link}
+                variant='white'
+                size='lg'
+                mt='xs'
+                to={'/register'}
+                aria-label='Start 14-day free trial'
+              >
+                Start 14-day free trial
+              </Button>
+            </motion.div>
+          </Stack>
+        </motion.div>
 
         <Box visibleFrom='md' className={classes.perspective}>
           <motion.div
@@ -187,27 +202,32 @@ function HeaderSection({ ...props }: BoxProps) {
           </motion.div>
         </Box>
 
-        <Image
-          src={IphoneProject}
-          w='100%'
-          miw={250}
-          maw={420}
-          mx='auto'
-          hiddenFrom='md'
-          alt='Agile Tasker project board on iPhone'
-        />
-        <Title
-          ta='center'
-          order={2}
-          fw={500}
-          mt={{ base: 64, sm: 112 }}
-          mx='auto'
-          maw={860}
-          className={classes.community}
-        >
-          Join the global community of over 2,000,000 teams leveraging Agile
-          Tasker to achieve greater productivity.
-        </Title>
+        <Box hiddenFrom='md'>
+          <motion.div {...enter} variants={settle}>
+            <Image
+              src={IphoneProject}
+              w='100%'
+              miw={250}
+              maw={420}
+              mx='auto'
+              alt='Agile Tasker project board on iPhone'
+            />
+          </motion.div>
+        </Box>
+        <motion.div {...reveal} variants={rise}>
+          <Title
+            ta='center'
+            order={2}
+            fw={500}
+            mt={{ base: 64, sm: 112 }}
+            mx='auto'
+            maw={860}
+            className={classes.community}
+          >
+            Join the global community of over 2,000,000 teams leveraging Agile
+            Tasker to achieve greater productivity.
+          </Title>
+        </motion.div>
       </Container>
     </Box>
   );

@@ -9,6 +9,7 @@ import {
   Stack,
 } from '@mantine/core';
 import { TbPlugConnected, TbRobot, TbBuildingSkyscraper } from 'react-icons/tb';
+import { childRoot, revealRoot, stagger } from '../../../theme/motion';
 import classes from './FeatureSection.module.css';
 
 const features = [
@@ -36,7 +37,12 @@ function FeatureSection({ ...props }: BoxProps) {
   return (
     <Box className={classes.root} {...props}>
       <Container size='lg' py={{ base: 72, sm: 112 }}>
-        <Stack gap='md' mb={{ base: 48, sm: 72 }} maw={720}>
+        <Stack
+          gap='md'
+          mb={{ base: 48, sm: 72 }}
+          maw={720}
+          renderRoot={revealRoot()}
+        >
           <Title order={1} c='white' className={classes.title}>
             Maximize your potential with Agile Tasker.
           </Title>
@@ -46,9 +52,17 @@ function FeatureSection({ ...props }: BoxProps) {
           </Text>
         </Stack>
 
-        <SimpleGrid cols={{ base: 1, sm: 3 }} spacing={{ base: 40, sm: 48 }}>
+        <SimpleGrid
+          cols={{ base: 1, sm: 3 }}
+          spacing={{ base: 40, sm: 48 }}
+          renderRoot={revealRoot(stagger(0.1))}
+        >
           {features.map((feature) => (
-            <Box key={feature.title} className={classes.feature}>
+            <Box
+              key={feature.title}
+              className={classes.feature}
+              renderRoot={childRoot()}
+            >
               <feature.icon className={classes.icon} aria-hidden />
               <Title order={3} c='white' mb='xs'>
                 {feature.title}

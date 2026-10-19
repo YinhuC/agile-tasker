@@ -10,6 +10,13 @@ import {
 } from '@mantine/core';
 import { LayoutGroup, motion, useInView, useReducedMotion } from 'motion/react';
 import { FaRegEdit } from 'react-icons/fa';
+import {
+  childRoot,
+  reveal,
+  revealRoot,
+  settle,
+  stagger,
+} from '../../../theme/motion';
 import classes from './ComponentSection.module.css';
 
 const concepts = [
@@ -100,6 +107,7 @@ function MiniBoard() {
       className={classes.board}
       aria-label='Example board'
       role='img'
+      renderRoot={revealRoot(settle)}
     >
       <LayoutGroup>
         {columns.map((column, index) => (
@@ -136,12 +144,26 @@ function ComponentSection({ ...props }: BoxProps) {
       <Container size='lg' py={{ base: 72, sm: 112 }}>
         <Box className={classes.layout}>
           <Stack gap='xl' justify='center'>
-            <Title order={1} className={classes.title}>
+            <Title
+              order={1}
+              className={classes.title}
+              renderRoot={revealRoot()}
+            >
               Scalable project workflows for all types of endeavors.
             </Title>
-            <Stack gap='lg' component='dl' m={0}>
+            <Stack
+              gap='lg'
+              m={0}
+              renderRoot={(rootProps) => (
+                <motion.dl {...rootProps} {...reveal} variants={stagger()} />
+              )}
+            >
               {concepts.map((concept) => (
-                <Box key={concept.title} className={classes.concept}>
+                <Box
+                  key={concept.title}
+                  className={classes.concept}
+                  renderRoot={childRoot()}
+                >
                   <Title
                     order={3}
                     component='dt'

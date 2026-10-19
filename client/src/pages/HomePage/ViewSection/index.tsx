@@ -11,8 +11,16 @@ import {
   Image,
 } from '@mantine/core';
 import { Link } from 'react-router';
+import { motion } from 'motion/react';
 import { TbCalendarTime, TbChecklist } from 'react-icons/tb';
 import MacProject from '../../../assets/images/mac/mac-project.png';
+import {
+  childRoot,
+  reveal,
+  revealRoot,
+  settle,
+  stagger,
+} from '../../../theme/motion';
 import classes from './ViewSection.module.css';
 
 const points = [
@@ -34,7 +42,12 @@ function ViewSection({ ...props }: BoxProps) {
   return (
     <Box className={classes.root} {...props}>
       <Container size='lg' py={{ base: 72, sm: 112 }}>
-        <Stack align='center' gap='lg' mb={{ base: 40, sm: 56 }}>
+        <Stack
+          align='center'
+          gap='lg'
+          mb={{ base: 40, sm: 56 }}
+          renderRoot={revealRoot()}
+        >
           <Title ta='center' order={1} className={classes.title}>
             Experience work through a fresh lens.
           </Title>
@@ -54,6 +67,9 @@ function ViewSection({ ...props }: BoxProps) {
           mx='auto'
           loading='lazy'
           className={classes.device}
+          renderRoot={(rootProps) => (
+            <motion.img {...rootProps} {...reveal} variants={settle} />
+          )}
         />
 
         <SimpleGrid
@@ -62,9 +78,10 @@ function ViewSection({ ...props }: BoxProps) {
           mt={{ base: 48, sm: 72 }}
           maw={960}
           mx='auto'
+          renderRoot={revealRoot(stagger(0.1))}
         >
           {points.map((point) => (
-            <Box key={point.title}>
+            <Box key={point.title} renderRoot={childRoot()}>
               <point.icon className={classes.icon} aria-hidden />
               <Title order={3} mb='xs'>
                 {point.title}

@@ -10,6 +10,7 @@ import {
 } from '@mantine/core';
 import { FaCheck } from 'react-icons/fa';
 import PriceCard from '../../../components/PriceCard';
+import { enterRoot, revealRoot, stagger } from '../../../theme/motion';
 import classes from './PriceSection.module.css';
 
 const tiers = [
@@ -109,7 +110,7 @@ function PriceSection() {
           pt={{ base: 64, sm: 96 }}
           pb={{ base: 40, sm: 56 }}
         >
-          <Stack align='center' gap='lg'>
+          <Stack align='center' gap='lg' renderRoot={enterRoot()}>
             <Title order={1} ta='center' className={classes.title}>
               Agile Tasker, tailored to you.
             </Title>
@@ -126,6 +127,7 @@ function PriceSection() {
           cols={{ base: 1, xs: 2, md: 4 }}
           spacing='lg'
           verticalSpacing='lg'
+          renderRoot={revealRoot(stagger(0.08))}
         >
           {tiers.map(({ featuresTitle, features, ...tier }) => (
             <PriceCard key={tier.tier} {...tier}>

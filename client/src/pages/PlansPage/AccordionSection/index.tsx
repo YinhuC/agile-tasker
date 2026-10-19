@@ -7,11 +7,12 @@ import {
   Accordion,
   Text,
 } from '@mantine/core';
+import { revealRoot } from '../../../theme/motion';
 
 function AccordionSection({ ...props }: ContainerProps) {
   return (
     <Container size={860} pb={{ base: 72, sm: 112 }} {...props}>
-      <Stack gap='xl'>
+      <Stack gap='xl' renderRoot={revealRoot()}>
         <Title order={2} fw={500} ta='center'>
           Frequently asked questions
         </Title>

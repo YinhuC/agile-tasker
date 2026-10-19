@@ -1,8 +1,10 @@
 import React, { PropsWithChildren } from 'react';
 import { Box, Image, Text, Title } from '@mantine/core';
 import { Link } from 'react-router';
+import { motion } from 'motion/react';
 import LogoDark from '../../assets/logos/logo-dark.png';
 import marketing from '../../theme/styles/marketing.module.css';
+import { childRoot, enterRoot, settle, stagger } from '../../theme/motion';
 import classes from './AuthLayout.module.css';
 
 type AuthLayoutProps = PropsWithChildren & {
@@ -23,7 +25,10 @@ function AuthLayout({
   children,
 }: AuthLayoutProps) {
   return (
-    <Box className={`${marketing.page} ${classes.root}`}>
+    <Box
+      className={`${marketing.page} ${classes.root}`}
+      renderRoot={enterRoot(stagger(0.15))}
+    >
       <Box className={classes.formSide}>
         <Link to={'/'} className={classes.logoLink}>
           <Image
@@ -32,7 +37,7 @@ function AuthLayout({
             className={classes.logo}
           />
         </Link>
-        <Box className={classes.form}>
+        <Box className={classes.form} renderRoot={childRoot()}>
           <Title order={1} className={classes.title}>
             {title}
           </Title>
@@ -46,7 +51,12 @@ function AuthLayout({
         </Box>
       </Box>
       <Box className={classes.visual} visibleFrom='md'>
-        <img src={image} alt={imageAlt} className={classes.phone} />
+        <motion.img
+          src={image}
+          alt={imageAlt}
+          className={classes.phone}
+          variants={settle}
+        />
       </Box>
     </Box>
   );
