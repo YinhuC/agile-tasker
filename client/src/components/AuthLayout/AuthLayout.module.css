@@ -83,7 +83,8 @@
 }
 
 .phone {
-  display: block;
-  width: min(32vw, 340px);
-  height: auto;
+  width: min(28vw, 320px);
+  box-shadow:
+    0 0 0 1.5px var(--mantine-color-dark-4),
+    var(--mantine-shadow-lg);
 }

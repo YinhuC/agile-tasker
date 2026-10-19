@@ -170,7 +170,7 @@ Kanban means signal card. Every card in agile tasker is a printed production car
 
 The system is dense and printed rather than airy and glossy. Hierarchy comes from rules, case and width, not from colour washes: Archivo is stretched and squeezed along its width axis (62% for the giant card number, 82 to 86% for headlines) and paired with Martian Mono for the small machine-printed codes. Depth is physical: cards carry a soft sheen and a cast shadow, holes are inset, button tags have a punched dot. Motion moves a card the way a hand would: it lifts, travels, lands, and gets stamped.
 
-The world rejects the gradient SaaS hero with floating device mockups and the three-up feature-card grid. Product screenshots sit in a sleeve on the rack like any other card. The current product images are placeholders that the owner will replace; the sleeve, rack and parallax treatment around them is the durable part.
+The world rejects the gradient SaaS hero with floating device mockups and the three-up feature-card grid. Product images are real captures of the running app with believable seed data: stills and one short recording, each set in an ink ScreenFrame (a labelled window or a phone bezel) on the rack. The frames come from the page, not the image, so a fresh capture drops straight in.
 
 **Key Characteristics:**
 - Steel pegboard ground; colour carried only by card stocks.
@@ -303,7 +303,7 @@ Everything eases on one out-expo curve (cubic-bezier(0.16, 1, 0.3, 1)). Text ris
 - **Do** divide printed fields with 2px ink rules and outline resting cards with 1.5px steel.
 - **Do** give every action a pill tag with the punched dot; use the ink tag for the main action on light ground and the yellow filled tag on ink.
 - **Do** set IDs, counts and codes in Martian Mono at 11 to 12px, zero-padded (#07, 03).
-- **Do** sit product screenshots in a sleeve on the rack, and treat them as replaceable placeholders.
+- **Do** show the real app: capture it with believable data, set each capture in a ScreenFrame on the rack, and play recordings only while they are on screen, never under reduced motion.
 - **Do** keep copy honest: show only shipped features and disclose the free-tier cold start near the demo action.
 
 ### Don't:

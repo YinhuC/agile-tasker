@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { Box, Text, Title } from '@mantine/core';
 import { motion } from 'motion/react';
+import ScreenFrame from '../ScreenFrame';
 import StockCard from '../StockCard';
 import Wordmark from '../Wordmark';
 import { enter, rise, settle, stagger } from '../../theme/motion';
@@ -14,7 +15,7 @@ type AuthLayoutProps = PropsWithChildren & {
   footer: React.ReactNode;
 };
 
-/** Auth screen on the steel rack: the form is a white printed card, the phone shot sits in a sleeve from md up. */
+/** Auth screen on the steel rack: the form is a white printed card, a real phone capture sits in a sleeve from md up. */
 function AuthLayout({
   title,
   subtitle,
@@ -44,7 +45,9 @@ function AuthLayout({
       </Box>
       <Box className={classes.visual} visibleFrom='md'>
         <motion.div className={classes.sleeve} variants={settle}>
-          <img src={image} alt={imageAlt} className={classes.phone} />
+          <ScreenFrame kind='phone' className={classes.phone}>
+            <img src={image} width={780} height={1688} alt={imageAlt} />
+          </ScreenFrame>
         </motion.div>
       </Box>
     </motion.div>

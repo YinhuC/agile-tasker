@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Box, BoxProps, Container, Title } from '@mantine/core';
 import {
   motion,
@@ -6,7 +6,9 @@ import {
   useScroll,
   useTransform,
 } from 'motion/react';
-import LaptopImage from '../../../assets/images/mac/mac-board.png';
+import BoardDemo from '../../../assets/video/board-demo.mp4';
+import BoardDemoPoster from '../../../assets/images/screens/board-demo-poster.webp';
+import ScreenFrame from '../../../components/ScreenFrame';
 import StockCard from '../../../components/StockCard';
 import { reveal, rise, stagger } from '../../../theme/motion';
 import classes from './SpecSection.module.css';
@@ -39,7 +41,48 @@ const specs = [
   },
 ];
 
-/** Honest feature sheet beside the desktop screenshot, which settles into its frame on scroll. */
+/** Real recording of the board; plays only while on screen, and never under reduced motion. */
+function BoardVideo() {
+  const ref = useRef<HTMLVideoElement>(null);
+  const still = useReducedMotion() ?? false;
+
+  useEffect(() => {
+    const video = ref.current;
+    if (!video || still) {
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => undefined);
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0.4 }
+    );
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, [still]);
+
+  return (
+    <video
+      ref={ref}
+      src={BoardDemo}
+      poster={BoardDemoPoster}
+      width={1600}
+      height={1000}
+      muted
+      loop
+      playsInline
+      preload='metadata'
+      controls={still}
+      aria-label='Two cards dragged from Doing and Review into Done on the Portfolio board'
+    />
+  );
+}
+
+/** Honest feature sheet beside the board recording, which settles into place on scroll. */
 function SpecSection({ ...props }: BoxProps) {
   const still = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
@@ -82,12 +125,12 @@ function SpecSection({ ...props }: BoxProps) {
             className={classes.figure}
             style={still ? undefined : { scale, y }}
           >
-            <img
-              src={LaptopImage}
-              alt='Workspaces and their projects in agile tasker on a laptop'
-              loading='lazy'
-            />
-            <figcaption>Workspaces and their projects, on desktop.</figcaption>
+            <ScreenFrame kind='window' label='agile tasker / Portfolio'>
+              <BoardVideo />
+            </ScreenFrame>
+            <figcaption>
+              Recorded on the real board. Every drop saves the new order.
+            </figcaption>
           </motion.figure>
         </StockCard>
       </Container>

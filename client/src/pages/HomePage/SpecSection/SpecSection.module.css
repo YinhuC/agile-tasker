@@ -53,13 +53,6 @@
   margin: 0;
   transform-origin: 50% 100%;
 
-  img {
-    display: block;
-    width: 100%;
-    height: auto;
-    filter: drop-shadow(0 28px 40px rgba(18, 49, 80, 0.3));
-  }
-
   figcaption {
     margin-top: 12px;
     font-size: 14px;

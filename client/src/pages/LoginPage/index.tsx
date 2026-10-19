@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, TextInput, PasswordInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import AuthLayout from '../../components/AuthLayout';
-import IphoneLogin from '../../assets/images/iphone/iphone-login.png';
+import PhoneBoard from '../../assets/images/screens/phone-board.webp';
 import { TbPassword } from 'react-icons/tb';
 import { MdOutlineAlternateEmail, MdError } from 'react-icons/md';
 import { Link, Navigate, useNavigate } from 'react-router';
@@ -57,8 +57,8 @@ function LoginPage() {
     <AuthLayout
       title='Sign in.'
       subtitle='The demo account is already filled in. Press sign in to open its board.'
-      image={IphoneLogin}
-      imageAlt='Agile Tasker login screen on iPhone'
+      image={PhoneBoard}
+      imageAlt='A project board in agile tasker on a phone'
       footer={
         <>
           {'No account yet? '}

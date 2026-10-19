@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Group, TextInput, PasswordInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import AuthLayout from '../../components/AuthLayout';
-import IphoneRegister from '../../assets/images/iphone/iphone-register.png';
+import PhoneWorkspaces from '../../assets/images/screens/phone-workspaces.webp';
 import { Link, useNavigate } from 'react-router';
 import { MESSAGES, REGEXES } from '../../utils/regex.utils';
 import { RegisterParams } from '../../types/auth.types';
@@ -75,8 +75,8 @@ function RegisterPage() {
     <AuthLayout
       title='Create an account.'
       subtitle='Make your own workspaces, projects and boards. It takes a minute.'
-      image={IphoneRegister}
-      imageAlt='Agile Tasker sign up screen on iPhone'
+      image={PhoneWorkspaces}
+      imageAlt='Workspaces and their projects in agile tasker on a phone'
       footer={
         <>
           {'Already have an account? '}

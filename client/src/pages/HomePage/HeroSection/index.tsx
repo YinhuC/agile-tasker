@@ -1,13 +1,5 @@
-import React, { useRef, useState } from 'react';
-import {
-  Container,
-  Text,
-  Title,
-  Button,
-  BoxProps,
-  Box,
-  Skeleton,
-} from '@mantine/core';
+import React, { useRef } from 'react';
+import { Container, Text, Title, Button, BoxProps, Box } from '@mantine/core';
 import { Link } from 'react-router';
 import {
   motion,
@@ -20,16 +12,16 @@ import {
 } from 'motion/react';
 import { TbClockHour4 } from 'react-icons/tb';
 
-import MacScreen from '../../../assets/images/parallax/project-parallax.png';
-import PhoneScreen from '../../../assets/images/parallax/phone-parallax.png';
-import IphoneProject from '../../../assets/images/iphone/iphone-project.png';
+import DeskBoard from '../../../assets/images/screens/desk-board.webp';
+import PhoneBoard from '../../../assets/images/screens/phone-board.webp';
+import ScreenFrame from '../../../components/ScreenFrame';
 import StockCard from '../../../components/StockCard';
 import { EASE_OUT, enter, rise, settle, stagger } from '../../../theme/motion';
 import classes from './HeroSection.module.css';
 
 type LayerProps = {
-  src: string;
-  alt: string;
+  className: string;
+  children: React.ReactNode;
   pointerX: MotionValue<number>;
   pointerY: MotionValue<number>;
   scroll: MotionValue<number>;
@@ -37,7 +29,6 @@ type LayerProps = {
   lift: number;
   delay: number;
   still: boolean;
-  onLoad?: () => void;
 };
 
 const SPRING = { stiffness: 140, damping: 22, mass: 0.5 };
@@ -51,14 +42,14 @@ const fields = [
 
 const slots = [
   { name: 'To do', count: '03' },
-  { name: 'Doing', count: '01' },
-  { name: 'Done', count: '05' },
+  { name: 'Doing', count: '02' },
+  { name: 'Done', count: '04' },
 ];
 
-/** One transparent 1438x919 layer; depth is pointer travel in px, lift is scroll travel. */
+/** One layer of the hero stage; depth is pointer travel in px, lift is scroll travel. */
 function ParallaxLayer({
-  src,
-  alt,
+  className,
+  children,
   pointerX,
   pointerY,
   scroll,
@@ -66,7 +57,6 @@ function ParallaxLayer({
   lift,
   delay,
   still,
-  onLoad,
 }: LayerProps) {
   const x = useTransform(pointerX, (value) => value * depth);
   const y = useTransform(
@@ -75,21 +65,19 @@ function ParallaxLayer({
   );
 
   return (
-    <motion.img
-      className={classes.layer}
-      src={src}
-      alt={alt}
-      onLoad={onLoad}
+    <motion.div
+      className={className}
       style={still ? undefined : { x, y }}
-      initial={still || delay === 0 ? false : { opacity: 0, scale: 0.94 }}
-      animate={{ opacity: 1, scale: 1 }}
+      initial={still || delay === 0 ? false : { opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.9, delay, ease: EASE_OUT }}
-    />
+    >
+      {children}
+    </motion.div>
   );
 }
 
 function HeroSection({ ...props }: BoxProps) {
-  const [loaded, setLoaded] = useState(false);
   const still = useReducedMotion() ?? false;
   const stageRef = useRef<HTMLDivElement>(null);
 
@@ -200,35 +188,43 @@ function HeroSection({ ...props }: BoxProps) {
                 className={classes.stage}
                 style={still ? undefined : { rotateX, rotateY }}
               >
-                {!loaded && (
-                  <Skeleton radius={10} className={classes.skeleton} />
-                )}
                 <ParallaxLayer
                   {...layerProps}
-                  src={MacScreen}
-                  alt='The agile tasker project board on desktop'
+                  className={classes.windowLayer}
                   depth={10}
                   lift={0}
                   delay={0}
-                  onLoad={() => setLoaded(true)}
-                />
-                {loaded && (
-                  <ParallaxLayer
-                    {...layerProps}
-                    src={PhoneScreen}
-                    alt=''
-                    depth={28}
-                    lift={60}
-                    delay={0.15}
-                  />
-                )}
+                >
+                  <ScreenFrame kind='window' label='agile tasker / Portfolio'>
+                    <img
+                      src={DeskBoard}
+                      width={1600}
+                      height={1000}
+                      alt='The Portfolio project board with To do, Doing, Review and Done lists'
+                    />
+                  </ScreenFrame>
+                </ParallaxLayer>
+                <ParallaxLayer
+                  {...layerProps}
+                  className={classes.phoneLayer}
+                  depth={28}
+                  lift={70}
+                  delay={0.25}
+                >
+                  <ScreenFrame kind='phone'>
+                    <img src={PhoneBoard} width={780} height={1688} alt='' />
+                  </ScreenFrame>
+                </ParallaxLayer>
               </motion.div>
             </Box>
-            <img
-              src={IphoneProject}
-              className={classes.phone}
-              alt='The agile tasker project board on a phone'
-            />
+            <ScreenFrame kind='phone' hiddenFrom='md' className={classes.phone}>
+              <img
+                src={PhoneBoard}
+                width={780}
+                height={1688}
+                alt='The Portfolio project board on a phone'
+              />
+            </ScreenFrame>
           </motion.div>
 
           <motion.p className={classes.note} variants={rise}>
