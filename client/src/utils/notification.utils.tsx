@@ -3,7 +3,8 @@ import { MdError } from 'react-icons/md';
 
 export const GeneralErrorObject = {
   title: 'Something went wrong.',
-  message: 'Try again in a moment. The free server may still be waking up.',
+  message:
+    "The server couldn't be reached. Only the frontend is hosted right now; clone the repo to run the full app.",
   color: 'signal',
   icon: <MdError />,
 };

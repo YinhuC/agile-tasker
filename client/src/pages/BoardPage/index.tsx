@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
 import { Box, Container, Title, Text } from '@mantine/core';
-import { TbClockHour4 } from 'react-icons/tb';
 import ProjectGrid from '../../components/ProjectGrid';
 import { fetchAllGroupsThunk } from '../../store/group/group.thunks';
 import GroupModal from '../../components/GroupModal';
@@ -36,11 +35,6 @@ function BoardPage() {
             <Title order={1} className={classes.title}>
               Workspaces
             </Title>
-            <Text className={classes.note}>
-              <TbClockHour4 aria-hidden />
-              Free hosting: the first load after a quiet spell can take about 30
-              seconds.
-            </Text>
           </div>
           <GroupModal type='add' />
         </header>

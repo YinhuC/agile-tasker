@@ -17,19 +17,6 @@
   font-size: clamp(2.25rem, 1.6rem + 2vw, 3.25rem);
 }
 
-.note {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 10px;
-  font-size: 14px;
-  color: var(--mantine-color-steel-8);
-
-  svg {
-    flex: none;
-  }
-}
-
 .empty {
   padding: 40px 0;
   font-size: 17px;

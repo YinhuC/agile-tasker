@@ -8,6 +8,7 @@ import { MdOutlineAlternateEmail, MdError } from 'react-icons/md';
 import { Link, Navigate, useNavigate } from 'react-router';
 import { postAuthLogin } from '../../api/auth.api';
 import { LoginParams } from '../../types/auth.types';
+import { GITHUB_URL } from '../../utils/links';
 import { AxiosError } from 'axios';
 import { notifications } from '@mantine/notifications';
 import { User } from '../../types/user.types';
@@ -63,7 +64,11 @@ function LoginPage() {
         <>
           {'No account yet? '}
           <Link to={'/register'}>Create one</Link>
-          {'. The free server can take about 30 seconds to wake up.'}
+          {'. Only the frontend is hosted right now, so to sign in, '}
+          <a href={GITHUB_URL} target='_blank' rel='noreferrer'>
+            clone the repo
+          </a>
+          {'.'}
         </>
       }
     >

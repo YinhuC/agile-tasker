@@ -17,9 +17,9 @@ function DemoSection({ ...props }: BoxProps) {
             </Title>
             <div>
               <Text className={classes.lede}>
-                The demo account is already filled in on the sign-in form. On
-                the first visit, give the free server about 30 seconds to wake
-                up.
+                Only the frontend is hosted right now, so signing in won't work
+                here. Clone the repo to run the full app with its API and
+                database; the demo account is filled in on the sign-in form.
               </Text>
               <div className={classes.actions}>
                 <Button component={Link} to='/login' variant='ink' size='lg'>

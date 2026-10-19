@@ -10,12 +10,13 @@ import {
   useSpring,
   useTransform,
 } from 'motion/react';
-import { TbClockHour4 } from 'react-icons/tb';
+import { TbInfoCircle } from 'react-icons/tb';
 
 import DeskBoard from '../../../assets/images/screens/desk-board.webp';
 import PhoneBoard from '../../../assets/images/screens/phone-board.webp';
 import ScreenFrame from '../../../components/ScreenFrame';
 import StockCard from '../../../components/StockCard';
+import { GITHUB_URL } from '../../../utils/links';
 import { EASE_OUT, enter, rise, settle, stagger } from '../../../theme/motion';
 import classes from './HeroSection.module.css';
 
@@ -228,9 +229,15 @@ function HeroSection({ ...props }: BoxProps) {
           </motion.div>
 
           <motion.p className={classes.note} variants={rise}>
-            <TbClockHour4 aria-hidden />
-            The demo account is filled in for you. The free server can take
-            about 30 seconds to wake up on the first visit.
+            <TbInfoCircle aria-hidden />
+            <span>
+              Only the frontend is hosted right now, so signing in won't work
+              here. For the full app,{' '}
+              <a href={GITHUB_URL} target='_blank' rel='noreferrer'>
+                clone the repo
+              </a>
+              .
+            </span>
           </motion.p>
         </motion.div>
       </Container>
