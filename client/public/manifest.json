@@ -3,18 +3,23 @@
   "name": "Agile Tasker",
   "icons": [
     {
-      "src": "edit-circle.png",
+      "src": "icon-192.png",
       "type": "image/png",
-      "sizes": "240x240"
+      "sizes": "192x192"
     },
     {
-      "src": "edit-circle.svg",
+      "src": "icon-512.png",
       "type": "image/png",
-      "sizes": "240x240"
+      "sizes": "512x512"
+    },
+    {
+      "src": "favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#16181a",
+  "background_color": "#e4e9ec"
 }
