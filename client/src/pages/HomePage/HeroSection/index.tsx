@@ -35,10 +35,10 @@ type LayerProps = {
 const SPRING = { stiffness: 140, damping: 22, mass: 0.5 };
 
 const fields = [
-  { label: 'Workspace', value: 'Personal' },
-  { label: 'Project', value: 'Portfolio' },
-  { label: 'List', value: 'Doing' },
-  { label: 'Card', value: 'Ship the redesign' },
+  { label: 'Setup', value: 'Under a minute' },
+  { label: 'Drag and drop', value: 'Every list' },
+  { label: 'Works on', value: 'Desktop and phone' },
+  { label: 'Starts at', value: '$0' },
 ];
 
 const slots = [
@@ -122,12 +122,12 @@ function HeroSection({ ...props }: BoxProps) {
               </span>
               <dl className={classes.meta}>
                 <div>
-                  <dt>Card type</dt>
-                  <dd>Kanban board</dd>
+                  <dt>Product</dt>
+                  <dd>Kanban task boards</dd>
                 </div>
                 <div>
-                  <dt>Built with</dt>
-                  <dd>React · NestJS · PostgreSQL</dd>
+                  <dt>Free plan</dt>
+                  <dd>No card needed</dd>
                 </div>
               </dl>
             </div>
@@ -143,21 +143,21 @@ function HeroSection({ ...props }: BoxProps) {
               ))}
             </dl>
             <Text className={classes.lede}>
-              A full-stack kanban board. Workspaces hold projects, projects hold
-              lists, lists hold cards, and every card drags from To do to Done.
-              Open the demo and move a few.
+              Put every project on one board. Group work into workspaces, break
+              it into lists and cards, and drag each card from To do to Done, at
+              your desk or on your phone.
             </Text>
             <div className={classes.actions}>
-              <Button component={Link} to='/login' variant='ink' size='lg'>
-                Open the demo board
+              <Button component={Link} to='/register' variant='ink' size='lg'>
+                Start for free
               </Button>
               <Button
                 component={Link}
-                to='/register'
+                to='/#pricing'
                 variant='outline'
                 size='lg'
               >
-                Create an account
+                See pricing
               </Button>
               <span className={classes.barcode} aria-hidden />
             </div>

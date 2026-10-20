@@ -15,29 +15,31 @@ import classes from './SpecSection.module.css';
 
 const specs = [
   {
-    name: 'Accounts',
-    detail: 'Register, sign in and sign out. Sessions live in a secure cookie.',
-  },
-  {
     name: 'Workspaces',
-    detail: 'Keep projects grouped. Create, rename or delete them.',
+    detail:
+      'Keep work, home and side projects apart, each with its own projects.',
   },
   {
-    name: 'Projects',
-    detail: 'A name and a short description, inside a workspace.',
-  },
-  {
-    name: 'Lists',
-    detail: 'Your stages. Add, rename and drag them into any order.',
+    name: 'Boards',
+    detail: 'Every project is a board of lists you name and order yourself.',
   },
   {
     name: 'Cards',
     detail:
-      'A name and a description. Create, edit, delete and drag them between lists.',
+      'Give each task a name and notes, then edit it whenever plans change.',
   },
   {
-    name: 'Phones',
-    detail: 'Every screen works on a small screen, the board included.',
+    name: 'Drag and drop',
+    detail:
+      'Move cards between lists or reorder them. Every drop saves instantly.',
+  },
+  {
+    name: 'On your phone',
+    detail: 'The whole board works on a small screen, drag and drop included.',
+  },
+  {
+    name: 'Secure sign in',
+    detail: 'Your own account, with sessions kept in a secure cookie.',
   },
 ];
 
@@ -82,7 +84,7 @@ function BoardVideo() {
   );
 }
 
-/** Honest feature sheet beside the board recording, which settles into place on scroll. */
+/** Feature sheet beside the board recording, which settles into place on scroll. */
 function SpecSection({ ...props }: BoxProps) {
   const still = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
@@ -94,13 +96,13 @@ function SpecSection({ ...props }: BoxProps) {
   const y = useTransform(scrollYProgress, [0, 1], [60, 0]);
 
   return (
-    <Box className={classes.root} {...props}>
+    <Box id='features' className={classes.root} {...props}>
       <Container size='xl'>
         <StockCard stock='blue' className={classes.layout}>
           <div>
             <motion.div {...reveal} variants={rise}>
               <Title order={2} className={classes.title}>
-                Everything it does, and nothing it doesn’t.
+                Everything you need to move work forward.
               </Title>
             </motion.div>
             <motion.dl

@@ -13,25 +13,24 @@ function DemoSection({ ...props }: BoxProps) {
         <motion.div {...reveal} variants={rise}>
           <StockCard className={classes.inner}>
             <Title order={2} className={classes.title}>
-              Open the demo board.
+              Start planning in a minute.
             </Title>
             <div>
               <Text className={classes.lede}>
-                Only the frontend is hosted right now, so signing in won't work
-                here. Clone the repo to run the full app with its API and
-                database; the demo account is filled in on the sign-in form.
+                Free to start, no card needed. Only the frontend is hosted right
+                now, so clone the repo to run the full app.
               </Text>
               <div className={classes.actions}>
-                <Button component={Link} to='/login' variant='ink' size='lg'>
-                  Open the demo board
+                <Button component={Link} to='/register' variant='ink' size='lg'>
+                  Start for free
                 </Button>
                 <Button
                   component={Link}
-                  to='/register'
+                  to='/login'
                   variant='outline'
                   size='lg'
                 >
-                  Create an account
+                  Sign in
                 </Button>
               </div>
             </div>

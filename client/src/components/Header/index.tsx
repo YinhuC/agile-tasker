@@ -5,7 +5,6 @@ import { useAuth } from '../../hooks/useAuth';
 import { notifications } from '@mantine/notifications';
 import { GeneralErrorObject } from '../../utils/notification.utils';
 import { postAuthLogout } from '../../api/auth.api';
-import { GITHUB_URL } from '../../utils/links';
 import { usePrevious, useWindowScroll } from '@mantine/hooks';
 import Wordmark from '../Wordmark';
 import classes from './Header.module.css';
@@ -43,17 +42,12 @@ const Header: React.FC<BoxProps> = ({ ...props }) => {
               <Link to={'/#how'} className={classes.link}>
                 How it works
               </Link>
-              <Link to={'/#build'} className={classes.link}>
-                The build
+              <Link to={'/#features'} className={classes.link}>
+                Features
               </Link>
-              <a
-                href={GITHUB_URL}
-                target='_blank'
-                rel='noreferrer'
-                className={classes.link}
-              >
-                GitHub
-              </a>
+              <Link to={'/#pricing'} className={classes.link}>
+                Pricing
+              </Link>
             </nav>
           )}
         </Group>
@@ -91,11 +85,11 @@ const Header: React.FC<BoxProps> = ({ ...props }) => {
               </Button>
               <Button
                 component={Link}
-                to={'/login'}
+                to={'/register'}
                 size='compact-md'
                 visibleFrom='xs'
               >
-                Try the demo
+                Start free
               </Button>
             </>
           )}

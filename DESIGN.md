@@ -304,7 +304,7 @@ Everything eases on one out-expo curve (cubic-bezier(0.16, 1, 0.3, 1)). Text ris
 - **Do** give every action a pill tag with the punched dot; use the ink tag for the main action on light ground and the yellow filled tag on ink.
 - **Do** set IDs, counts and codes in Martian Mono at 11 to 12px, zero-padded (#07, 03).
 - **Do** show the real app: capture it with believable data, set each capture in a ScreenFrame on the rack, and play recordings only while they are on screen, never under reduced motion.
-- **Do** keep copy honest: show only shipped features and disclose the free-tier cold start near the demo action.
+- **Do** write the marketing pages in a product voice (features, pricing, start free) while describing only shipped features, and say near the main action that only the frontend is hosted.
 
 ### Don't:
 - **Don't** use signal red for anything except the moving card, the DONE stamp and error feedback.

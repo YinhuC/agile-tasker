@@ -16,8 +16,11 @@ function Footer({ ...props }: BoxProps) {
             <Link to='/#how' className={classes.link}>
               How it works
             </Link>
-            <Link to='/#build' className={classes.link}>
-              The build
+            <Link to='/#features' className={classes.link}>
+              Features
+            </Link>
+            <Link to='/#pricing' className={classes.link}>
+              Pricing
             </Link>
             <Link to='/login' className={classes.link}>
               Sign in
@@ -34,7 +37,7 @@ function Footer({ ...props }: BoxProps) {
         </Box>
         <Box className={classes.bottom}>
           <Text size='sm' className={classes.muted}>
-            A portfolio project. Open source under the MIT licence.
+            Open source under the MIT licence.
           </Text>
           <Text size='sm' className={classes.muted}>
             © 2023 agile tasker

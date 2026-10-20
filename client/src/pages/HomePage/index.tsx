@@ -3,7 +3,7 @@ import HeroSection from './HeroSection';
 import HowSection from './HowSection';
 import SpecSection from './SpecSection';
 import PhoneShowcase from './PhoneShowcase';
-import BuildSection from './BuildSection';
+import PricingSection from './PricingSection';
 import DemoSection from './DemoSection';
 import Footer from '../../components/Footer';
 
@@ -14,7 +14,7 @@ function HomePage() {
       <HowSection />
       <SpecSection />
       <PhoneShowcase />
-      <BuildSection />
+      <PricingSection />
       <DemoSection />
       <Footer />
     </>
