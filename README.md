@@ -22,7 +22,7 @@ Sign in with details below to see data and play around OR create your own accoun
 
 Before getting started, make sure you have the following software installed on your machine:
 
-- Node.js 24 LTS or later (run `nvm use` to pick up the version in `.nvmrc`)
+- Node.js 24 LTS (run `nvm use` to pick up the version in `.nvmrc`)
 - Yarn package manager
 
       npm install --global yarn
