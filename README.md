@@ -3,18 +3,14 @@
 
 Welcome to the Agile Tasker App! This application helps you manage your tasks and stay organized in an agile manner.
 
-Sign in with details below to see data and play around OR create your own account and start from scratch - [https://agile-tasker.onrender.com](https://agile-tasker.onrender.com)
+**Note:** The frontend is being moved to Vercel, and only the frontend is hosted, so signing in needs the full app running locally. Follow [Getting Started](#getting-started) below, then sign in with the seeded demo account:
 
     email: johndoe@example.com
     password: Password12345
-    
-**Note:** Hosted on Render's free tier, so has a slight delay in backend startup due to automatic shutdown during inactivity, connection limit may also be reached.
 
-![Board Page MacBook](https://github.com/YinhuC/agile-tasker/blob/master/client/src/assets/images/mac/mac-board.png)
+![Board on desktop](client/src/assets/images/screens/desk-board.webp)
 
-![Project Page MacBook](https://github.com/YinhuC/agile-tasker/blob/master/client/src/assets/images/mac/mac-project.png)
-
-![Iphone Screens](https://github.com/YinhuC/agile-tasker/blob/master/client/src/assets/images/iphone/iphone-all-transparent.png)
+![Board on phone](client/src/assets/images/screens/phone-board.webp)
 
 # Prerequisites
 
