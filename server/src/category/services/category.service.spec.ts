@@ -150,6 +150,30 @@ describe('CategoryService', () => {
       expect(manager.save).toHaveBeenCalledWith(expectedCategory);
     });
 
+    it('should not copy an id from the request onto the new category', async () => {
+      const user = generateMockUser(1);
+      const createCategoryDto = {
+        name: 'Doing',
+        projectId: 5,
+        id: 99,
+      } as CreateCategoryDto;
+      const lock = generateMockQueryBuilder();
+      const count = generateMockQueryBuilder({ getCount: 3 });
+      const manager = generateMockEntityManager([lock, count]);
+      jest.spyOn(projectService, 'isMember').mockResolvedValue(true);
+      (categoryRepository.manager.transaction as jest.Mock).mockImplementation(
+        async (run) => await run(manager)
+      );
+
+      await service.createCategory(user, createCategoryDto);
+
+      expect(manager.create).toHaveBeenCalledWith(CategoryEntity, {
+        name: 'Doing',
+        project: { id: 5 },
+        index: 3,
+      });
+    });
+
     it('should throw a ForbiddenException if the user is not a member of the project', async () => {
       const user = generateMockUser(1);
       const createCategoryDto: CreateCategoryDto = generateMockCategoryDto(1);

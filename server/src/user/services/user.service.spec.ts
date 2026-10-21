@@ -106,6 +106,28 @@ describe('UserService', () => {
 
       expect(result).toEqual(createdUser);
     });
+
+    it('should not copy an id or groups from the request onto the new user', async () => {
+      const userData = {
+        email: 'sam@example.com',
+        firstname: 'Sam',
+        lastname: 'Lee',
+        password: 'Password1',
+        id: 99,
+        groups: [{ id: 7 }],
+      } as Partial<User>;
+      jest.spyOn(userRepository, 'create').mockReturnValue({} as UserEntity);
+      jest.spyOn(userRepository, 'save').mockResolvedValue({} as UserEntity);
+
+      await service.create(userData);
+
+      expect(userRepository.create).toHaveBeenCalledWith({
+        email: 'sam@example.com',
+        firstname: 'Sam',
+        lastname: 'Lee',
+        password: expect.stringMatching(/^\$2b\$/),
+      });
+    });
   });
 
   describe('updateUser', () => {

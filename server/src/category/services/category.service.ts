@@ -44,7 +44,7 @@ export class CategoryService {
     user: User,
     createCategoryDto: CreateCategoryDto
   ): Promise<Category> {
-    const { projectId, ...categoryDto } = createCategoryDto;
+    const { projectId, name } = createCategoryDto;
 
     const isMember = await this.projectService.isMember(user, projectId);
     if (!isMember) {
@@ -58,7 +58,7 @@ export class CategoryService {
         await lockBoardOfProject(manager, projectId);
         const index = await this.countCategories(manager, projectId);
         const category = manager.create(CategoryEntity, {
-          ...categoryDto,
+          name,
           project: { id: projectId },
           index,
         });

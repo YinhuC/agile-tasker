@@ -155,6 +155,32 @@ describe('TaskService', () => {
       expect(manager.save).toHaveBeenCalledWith(expectedTask);
     });
 
+    it('should not copy an id from the request onto the new task', async () => {
+      const user = generateMockUser(1);
+      const createTaskDto = {
+        name: 'Ship it',
+        description: 'Before Friday',
+        categoryId: 4,
+        id: 99,
+      } as CreateTaskDto;
+      const lock = generateMockQueryBuilder();
+      const count = generateMockQueryBuilder({ getCount: 3 });
+      const manager = generateMockEntityManager([lock, count]);
+      jest.spyOn(categoryService, 'isMember').mockResolvedValue(true);
+      (taskRepository.manager.transaction as jest.Mock).mockImplementation(
+        async (run) => await run(manager)
+      );
+
+      await service.createTask(user, createTaskDto);
+
+      expect(manager.create).toHaveBeenCalledWith(TaskEntity, {
+        name: 'Ship it',
+        description: 'Before Friday',
+        category: { id: 4 },
+        index: 3,
+      });
+    });
+
     it('should throw ForbiddenException if the user is not a member of the category', async () => {
       const user = generateMockUser(1);
       const createTaskDto: CreateTaskDto = generateMockTaskDto(1);

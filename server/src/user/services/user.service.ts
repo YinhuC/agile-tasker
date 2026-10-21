@@ -31,11 +31,13 @@ export class UserService {
   }
 
   async create(data: Partial<User>): Promise<User> {
-    const { password, ...userData } = data;
+    const { email, firstname, lastname, password } = data;
     const hashedPassword = await hashPassword(password);
 
     const user = this.userRepository.create({
-      ...userData,
+      email,
+      firstname,
+      lastname,
       password: hashedPassword,
     });
     await this.userRepository.save(user);

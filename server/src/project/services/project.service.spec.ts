@@ -200,6 +200,29 @@ describe('ProjectService', () => {
       expect(projectRepository.save).toHaveBeenCalledWith(project);
     });
 
+    it('should not copy an id from the request onto the new project', async () => {
+      const user: User = generateMockUser(1);
+      const createProjectDto = {
+        name: 'Launch',
+        description: 'Site launch',
+        groupId: 2,
+        id: 99,
+      } as CreateProjectDto;
+      const group = generateMockGroup(2);
+      jest.spyOn(groupService, 'isMember').mockResolvedValue(true);
+      jest.spyOn(groupService, 'getGroupById').mockResolvedValue(group);
+      jest.spyOn(projectRepository, 'create').mockReturnValue({} as Project);
+      jest.spyOn(projectRepository, 'save').mockResolvedValue({} as Project);
+
+      await service.createProject(user, createProjectDto);
+
+      expect(projectRepository.create).toHaveBeenCalledWith({
+        name: 'Launch',
+        description: 'Site launch',
+        group,
+      });
+    });
+
     it('should throw a ForbiddenException if the user is not a member of the group', async () => {
       const user: User = generateMockUser(1);
       const groupId = 1;
@@ -242,6 +265,23 @@ describe('ProjectService', () => {
       expect(result).toBe(updatedProject);
       expect(service.getProjectById).toHaveBeenCalledWith(projectId);
       expect(projectRepository.save).toHaveBeenCalledWith(updatedProject);
+    });
+
+    it('should keep the project id when the request names another id', async () => {
+      const updateProjectDto = {
+        name: 'Renamed',
+        id: 99,
+      } as UpdateProjectDto;
+      const project: Project = generateMockProject(1, generateMockGroup(1));
+      jest.spyOn(service, 'getProjectById').mockResolvedValue(project);
+      jest.spyOn(projectRepository, 'save').mockResolvedValue(project);
+
+      await service.updateProject(1, updateProjectDto);
+
+      expect(projectRepository.save).toHaveBeenCalledWith({
+        ...project,
+        name: 'Renamed',
+      });
     });
 
     it('should throw a NotFoundException if the project does not exist', async () => {

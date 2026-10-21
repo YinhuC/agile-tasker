@@ -69,7 +69,7 @@ export class ProjectService {
     user: User,
     createProjectDto: CreateProjectDto
   ): Promise<Project> {
-    const { groupId, ...projectDto } = createProjectDto;
+    const { groupId, name, description } = createProjectDto;
 
     const isMember = await this.groupService.isMember(user, groupId);
     if (!isMember) {
@@ -79,10 +79,7 @@ export class ProjectService {
     }
 
     const group = await this.groupService.getGroupById(groupId);
-    const project = {
-      ...projectDto,
-      group,
-    };
+    const project = { name, description, group };
     const newProject = this.projectRepository.create(project);
     return await this.projectRepository.save(newProject);
   }
@@ -91,8 +88,13 @@ export class ProjectService {
     projectId: number,
     updateProjectDto: UpdateProjectDto
   ): Promise<Project> {
+    const { name, description } = updateProjectDto;
     const project = await this.getProjectById(projectId);
-    const updatedProject = { ...project, ...updateProjectDto };
+    const updatedProject = {
+      ...project,
+      name: name ?? project.name,
+      description: description ?? project.description,
+    };
     return await this.projectRepository.save(updatedProject);
   }
 

@@ -42,7 +42,7 @@ export class TaskService {
   }
 
   async createTask(user: User, createTaskDto: CreateTaskDto): Promise<Task> {
-    const { categoryId, ...taskDto } = createTaskDto;
+    const { categoryId, name, description } = createTaskDto;
 
     const isMember = await this.categoryService.isMember(user, categoryId);
     if (!isMember) {
@@ -55,7 +55,8 @@ export class TaskService {
       await lockBoardOfCategory(manager, categoryId);
       const index = await this.countTasks(manager, categoryId);
       const task = manager.create(TaskEntity, {
-        ...taskDto,
+        name,
+        description,
         category: { id: categoryId },
         index,
       });
