@@ -7,6 +7,7 @@ import { User } from '../../shared/interfaces/user.interface';
 import { generateMockUser } from '../../shared/mock/user.mock';
 import { NotFoundException } from '@nestjs/common';
 import { UpdateUserDto } from '../dto/update-user';
+import bcrypt from 'bcrypt';
 
 describe('UserService', () => {
   const USER_REPOSITROY_TOKEN = getRepositoryToken(UserEntity);
@@ -121,6 +122,23 @@ describe('UserService', () => {
       expect(result).toEqual(updatedUser);
       expect(service.findUserById).toHaveBeenCalledWith(userId);
       expect(userRepository.save).toHaveBeenCalledWith(user);
+    });
+
+    it('should save a new password hashed, never as plain text', async () => {
+      const userId = 1;
+      const newPassword = 'NewPassword1';
+      const user: User = generateMockUser(userId, 'old@example.com');
+      jest.spyOn(service, 'findUserById').mockResolvedValue(user);
+      jest.spyOn(userRepository, 'save').mockResolvedValue(user);
+
+      await service.updateUser(userId, { password: newPassword });
+
+      expect(service.findUserById).toHaveBeenCalledWith(userId);
+      expect(userRepository.save).toHaveBeenCalledTimes(1);
+      const savedUser = jest.mocked(userRepository.save).mock.calls[0][0];
+      expect(savedUser.email).toEqual('old@example.com');
+      expect(savedUser.password).not.toEqual(newPassword);
+      expect(await bcrypt.compare(newPassword, savedUser.password)).toBe(true);
     });
 
     it('should throw NotFoundException if user is not found', async () => {

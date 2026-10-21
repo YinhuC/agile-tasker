@@ -44,7 +44,11 @@ export class UserService {
 
   async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findUserById(id);
-    Object.assign(user, updateUserDto);
+    const { password, ...changes } = updateUserDto;
+    Object.assign(user, changes);
+    if (password) {
+      user.password = await hashPassword(password);
+    }
     return await this.userRepository.save(user);
   }
 
