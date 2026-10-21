@@ -3,7 +3,6 @@ import { MESSAGES, REGEXES } from '../../shared/utils/regex.utils';
 
 export class UpdateUserDto {
   @IsEmail()
-  @Length(2, 20)
   email?: string;
 
   @Length(1, 20)
