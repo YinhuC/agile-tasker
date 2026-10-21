@@ -124,7 +124,7 @@ describe('UserService', () => {
         email: 'sam@example.com',
         firstname: 'Sam',
         lastname: 'Lee',
-        password: expect.stringMatching(/^\$2b\$/),
+        password: expect.stringMatching(/^\$2b\$12\$/),
       });
     });
   });
