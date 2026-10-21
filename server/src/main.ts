@@ -2,6 +2,7 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import session from 'express-session';
 import connectPgSimple from 'connect-pg-simple';
 import compression from 'compression';
+import helmet from 'helmet';
 import passport from 'passport';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
@@ -25,6 +26,7 @@ async function bootstrap() {
     origin: corsWhitelist,
     credentials: true,
   });
+  app.use(helmet());
   app.use(compression());
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true })
