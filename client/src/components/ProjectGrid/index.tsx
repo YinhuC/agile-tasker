@@ -48,11 +48,11 @@ function ProjectGrid({ group, ...props }: ProjectGridProps) {
         </Text>
       ) : (
         <SimpleGrid cols={{ base: 1, xs: 2, md: 3 }} spacing='md'>
-          {projects.map((project, index) => (
+          {projects.map((project) => (
             <ProjectCard
               project={project}
               groupId={id}
-              key={`project-card-${index}`}
+              key={`project-card-${project.id}`}
             />
           ))}
         </SimpleGrid>

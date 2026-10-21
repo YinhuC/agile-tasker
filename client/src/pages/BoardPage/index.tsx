@@ -31,8 +31,8 @@ function BoardPage() {
             No workspaces yet. Make one to start adding projects.
           </Text>
         )}
-        {groups.map((group, index) => (
-          <ProjectGrid group={group} key={`project-grid-${index}`} />
+        {groups.map((group) => (
+          <ProjectGrid group={group} key={`project-grid-${group.id}`} />
         ))}
       </Container>
     </Box>
