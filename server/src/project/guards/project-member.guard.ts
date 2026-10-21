@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { User } from '../../shared/interfaces/user.interface';
+import { parseRowId } from '../../shared/utils/row-id.utils';
 import { ProjectService } from '../services/project.service';
 
 @Injectable()
@@ -19,7 +20,7 @@ export class ProjectMemberGuard implements CanActivate {
     const user: Partial<User> = request.user;
     const isMember = await this.projectService.isMember(
       user,
-      parseInt(request.params.id)
+      parseRowId(request.params.id)
     );
     if (!isMember) {
       throw new ForbiddenException('You have no access to this project');

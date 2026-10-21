@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsOptional, Length } from 'class-validator';
+import { IsRowId } from '../../shared/utils/row-id.utils';
 
 export class CreateTaskDto {
   @Length(0, 50)
@@ -9,6 +10,6 @@ export class CreateTaskDto {
   @IsOptional()
   description?: string;
 
-  @IsNotEmpty()
+  @IsRowId()
   categoryId: number;
 }

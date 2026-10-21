@@ -1,6 +1,6 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsRowId } from '../../shared/utils/row-id.utils';
 
 export class GetProjectDto {
-  @IsNotEmpty()
+  @IsRowId()
   groupId: number;
 }

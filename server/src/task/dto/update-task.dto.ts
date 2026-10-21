@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsOptional, Length } from 'class-validator';
+import { IsInt, IsOptional, Length, Min } from 'class-validator';
+import { IsRowId } from '../../shared/utils/row-id.utils';
 
 export class UpdateTaskDto {
   @Length(0, 50)
@@ -10,8 +11,10 @@ export class UpdateTaskDto {
   description?: string;
 
   @IsOptional()
+  @IsInt()
+  @Min(0)
   index?: number;
 
-  @IsNotEmpty()
+  @IsRowId()
   categoryId: number;
 }

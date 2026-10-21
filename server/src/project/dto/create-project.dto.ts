@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsOptional, Length } from 'class-validator';
+import { IsRowId } from '../../shared/utils/row-id.utils';
 
 export class CreateProjectDto {
   @IsNotEmpty()
@@ -9,6 +10,6 @@ export class CreateProjectDto {
   @Length(0, 100)
   description: string;
 
-  @IsNotEmpty()
+  @IsRowId()
   groupId: number;
 }
