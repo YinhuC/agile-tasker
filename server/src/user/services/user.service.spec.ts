@@ -126,10 +126,12 @@ describe('UserService', () => {
     it('should throw NotFoundException if user is not found', async () => {
       const userId = 1;
       const updateUserDto: UpdateUserDto = { firstname: 'John' };
-      jest.spyOn(service, 'findUserById').mockResolvedValue(undefined);
+      jest
+        .spyOn(service, 'findUserById')
+        .mockRejectedValue(new NotFoundException('User not found'));
 
       await expect(service.updateUser(userId, updateUserDto)).rejects.toThrow(
-        NotFoundException
+        'User not found'
       );
       expect(service.findUserById).toHaveBeenCalledWith(userId);
       expect(userRepository.save).not.toHaveBeenCalled();
