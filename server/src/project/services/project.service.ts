@@ -1,8 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateProjectDto } from '../dto/create-project.dto';
@@ -30,9 +26,7 @@ export class ProjectService {
   ): Promise<Project[]> {
     const isMember = await this.groupService.isMember(user, groupId);
     if (!isMember) {
-      throw new ForbiddenException(
-        'You have no access to projects from this group'
-      );
+      throw new NotFoundException('Group not found');
     }
     return await this.projectRepository
       .createQueryBuilder('project')
@@ -73,9 +67,7 @@ export class ProjectService {
 
     const isMember = await this.groupService.isMember(user, groupId);
     if (!isMember) {
-      throw new ForbiddenException(
-        'You have rights to create a project for this group'
-      );
+      throw new NotFoundException('Group not found');
     }
 
     const group = await this.groupService.getGroupById(groupId);

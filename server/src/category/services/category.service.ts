@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -48,9 +47,7 @@ export class CategoryService {
 
     const isMember = await this.projectService.isMember(user, projectId);
     if (!isMember) {
-      throw new ForbiddenException(
-        'You have rights to create a category for this project'
-      );
+      throw new NotFoundException('Project not found');
     }
 
     return await this.categoryRepository.manager.transaction(

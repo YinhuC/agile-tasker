@@ -181,13 +181,13 @@ describe('TaskService', () => {
       });
     });
 
-    it('should throw ForbiddenException if the user is not a member of the category', async () => {
+    it('should answer a category the user is not in with not found', async () => {
       const user = generateMockUser(1);
       const createTaskDto: CreateTaskDto = generateMockTaskDto(1);
       jest.spyOn(categoryService, 'isMember').mockResolvedValue(false);
 
       await expect(service.createTask(user, createTaskDto)).rejects.toThrow(
-        'You have rights to create a task for this category'
+        'Category not found'
       );
 
       expect(categoryService.isMember).toHaveBeenCalledWith(

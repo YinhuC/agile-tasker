@@ -174,16 +174,14 @@ describe('CategoryService', () => {
       });
     });
 
-    it('should throw a ForbiddenException if the user is not a member of the project', async () => {
+    it('should answer a project the user is not in with not found', async () => {
       const user = generateMockUser(1);
       const createCategoryDto: CreateCategoryDto = generateMockCategoryDto(1);
       jest.spyOn(projectService, 'isMember').mockResolvedValue(false);
 
       await expect(
         service.createCategory(user, createCategoryDto)
-      ).rejects.toThrow(
-        'You have rights to create a category for this project'
-      );
+      ).rejects.toThrow('Project not found');
 
       expect(categoryRepository.manager.transaction).not.toHaveBeenCalled();
     });

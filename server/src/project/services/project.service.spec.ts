@@ -10,7 +10,7 @@ import { Category as CategoryEntity } from '../../shared/entities/category.entit
 import { Repository } from 'typeorm';
 import { Project } from '../../shared/interfaces/project.interface';
 import { User } from '../../shared/interfaces/user.interface';
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { generateMockUser } from '../../shared/mock/user.mock';
 import { generateMockGroup } from '../../shared/mock/group.mock';
 import {
@@ -118,7 +118,7 @@ describe('ProjectService', () => {
       expect(projectRepository.createQueryBuilder().getMany).toHaveBeenCalled();
     });
 
-    it('should throw a ForbiddenException if the user is not a member of the group', async () => {
+    it('should answer a group the user is not in with not found', async () => {
       const user: User = generateMockUser(1);
       const groupId = 1;
 
@@ -126,7 +126,7 @@ describe('ProjectService', () => {
 
       await expect(
         service.getAllProjectsByGroupId(user, groupId)
-      ).rejects.toThrow(ForbiddenException);
+      ).rejects.toThrow('Group not found');
 
       expect(groupService.isMember).toHaveBeenCalledWith(user, groupId);
     });
@@ -223,7 +223,7 @@ describe('ProjectService', () => {
       });
     });
 
-    it('should throw a ForbiddenException if the user is not a member of the group', async () => {
+    it('should answer a group the user is not in with not found', async () => {
       const user: User = generateMockUser(1);
       const groupId = 1;
       const createProjectDto: CreateProjectDto =
@@ -233,7 +233,7 @@ describe('ProjectService', () => {
 
       await expect(
         service.createProject(user, createProjectDto)
-      ).rejects.toThrow(ForbiddenException);
+      ).rejects.toThrow('Group not found');
 
       expect(groupService.isMember).toHaveBeenCalledWith(
         user,

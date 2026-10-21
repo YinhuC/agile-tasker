@@ -1,8 +1,8 @@
 import {
   CanActivate,
   ExecutionContext,
-  ForbiddenException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { User } from '../../shared/interfaces/user.interface';
@@ -23,7 +23,7 @@ export class GroupMemberGuard implements CanActivate {
       parseRowId(request.params.id)
     );
     if (!isMember) {
-      throw new ForbiddenException('You have no access to this group');
+      throw new NotFoundException('Group not found');
     }
     return isMember;
   }

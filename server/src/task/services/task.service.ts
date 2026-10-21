@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -46,9 +45,7 @@ export class TaskService {
 
     const isMember = await this.categoryService.isMember(user, categoryId);
     if (!isMember) {
-      throw new ForbiddenException(
-        'You have rights to create a task for this category'
-      );
+      throw new NotFoundException('Category not found');
     }
 
     return await this.taskRepository.manager.transaction(async (manager) => {
