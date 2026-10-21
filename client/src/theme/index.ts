@@ -5,7 +5,6 @@ import { button } from './components/button-styles';
 import { surfaces } from './components/surface-styles';
 import { ink, signal, sleeve, steel, stock } from './colors';
 
-import './styles/fonts.css';
 import './styles/body.css';
 
 const projectTheme = createTheme({

@@ -17,6 +17,7 @@ import PhoneBoard from '../../../assets/images/screens/phone-board.webp';
 import ScreenFrame from '../../../components/ScreenFrame';
 import StockCard from '../../../components/StockCard';
 import { GITHUB_URL } from '../../../utils/links';
+import { useIsDesktop } from '../../../hooks/useIsDesktop';
 import { EASE_OUT, enter, rise, settle, stagger } from '../../../theme/motion';
 import classes from './HeroSection.module.css';
 
@@ -80,6 +81,7 @@ function ParallaxLayer({
 
 function HeroSection({ ...props }: BoxProps) {
   const still = useReducedMotion() ?? false;
+  const isDesktop = useIsDesktop();
   const stageRef = useRef<HTMLDivElement>(null);
 
   const rawX = useMotionValue(0);
@@ -197,12 +199,15 @@ function HeroSection({ ...props }: BoxProps) {
                   delay={0}
                 >
                   <ScreenFrame kind='window' label='agile tasker / Portfolio'>
-                    <img
-                      src={DeskBoard}
-                      width={1600}
-                      height={1000}
-                      alt='The Portfolio project board with To do, Doing, Review and Done lists'
-                    />
+                    {isDesktop && (
+                      <img
+                        src={DeskBoard}
+                        width={1600}
+                        height={1000}
+                        fetchPriority='high'
+                        alt='The Portfolio project board with To do, Doing, Review and Done lists'
+                      />
+                    )}
                   </ScreenFrame>
                 </ParallaxLayer>
                 <ParallaxLayer

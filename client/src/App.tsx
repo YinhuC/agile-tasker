@@ -1,5 +1,7 @@
 import React, {
+  lazy,
   PropsWithChildren,
+  Suspense,
   useCallback,
   useEffect,
   useRef,
@@ -8,19 +10,20 @@ import React, {
 import { useLocation, Navigate, Route, Routes } from 'react-router';
 import { ThemeProvider } from './providers/ThemeProvider';
 import Header from './components/Header';
-import LoginPage from './pages/LoginPage';
-import HomePage from './pages/HomePage';
-import RegisterPage from './pages/RegisterPage';
 import { Provider as ReduxProvider } from 'react-redux';
 import { store } from './store';
 import { Notifications } from '@mantine/notifications';
 import { AuthContext } from './utils/context/AuthContext';
 import { User } from './types/user.types';
 import AuthRoute from './components/AuthRoute';
-import BoardPage from './pages/BoardPage';
-import ProjectPage from './pages/ProjectPage';
 import { Flex } from '@mantine/core';
 import { getAuthUser } from './api/auth.api';
+
+const HomePage = lazy(() => import('./pages/HomePage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const RegisterPage = lazy(() => import('./pages/RegisterPage'));
+const BoardPage = lazy(() => import('./pages/BoardPage'));
+const ProjectPage = lazy(() => import('./pages/ProjectPage'));
 
 const PUBLIC_PATHS = ['/', '/login', '/register'];
 
@@ -81,16 +84,18 @@ function App() {
           <Header />
         </Flex>
       )}
-      <Routes>
-        <Route path='/' element={<HomePage />} />
-        <Route path='/login' element={<LoginPage />} />
-        <Route path='/register' element={<RegisterPage />} />
-        <Route element={<AuthRoute />}>
-          <Route path='/boards/:id' element={<BoardPage />} />
-          <Route path='/project/:id' element={<ProjectPage />} />
-        </Route>
-        <Route path='*' element={<Navigate to='/' replace />} />
-      </Routes>
+      <Suspense fallback={null}>
+        <Routes>
+          <Route path='/' element={<HomePage />} />
+          <Route path='/login' element={<LoginPage />} />
+          <Route path='/register' element={<RegisterPage />} />
+          <Route element={<AuthRoute />}>
+            <Route path='/boards/:id' element={<BoardPage />} />
+            <Route path='/project/:id' element={<ProjectPage />} />
+          </Route>
+          <Route path='*' element={<Navigate to='/' replace />} />
+        </Routes>
+      </Suspense>
     </Providers>
   );
 }

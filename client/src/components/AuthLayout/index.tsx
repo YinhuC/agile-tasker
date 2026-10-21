@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { Box, Text, Title } from '@mantine/core';
-import { motion } from 'motion/react';
+import { motion, MotionConfig } from 'motion/react';
+import { useIsDesktop } from '../../hooks/useIsDesktop';
 import ScreenFrame from '../ScreenFrame';
 import StockCard from '../StockCard';
 import Wordmark from '../Wordmark';
@@ -24,33 +25,39 @@ function AuthLayout({
   footer,
   children,
 }: AuthLayoutProps) {
+  const isDesktop = useIsDesktop();
+
   return (
-    <motion.div className={classes.root} {...enter} variants={stagger(0.12)}>
-      <Box className={classes.formSide}>
-        <Wordmark to='/' size={24} />
-        <motion.div className={classes.formSlot} variants={rise}>
-          <StockCard stock='white' className={classes.card}>
-            <div className={classes.head}>
-              <Title order={1} className={classes.title}>
-                {title}
-              </Title>
-              <Text className={classes.subtitle}>{subtitle}</Text>
-            </div>
-            {children}
-            <Text size='sm' className={classes.footer}>
-              {footer}
-            </Text>
-          </StockCard>
-        </motion.div>
-      </Box>
-      <Box className={classes.visual} visibleFrom='md'>
-        <motion.div className={classes.sleeve} variants={settle}>
-          <ScreenFrame kind='phone' className={classes.phone}>
-            <img src={image} width={780} height={1688} alt={imageAlt} />
-          </ScreenFrame>
-        </motion.div>
-      </Box>
-    </motion.div>
+    <MotionConfig reducedMotion='user'>
+      <motion.div className={classes.root} {...enter} variants={stagger(0.12)}>
+        <Box className={classes.formSide}>
+          <Wordmark to='/' size={24} />
+          <motion.div className={classes.formSlot} variants={rise}>
+            <StockCard stock='white' className={classes.card}>
+              <div className={classes.head}>
+                <Title order={1} className={classes.title}>
+                  {title}
+                </Title>
+                <Text className={classes.subtitle}>{subtitle}</Text>
+              </div>
+              {children}
+              <Text size='sm' className={classes.footer}>
+                {footer}
+              </Text>
+            </StockCard>
+          </motion.div>
+        </Box>
+        {isDesktop && (
+          <Box className={classes.visual}>
+            <motion.div className={classes.sleeve} variants={settle}>
+              <ScreenFrame kind='phone' className={classes.phone}>
+                <img src={image} width={780} height={1688} alt={imageAlt} />
+              </ScreenFrame>
+            </motion.div>
+          </Box>
+        )}
+      </motion.div>
+    </MotionConfig>
   );
 }
 
