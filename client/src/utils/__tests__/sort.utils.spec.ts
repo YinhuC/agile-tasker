@@ -1,9 +1,4 @@
-import {
-  sortByIndex,
-  sortById,
-  sortByUpdateTime,
-  sortByCreateTime,
-} from '../sort.utils';
+import { sortByIndex, sortByUpdateTime, sortByCreateTime } from '../sort.utils';
 
 describe('Sort Utils', () => {
   describe('sortByIndex', () => {
@@ -24,23 +19,6 @@ describe('Sort Utils', () => {
       ];
 
       const result = sortByIndex(items);
-
-      expect(result).toEqual(expectedResult);
-    });
-  });
-
-  describe('sortById', () => {
-    test('should sort items by id in ascending order', () => {
-      const items = [{ id: 3 }, { id: 1 }, { id: 2 }, { id: 5 }, { id: 4 }];
-      const expectedResult = [
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-        { id: 4 },
-        { id: 5 },
-      ];
-
-      const result = sortById(items);
 
       expect(result).toEqual(expectedResult);
     });

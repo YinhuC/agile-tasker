@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { Group } from '../../types/group.types';
 import {
   createGroupThunk,
@@ -19,26 +19,7 @@ const initialState: GroupState = {
 export const groupSlice = createSlice({
   name: 'groups',
   initialState,
-  reducers: {
-    addGroup: (state, action: PayloadAction<Group>) => {
-      state.groups.unshift(action.payload);
-    },
-
-    removeGroup: (state, action: PayloadAction<number>) => {
-      state.groups = state.groups.filter(
-        (group) => group.id !== action.payload
-      );
-    },
-
-    updateGroup: (state, action: PayloadAction<Group>) => {
-      const index = state.groups.findIndex(
-        (group) => group.id === action.payload.id
-      );
-      if (index !== -1) {
-        state.groups[index] = action.payload;
-      }
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchAllGroupsThunk.fulfilled, (state, action) => {
       state.groups = sortByCreateTime(action.payload.data);
@@ -65,6 +46,5 @@ export const groupSlice = createSlice({
     });
   },
 });
-export const { addGroup, removeGroup, updateGroup } = groupSlice.actions;
 
 export default groupSlice.reducer;

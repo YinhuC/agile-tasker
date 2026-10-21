@@ -4,12 +4,6 @@ export function sortByIndex<T extends { index: number }>(items: T[]): T[] {
   });
 }
 
-export function sortById<T extends { id: number }>(items: T[]): T[] {
-  return items.slice().sort((a, b) => {
-    return a.id - b.id;
-  });
-}
-
 export function sortByUpdateTime<T extends { updatedAt: string }>(
   items: T[]
 ): T[] {

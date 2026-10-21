@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { Project } from '../../types/project.types';
 import {
   createProjectThunk,
@@ -20,26 +20,7 @@ const initialState: ProjectState = {
 export const projectSlice = createSlice({
   name: 'projects',
   initialState,
-  reducers: {
-    addProject: (state, action: PayloadAction<Project>) => {
-      state.projects.unshift(action.payload);
-    },
-
-    removeProject: (state, action: PayloadAction<number>) => {
-      state.projects = state.projects.filter(
-        (project) => project.id !== action.payload
-      );
-    },
-
-    updateProject: (state, action: PayloadAction<Project>) => {
-      const index = state.projects.findIndex(
-        (project) => project.id === action.payload.id
-      );
-      if (index !== -1) {
-        state.projects[index] = action.payload;
-      }
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchAllProjectsThunk.fulfilled, (state, action) => {
       const { groupId } = action.meta.arg;
@@ -88,8 +69,5 @@ export const projectSlice = createSlice({
     });
   },
 });
-
-export const { addProject, removeProject, updateProject } =
-  projectSlice.actions;
 
 export default projectSlice.reducer;

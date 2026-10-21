@@ -9,11 +9,3 @@ export type User = {
   updatedAt: string;
   Groups?: Group[];
 };
-
-export type UpdateUserParams = {
-  email?: string;
-  firstName?: string;
-  lastName?: string;
-  authMethod?: string;
-  password?: string;
-};
