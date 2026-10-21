@@ -1,7 +1,9 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import session from 'express-session';
+import connectPgSimple from 'connect-pg-simple';
+import compression from 'compression';
 import passport from 'passport';
-import { ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
@@ -14,15 +16,27 @@ async function bootstrap() {
   const corsWhitelist = configService
     .get<string>('REACT_APP_CLIENT_URL')
     .split(',');
+  const PgSessionStore = connectPgSimple(session);
 
   app.enableCors({
     origin: corsWhitelist,
     credentials: true,
   });
+  app.use(compression());
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.setGlobalPrefix('api');
   app.use(
     session({
+      store: new PgSessionStore({
+        conObject: {
+          host: configService.get<string>('REACT_APP_DB_HOST'),
+          port: parseInt(configService.get<string>('REACT_APP_DB_PORT')),
+          user: configService.get<string>('REACT_APP_DB_USERNAME'),
+          password: configService.get<string>('REACT_APP_DB_PASSWORD'),
+          database: configService.get<string>('REACT_APP_DB_NAME'),
+        },
+      }),
       secret: configService.get<string>('REACT_APP_SECRET'),
       resave: false,
       saveUninitialized: false,

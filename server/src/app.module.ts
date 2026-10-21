@@ -32,7 +32,8 @@ import { ConfigModule } from '@nestjs/config';
       entities: ['dist/**/*.entity.js'],
       migrations: ['dist/database/migrations/**/*{.js,.ts}'],
       synchronize: false,
-      logging: true,
+      logging:
+        process.env.REACT_APP_NODE_ENV === 'production' ? ['error'] : true,
       poolSize: 5,
     }),
   ],
