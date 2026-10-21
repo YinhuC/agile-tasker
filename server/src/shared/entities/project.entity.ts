@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -12,6 +13,7 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'projects' })
+@Index(['group'])
 export class Project {
   @PrimaryGeneratedColumn()
   id: number;
