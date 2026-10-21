@@ -40,7 +40,6 @@ function GroupModal({ type, group, ...props }: GroupModalProps) {
     form.setValues({
       name: type === 'edit' && group?.name ? group.name : '',
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, group]);
 
   const onSubmit = async (values: CreateGroupParams | UpdateGroupParams) => {

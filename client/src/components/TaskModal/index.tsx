@@ -66,7 +66,6 @@ function TaskModal({ categoryId, type, task, ...props }: TaskModalProps) {
             : task.description
           : '',
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, task]);
 
   const onSubmit = async (values: CreateTaskParams | UpdateTaskParams) => {

@@ -46,7 +46,6 @@ function CategoryModal({
     form.setValues({
       name: type === 'edit' && category?.name ? category.name : '',
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, category]);
 
   const onSubmit = async (
