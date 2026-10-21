@@ -1,6 +1,6 @@
 import { CreateTaskParams, UpdateTaskParams } from '../../types/task.types';
 import { BoardList } from '../../types/project.types';
-import { store } from '..';
+import { setupStore, store } from '..';
 import { fetchBoardThunk } from '../project/project.thunks';
 import {
   createTaskThunk,
@@ -111,5 +111,25 @@ describe('Task Thunks', () => {
 
     expect(deleteTaskMock).toHaveBeenCalledWith(taskId.toString());
     expect(store.getState().tasks).toEqual({ tasks: [] });
+  });
+
+  it('clears the cards while fetchBoardThunk loads the next board', () => {
+    const boardStore = setupStore({
+      tasks: {
+        tasks: [
+          {
+            id: 7,
+            name: 'Write tests',
+            description: 'description',
+            index: 0,
+            createdAt: 'created',
+          },
+        ],
+      },
+    });
+
+    boardStore.dispatch(fetchBoardThunk.pending('request-1', '6'));
+
+    expect(boardStore.getState().tasks).toEqual({ tasks: [] });
   });
 });

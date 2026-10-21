@@ -3,7 +3,7 @@ import {
   updateCategoryThunk,
   deleteCategoryThunk,
 } from './category.thunks';
-import { store } from '..';
+import { setupStore, store } from '..';
 import { fetchBoardThunk } from '../project/project.thunks';
 import { BoardList } from '../../types/project.types';
 import {
@@ -116,5 +116,17 @@ describe('Async Thunks', () => {
         { id: 4, name: 'Done', index: 1, createdAt: 'created' },
       ],
     });
+  });
+
+  it('clears the lists while fetchBoardThunk loads the next board', () => {
+    const boardStore = setupStore({
+      categories: {
+        categories: [{ id: 3, name: 'To do', index: 0, createdAt: 'created' }],
+      },
+    });
+
+    boardStore.dispatch(fetchBoardThunk.pending('request-1', '6'));
+
+    expect(boardStore.getState().categories).toEqual({ categories: [] });
   });
 });

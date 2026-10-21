@@ -39,6 +39,10 @@ export const taskSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(fetchBoardThunk.pending, (state) => {
+      state.tasks = [];
+    });
+
     builder.addCase(fetchBoardThunk.fulfilled, (state, action) => {
       state.tasks = action.payload.data.flatMap(({ tasks, ...category }) =>
         tasks.map((task) => ({ ...task, category }))
