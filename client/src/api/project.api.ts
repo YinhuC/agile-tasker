@@ -1,4 +1,5 @@
 import {
+  BoardList,
   CreateProjectParams,
   GetProjectsParams,
   Project,
@@ -10,6 +11,9 @@ export const getAllProjects = (data: GetProjectsParams) =>
   axiosClient.post<Project[]>('/projects/all', data);
 
 export const getProject = (id: string) => axiosClient.get(`/projects/${id}`);
+
+export const getBoard = (id: string) =>
+  axiosClient.get<BoardList[]>(`/projects/${id}/board`);
 
 export const createProject = (data: CreateProjectParams) =>
   axiosClient.post<Project>('/projects', data);

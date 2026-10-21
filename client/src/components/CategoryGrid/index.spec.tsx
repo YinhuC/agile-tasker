@@ -2,7 +2,6 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderWithMantine } from '../../utils/test.utils';
 import CategoryGrid from '.';
-import { fetchAllTasksThunk } from '../../store/task/task.thunks';
 import { BrowserRouter as Router } from 'react-router';
 import { Category } from '../../types/category.types';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
@@ -15,9 +14,6 @@ vi.mock('../../hooks/useAppDispatch', () => ({
 }));
 vi.mock('../../hooks/useAppSelector', () => ({
   useAppSelector: vi.fn(),
-}));
-vi.mock('../../store/task/task.thunks', () => ({
-  fetchAllTasksThunk: vi.fn(),
 }));
 
 describe('CategoryGrid', () => {
@@ -68,29 +64,6 @@ describe('CategoryGrid', () => {
 
     const groupName = screen.getByText('Category 1');
     expect(groupName).toBeInTheDocument();
-  });
-
-  it('dispatches fetchAllTasksThunk with the correct categoryId', () => {
-    const dragOnEnd = vi.fn();
-    renderWithMantine(
-      <Router>
-        <DragDropContext onDragEnd={dragOnEnd}>
-          <Droppable droppableId='test'>
-            {(provided) => (
-              <div ref={provided.innerRef} {...provided.droppableProps}>
-                <CategoryGrid
-                  category={category}
-                  projectId={projectId}
-                  index={index}
-                />
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
-      </Router>
-    );
-
-    expect(fetchAllTasksThunk).toHaveBeenCalledWith({ categoryId: 1 });
   });
 
   it('renders TaskCard components for each task in the group', () => {

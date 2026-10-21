@@ -29,7 +29,7 @@ function LoginPage() {
 
   const navigate = useNavigate();
 
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   if (user) {
     return <Navigate to={`/boards/${user.id}`} replace />;
   }
@@ -37,6 +37,7 @@ function LoginPage() {
   const onSubmit = async (values: LoginParams) => {
     try {
       const user: User = (await postAuthLogin(values)).data;
+      setUser(user);
       navigate(`/boards/${user.id}`);
     } catch (err) {
       const axiosError = err as AxiosError;

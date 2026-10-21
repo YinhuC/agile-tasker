@@ -72,27 +72,29 @@ function TaskModal({ categoryId, type, task, ...props }: TaskModalProps) {
   const onSubmit = async (values: CreateTaskParams | UpdateTaskParams) => {
     try {
       if (type === 'add') {
-        dispatch(createTaskThunk(values as CreateTaskParams));
+        await dispatch(createTaskThunk(values as CreateTaskParams)).unwrap();
       } else {
-        dispatch(updateTaskThunk(values as UpdateTaskParams));
+        await dispatch(updateTaskThunk(values as UpdateTaskParams)).unwrap();
       }
+      form.reset();
+      close();
     } catch (err) {
       notifications.cleanQueue();
       notifications.show(GeneralErrorObject);
     }
-    form.reset();
-    close();
   };
 
   const onDelete = async () => {
     try {
-      if (task && task.id) dispatch(deleteTaskThunk(task.id.toString()));
+      if (task && task.id) {
+        await dispatch(deleteTaskThunk(task.id.toString())).unwrap();
+      }
+      form.reset();
+      close();
     } catch (err) {
       notifications.cleanQueue();
       notifications.show(GeneralErrorObject);
     }
-    form.reset();
-    close();
   };
 
   return (

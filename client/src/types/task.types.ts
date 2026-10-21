@@ -1,10 +1,6 @@
 import { Category } from './category.types';
 import { User } from './user.types';
 
-export type GetTasksParams = {
-  categoryId: number;
-};
-
 export type CreateTaskParams = {
   name: string;
   description?: string;
@@ -17,12 +13,6 @@ export type UpdateTaskParams = {
   description?: string;
   index?: number;
   categoryId?: number;
-};
-
-export type UpdateTaskOrderParams = {
-  categoryId: number;
-  id: number;
-  index: number;
 };
 
 export type Task = {

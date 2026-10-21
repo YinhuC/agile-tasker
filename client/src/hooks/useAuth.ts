@@ -1,45 +1,13 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { AuthContext } from '../utils/context/AuthContext';
-import { getAuthUser } from '../api/auth.api';
-import { useLocation } from 'react-router';
 
+/** Reads the signed-in user that App fetches once per page load. */
 export function useAuth() {
-  const [loading, setLoading] = useState(true);
-  const { user, setUser } = useContext(AuthContext);
-  const location = useLocation();
-  const { pathname } = location;
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const fetchAuthUser = async () => {
-      try {
-        if (
-          pathname !== '/' &&
-          pathname !== '/login' &&
-          pathname !== '/register'
-        ) {
-          const response = await getAuthUser();
-          const { data } = response;
-          setUser(data);
-        }
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setTimeout(() => setLoading(false), 1000);
-      }
-    };
-
-    fetchAuthUser();
-
-    return () => {
-      controller.abort();
-    };
-  }, [pathname, setUser]);
+  const { user, setUser, loading } = useContext(AuthContext);
 
   const removeUser = () => {
     setUser(undefined);
   };
 
-  return { user, loading, removeUser };
+  return { user, setUser, loading, removeUser };
 }

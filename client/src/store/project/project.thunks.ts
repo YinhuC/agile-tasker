@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import API from '../../api';
 import {
+  BoardList,
   CreateProjectParams,
   GetProjectsParams,
   Project,
@@ -25,6 +26,15 @@ export const fetchAllProjectsThunk = createAsyncThunk<
 export const fetchProjectThunk = createAsyncThunk<FetchProjectPayload, string>(
   'projects/fetch',
   (id: string) => API.project.getProject(id)
+);
+
+export interface FetchBoardPayload {
+  data: BoardList[];
+}
+
+export const fetchBoardThunk = createAsyncThunk<FetchBoardPayload, string>(
+  'projects/fetch/board',
+  (id: string) => API.project.getBoard(id)
 );
 
 export const createProjectThunk = createAsyncThunk(

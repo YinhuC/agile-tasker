@@ -3,10 +3,9 @@ import { Task } from '../../types/task.types';
 import {
   createTaskThunk,
   deleteTaskThunk,
-  fetchAllTasksThunk,
-  updateTaskOrderThunk,
   updateTaskThunk,
 } from './task.thunks';
+import { fetchBoardThunk } from '../project/project.thunks';
 import { sortByIndex } from '../../utils/sort.utils';
 
 export interface TaskState {
@@ -57,22 +56,10 @@ export const taskSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchAllTasksThunk.fulfilled, (state, action) => {
-      const fetchedTasks = action.payload.data;
-
-      fetchedTasks.forEach((fetchedTask) => {
-        const existingTaskIndex = state.tasks.findIndex(
-          (task) => task.id === fetchedTask.id
-        );
-
-        if (existingTaskIndex !== -1) {
-          state.tasks[existingTaskIndex] = fetchedTask;
-        } else {
-          state.tasks.push(fetchedTask);
-        }
-      });
-
-      state.tasks = sortByIndex(state.tasks);
+    builder.addCase(fetchBoardThunk.fulfilled, (state, action) => {
+      state.tasks = action.payload.data.flatMap(({ tasks, ...category }) =>
+        tasks.map((task) => ({ ...task, category }))
+      );
     });
 
     builder.addCase(createTaskThunk.fulfilled, (state, action) => {
@@ -86,24 +73,6 @@ export const taskSlice = createSlice({
       if (index !== -1) {
         state.tasks[index] = action.payload.data;
       }
-    });
-
-    builder.addCase(updateTaskOrderThunk.fulfilled, (state, action) => {
-      const fetchedTasks = action.payload.data;
-
-      fetchedTasks.forEach((fetchedTask) => {
-        const existingTaskIndex = state.tasks.findIndex(
-          (task) => task.id === fetchedTask.id
-        );
-
-        if (existingTaskIndex !== -1) {
-          state.tasks[existingTaskIndex] = fetchedTask;
-        } else {
-          state.tasks.push(fetchedTask);
-        }
-      });
-
-      state.tasks = sortByIndex(state.tasks);
     });
 
     builder.addCase(deleteTaskThunk.fulfilled, (state, action) => {

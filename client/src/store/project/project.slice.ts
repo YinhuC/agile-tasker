@@ -42,21 +42,15 @@ export const projectSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAllProjectsThunk.fulfilled, (state, action) => {
+      const { groupId } = action.meta.arg;
       const fetchedProjects = action.payload.data;
+      const otherProjects = state.projects.filter(
+        (project) =>
+          project.group?.id !== groupId &&
+          !fetchedProjects.some((fetched) => fetched.id === project.id)
+      );
 
-      fetchedProjects.forEach((fetchedProject) => {
-        const existingProjetIndex = state.projects.findIndex(
-          (project) => project.id === fetchedProject.id
-        );
-
-        if (existingProjetIndex !== -1) {
-          state.projects[existingProjetIndex] = fetchedProject;
-        } else {
-          state.projects.push(fetchedProject);
-        }
-      });
-
-      state.projects = sortByUpdateTime(state.projects);
+      state.projects = sortByUpdateTime([...otherProjects, ...fetchedProjects]);
     });
 
     builder.addCase(fetchProjectThunk.fulfilled, (state, action) => {

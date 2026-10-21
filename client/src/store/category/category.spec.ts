@@ -4,6 +4,8 @@ import {
   deleteCategoryThunk,
 } from './category.thunks';
 import { store } from '..';
+import { fetchBoardThunk } from '../project/project.thunks';
+import { BoardList } from '../../types/project.types';
 import {
   CreateCategoryParams,
   UpdateCategoryParams,
@@ -12,10 +14,12 @@ import API from '../../api';
 
 vi.mock('../../api', () => ({
   default: {
+    project: {
+      getBoard: vi.fn(),
+    },
     category: {
       createCategory: vi.fn(),
       updateCategory: vi.fn(),
-      getAllCategories: vi.fn(),
       deleteCategory: vi.fn(),
     },
   },
@@ -78,6 +82,39 @@ describe('Async Thunks', () => {
     expect(deleteCategoryMock).toHaveBeenCalledWith(categoryId);
     expect(store.getState().categories).toEqual({
       categories: [],
+    });
+  });
+
+  it('fills the lists from fetchBoardThunk without their cards', async () => {
+    const board: BoardList[] = [
+      {
+        id: 3,
+        name: 'To do',
+        index: 0,
+        createdAt: 'created',
+        tasks: [
+          {
+            id: 7,
+            name: 'Write tests',
+            description: 'description',
+            index: 0,
+            createdAt: 'created',
+          },
+        ],
+      },
+      { id: 4, name: 'Done', index: 1, createdAt: 'created', tasks: [] },
+    ];
+    const getBoardMock = vi.fn().mockResolvedValue({ data: board });
+    vi.mocked(API.project).getBoard.mockImplementation(getBoardMock);
+
+    await store.dispatch(fetchBoardThunk('5'));
+
+    expect(getBoardMock).toHaveBeenCalledWith('5');
+    expect(store.getState().categories).toEqual({
+      categories: [
+        { id: 3, name: 'To do', index: 0, createdAt: 'created' },
+        { id: 4, name: 'Done', index: 1, createdAt: 'created' },
+      ],
     });
   });
 });

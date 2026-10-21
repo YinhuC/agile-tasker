@@ -1,12 +1,8 @@
-import {
-  CreateTaskParams,
-  GetTasksParams,
-  Task,
-  UpdateTaskParams,
-} from '../../types/task.types';
+import { CreateTaskParams, UpdateTaskParams } from '../../types/task.types';
+import { BoardList } from '../../types/project.types';
 import { store } from '..';
+import { fetchBoardThunk } from '../project/project.thunks';
 import {
-  fetchAllTasksThunk,
   createTaskThunk,
   updateTaskThunk,
   deleteTaskThunk,
@@ -15,8 +11,10 @@ import API from '../../api';
 
 vi.mock('../../api', () => ({
   default: {
+    project: {
+      getBoard: vi.fn(),
+    },
     task: {
-      getAllTasks: vi.fn(),
       createTask: vi.fn(),
       updateTask: vi.fn(),
       deleteTask: vi.fn(),
@@ -65,26 +63,42 @@ describe('Task Thunks', () => {
     });
   });
 
-  it('dispatches fetchAllTasksThunk correctly', async () => {
-    const mockTasks: Task[] = [
+  it('fills the tasks from fetchBoardThunk with their list attached', async () => {
+    const board: BoardList[] = [
       {
-        id: 1,
-        name: 'Updated Task',
-        description: 'description',
+        id: 3,
+        name: 'To do',
         index: 0,
-        createdAt: Date.toString(),
+        createdAt: 'created',
+        tasks: [
+          {
+            id: 1,
+            name: 'Write tests',
+            description: 'description',
+            index: 0,
+            createdAt: 'created',
+          },
+        ],
       },
     ];
-    const getTasksMock = vi.fn().mockResolvedValue({ data: mockTasks });
-    const taskModule = vi.mocked(API.task);
-    taskModule.getAllTasks.mockImplementation(getTasksMock);
+    const getBoardMock = vi.fn().mockResolvedValue({ data: board });
+    vi.mocked(API.project).getBoard.mockImplementation(getBoardMock);
 
-    const params: GetTasksParams = { categoryId: 1 };
+    await store.dispatch(fetchBoardThunk('5'));
 
-    await store.dispatch(fetchAllTasksThunk(params));
-
-    expect(getTasksMock).toHaveBeenCalledWith(params);
-    expect(store.getState().tasks).toEqual({ tasks: mockTasks });
+    expect(getBoardMock).toHaveBeenCalledWith('5');
+    expect(store.getState().tasks).toEqual({
+      tasks: [
+        {
+          id: 1,
+          name: 'Write tests',
+          description: 'description',
+          index: 0,
+          createdAt: 'created',
+          category: { id: 3, name: 'To do', index: 0, createdAt: 'created' },
+        },
+      ],
+    });
   });
 
   it('dispatches deleteTaskThunk correctly', async () => {

@@ -62,28 +62,33 @@ function ProjectModal({ groupId, type, project, ...props }: ProjectModalProps) {
   ) => {
     try {
       if (type === 'add') {
-        dispatch(createProjectThunk(values as CreateProjectParams));
+        await dispatch(
+          createProjectThunk(values as CreateProjectParams)
+        ).unwrap();
       } else {
-        dispatch(updateProjectThunk(values as UpdateProjectParams));
+        await dispatch(
+          updateProjectThunk(values as UpdateProjectParams)
+        ).unwrap();
       }
+      form.reset();
+      close();
     } catch (err) {
       notifications.cleanQueue();
       notifications.show(GeneralErrorObject);
     }
-    form.reset();
-    close();
   };
 
   const onDelete = async () => {
     try {
-      if (project && project.id)
-        dispatch(deleteProjectThunk(project.id.toString()));
+      if (project && project.id) {
+        await dispatch(deleteProjectThunk(project.id.toString())).unwrap();
+      }
+      form.reset();
+      close();
     } catch (err) {
       notifications.cleanQueue();
       notifications.show(GeneralErrorObject);
     }
-    form.reset();
-    close();
   };
 
   return (

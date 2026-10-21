@@ -3,10 +3,9 @@ import { Category } from '../../types/category.types';
 import {
   createCategoryThunk,
   deleteCategoryThunk,
-  fetchAllCategoriesThunk,
-  updateCategoryOrderThunk,
   updateCategoryThunk,
 } from './category.thunks';
+import { fetchBoardThunk } from '../project/project.thunks';
 import { sortByIndex } from '../../utils/sort.utils';
 
 export interface CategoryState {
@@ -45,8 +44,10 @@ export const categorySlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchAllCategoriesThunk.fulfilled, (state, action) => {
-      state.categories = sortByIndex(action.payload.data);
+    builder.addCase(fetchBoardThunk.fulfilled, (state, action) => {
+      state.categories = action.payload.data.map(
+        ({ tasks, ...category }) => category
+      );
     });
 
     builder.addCase(createCategoryThunk.fulfilled, (state, action) => {
@@ -60,10 +61,6 @@ export const categorySlice = createSlice({
       if (index !== -1) {
         state.categories[index] = action.payload.data;
       }
-    });
-
-    builder.addCase(updateCategoryOrderThunk.fulfilled, (state, action) => {
-      state.categories = sortByIndex(action.payload.data);
     });
 
     builder.addCase(deleteCategoryThunk.fulfilled, (state, action) => {

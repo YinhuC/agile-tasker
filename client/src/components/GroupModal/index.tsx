@@ -46,27 +46,29 @@ function GroupModal({ type, group, ...props }: GroupModalProps) {
   const onSubmit = async (values: CreateGroupParams | UpdateGroupParams) => {
     try {
       if (type === 'add') {
-        dispatch(createGroupThunk(values as CreateGroupParams));
+        await dispatch(createGroupThunk(values as CreateGroupParams)).unwrap();
       } else {
-        dispatch(updateGroupThunk(values as UpdateGroupParams));
+        await dispatch(updateGroupThunk(values as UpdateGroupParams)).unwrap();
       }
+      form.reset();
+      close();
     } catch (err) {
       notifications.cleanQueue();
       notifications.show(GeneralErrorObject);
     }
-    form.reset();
-    close();
   };
 
   const onDelete = async () => {
     try {
-      if (group && group.id) dispatch(deleteGroupThunk(group.id.toString()));
+      if (group && group.id) {
+        await dispatch(deleteGroupThunk(group.id.toString())).unwrap();
+      }
+      form.reset();
+      close();
     } catch (err) {
       notifications.cleanQueue();
       notifications.show(GeneralErrorObject);
     }
-    form.reset();
-    close();
   };
 
   return (

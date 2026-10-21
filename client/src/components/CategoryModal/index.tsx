@@ -54,28 +54,33 @@ function CategoryModal({
   ) => {
     try {
       if (type === 'add') {
-        dispatch(createCategoryThunk(values as CreateCategoryParams));
+        await dispatch(
+          createCategoryThunk(values as CreateCategoryParams)
+        ).unwrap();
       } else {
-        dispatch(updateCategoryThunk(values as UpdateCategoryParams));
+        await dispatch(
+          updateCategoryThunk(values as UpdateCategoryParams)
+        ).unwrap();
       }
+      form.reset();
+      close();
     } catch (err) {
       notifications.cleanQueue();
       notifications.show(GeneralErrorObject);
     }
-    form.reset();
-    close();
   };
 
   const onDelete = async () => {
     try {
-      if (category && category.id)
-        dispatch(deleteCategoryThunk(category.id.toString()));
+      if (category && category.id) {
+        await dispatch(deleteCategoryThunk(category.id.toString())).unwrap();
+      }
+      form.reset();
+      close();
     } catch (err) {
       notifications.cleanQueue();
       notifications.show(GeneralErrorObject);
     }
-    form.reset();
-    close();
   };
 
   return (

@@ -1,13 +1,5 @@
-import {
-  CreateTaskParams,
-  GetTasksParams,
-  Task,
-  UpdateTaskParams,
-} from '../types/task.types';
+import { CreateTaskParams, Task, UpdateTaskParams } from '../types/task.types';
 import { axiosClient } from './client.api';
-
-export const getAllTasks = (data: GetTasksParams) =>
-  axiosClient.post<Task[]>('/tasks/all', data);
 
 export const createTask = (data: CreateTaskParams) =>
   axiosClient.post<Task>('/tasks', data);

@@ -1,13 +1,11 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Box, BoxProps, Title } from '@mantine/core';
 import TaskCard from '../TaskCard';
 import { Category } from '../../types/category.types';
-import { fetchAllTasksThunk } from '../../store/task/task.thunks';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { sortByIndex } from '../../utils/sort.utils';
 import TaskModal from '../TaskModal';
 import CategoryModal from '../CategoryModal';
-import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import classes from './CategoryGrid.module.css';
 
@@ -24,7 +22,6 @@ function CategoryGrid({
   projectId,
   ...props
 }: CategoryGridProps) {
-  const dispatch = useAppDispatch();
   const allTasks = useAppSelector((state) => state.tasks.tasks);
   const { name, id } = category;
 
@@ -32,10 +29,6 @@ function CategoryGrid({
     () => sortByIndex(allTasks.filter((task) => task.category?.id === id)),
     [allTasks, id]
   );
-
-  useEffect(() => {
-    dispatch(fetchAllTasksThunk({ categoryId: id }));
-  }, [dispatch, id]);
 
   return (
     <Draggable draggableId={`cat-drag-${id}`} index={index}>

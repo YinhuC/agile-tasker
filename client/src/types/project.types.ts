@@ -1,5 +1,6 @@
 import { Category } from './category.types';
 import { Group } from './group.types';
+import { Task } from './task.types';
 
 export type GetProjectsParams = {
   groupId: number;
@@ -26,3 +27,5 @@ export type Project = {
   updatedAt: string;
   categories?: Category[];
 };
+
+export type BoardList = Category & { tasks: Task[] };
