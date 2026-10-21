@@ -4,7 +4,12 @@ import { updateCategoryThunk } from '../../store/category/category.thunks';
 import { fetchBoardThunk } from '../../store/project/project.thunks';
 import { useLocation } from 'react-router';
 import CategoryGrid from '../../components/CategoryGrid';
-import { DragDropContext, DropResult, Droppable } from '@hello-pangea/dnd';
+import {
+  DragDropContext,
+  DraggableLocation,
+  DropResult,
+  Droppable,
+} from '@hello-pangea/dnd';
 import HeaderSection from './HeaderSection';
 import classes from './ProjectPage.module.css';
 import { Category } from '../../types/category.types';
@@ -20,6 +25,11 @@ import {
 import { updateAllCategories } from '../../store/category/category.slice';
 import { updateAllTasks } from '../../store/task/task.slice';
 import { showGeneralError } from '../../utils/notification.utils';
+
+/** Reads the numeric id from a drag and drop id such as `task-drop-12`. */
+function parseDndId(dndId: string) {
+  return parseInt(dndId.split('-')[2]);
+}
 
 function ProjectPage() {
   const categories = useAppSelector((state) => state.categories.categories);
@@ -39,11 +49,90 @@ function ProjectPage() {
     dispatch(fetchBoardThunk(projectId));
   };
 
-  const onDragEnd = (result: DropResult) => {
-    if (!result.destination) {
+  /** Reorders the lists on screen before saving, so the drop does not snap back. */
+  const moveCategory = (
+    source: DraggableLocation,
+    destination: DraggableLocation
+  ) => {
+    const updatedCategories = updateIndexValues(
+      categories,
+      source.index,
+      destination.index
+    );
+    dispatch(updateAllCategories(updatedCategories));
+
+    dispatch(
+      updateCategoryThunk({
+        id: categories[source.index].id,
+        index: destination.index,
+      })
+    )
+      .unwrap()
+      .catch(restoreBoard);
+  };
+
+  /** Moves the card on screen, within its list or into another, before saving, so the drop does not snap back. */
+  const moveTask = (
+    source: DraggableLocation,
+    destination: DraggableLocation,
+    draggableId: string
+  ) => {
+    const taskId = parseDndId(draggableId);
+    const task = tasks.find((task) => task.id === taskId);
+    if (!task) {
       return;
     }
+    const newCategoryId = parseDndId(destination.droppableId);
+    const oldCategoryId = parseDndId(source.droppableId);
+    const oldTaskGroup = tasks.filter(
+      (task) => task.category?.id === oldCategoryId
+    );
+
+    if (newCategoryId === oldCategoryId) {
+      const updatedTasks = updateIndexValues(
+        oldTaskGroup,
+        source.index,
+        destination.index
+      );
+      dispatch(updateAllTasks(updatedTasks));
+    } else {
+      const newTaskGroup = tasks.filter(
+        (task) => task.category?.id === newCategoryId
+      );
+      const { category, ...rest } = task;
+      const newTask: Task = {
+        ...rest,
+        index: destination.index,
+        category: {
+          ...(category as Category),
+          id: newCategoryId,
+        },
+      };
+      const inserted = insertIndexValue(
+        newTask,
+        newTaskGroup,
+        destination.index
+      );
+      const removed = removeIndexValue(oldTaskGroup, source.index);
+      dispatch(updateAllTasks(inserted.concat(removed)));
+    }
+
+    dispatch(
+      updateTaskThunk({
+        id: task.id,
+        index: destination.index,
+        categoryId: newCategoryId,
+      })
+    )
+      .unwrap()
+      .catch(restoreBoard);
+  };
+
+  const onDragEnd = (result: DropResult) => {
     const { source, destination, draggableId } = result;
+    if (!destination) {
+      return;
+    }
     if (
       source.droppableId === destination.droppableId &&
       source.index === destination.index
@@ -52,73 +141,9 @@ function ProjectPage() {
     }
 
     if (result.type === 'CATEGORY') {
-      // Update local first to prevent switch back glitch
-      const updatedCategories = updateIndexValues(
-        categories,
-        source.index,
-        destination.index
-      );
-      dispatch(updateAllCategories(updatedCategories));
-
-      dispatch(
-        updateCategoryThunk({
-          id: categories[source.index].id,
-          index: destination.index,
-        })
-      )
-        .unwrap()
-        .catch(restoreBoard);
+      moveCategory(source, destination);
     } else {
-      // Set variables and ids from drop zones
-      const taskId = parseInt(draggableId.split('-')[2]);
-      const task = tasks.find((task) => task.id === taskId);
-      if (!task) return;
-      const newCategoryId = parseInt(destination.droppableId.split('-')[2]);
-      const oldCategoryId = parseInt(source.droppableId.split('-')[2]);
-      const oldTaskGroup = tasks.filter(
-        (task) => task.category?.id === oldCategoryId
-      );
-
-      // Update local first to prevent switch back glitch
-      if (newCategoryId === oldCategoryId) {
-        const updatedTasks = updateIndexValues(
-          oldTaskGroup,
-          source.index,
-          destination.index
-        );
-        dispatch(updateAllTasks(updatedTasks));
-      } else {
-        const newTaskGroup = tasks.filter(
-          (task) => task.category?.id === newCategoryId
-        );
-        // Insert into new and remove from old category
-        const { category, ...rest } = task;
-        const newTask: Task = {
-          ...rest,
-          index: destination.index,
-          category: {
-            ...(category as Category),
-            id: newCategoryId,
-          },
-        };
-        const inserted = insertIndexValue(
-          newTask,
-          newTaskGroup,
-          destination.index
-        );
-        const removed = removeIndexValue(oldTaskGroup, source.index);
-        dispatch(updateAllTasks(inserted.concat(removed)));
-      }
-
-      dispatch(
-        updateTaskThunk({
-          id: task.id,
-          index: destination.index,
-          categoryId: newCategoryId,
-        })
-      )
-        .unwrap()
-        .catch(restoreBoard);
+      moveTask(source, destination, draggableId);
     }
   };
 
