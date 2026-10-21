@@ -3,13 +3,13 @@ import { User } from './user.types';
 
 export type CreateGroupParams = {
   name: string;
-  users?: string[];
+  emails?: string[];
 };
 
 export type UpdateGroupParams = {
   id: number;
   name?: string;
-  users?: string[];
+  emails?: string[];
   owner?: User;
 };
 
