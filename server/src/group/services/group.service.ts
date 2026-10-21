@@ -130,8 +130,7 @@ export class GroupService {
         let user = null;
         try {
           user = await this.userService.findUserByEmail(email);
-        } catch (error) {
-          console.error(`User not found for email: ${email}`);
+        } catch {
           notFoundUsers.push(email);
         }
         return user;
