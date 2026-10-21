@@ -2,8 +2,7 @@ import React from 'react';
 import { Box, Button, Container, Group, BoxProps } from '@mantine/core';
 import { Link, NavLink, useNavigate } from 'react-router';
 import { useAuth } from '../../hooks/useAuth';
-import { notifications } from '@mantine/notifications';
-import { GeneralErrorObject } from '../../utils/notification.utils';
+import { showGeneralError } from '../../utils/notification.utils';
 import { postAuthLogout } from '../../api/auth.api';
 import { usePrevious, useWindowScroll } from '@mantine/hooks';
 import Wordmark from '../Wordmark';
@@ -22,8 +21,7 @@ const Header: React.FC<BoxProps> = ({ ...props }) => {
       navigate(`/`);
       removeUser();
     } catch (err) {
-      notifications.cleanQueue();
-      notifications.show(GeneralErrorObject);
+      showGeneralError();
     }
   };
 

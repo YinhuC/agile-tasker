@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Flex, Text } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { updateCategoryThunk } from '../../store/category/category.thunks';
 import { fetchBoardThunk } from '../../store/project/project.thunks';
 import { useLocation } from 'react-router';
@@ -20,7 +19,7 @@ import {
 } from '../../utils/array.utils';
 import { updateAllCategories } from '../../store/category/category.slice';
 import { updateAllTasks } from '../../store/task/task.slice';
-import { GeneralErrorObject } from '../../utils/notification.utils';
+import { showGeneralError } from '../../utils/notification.utils';
 
 function ProjectPage() {
   const categories = useAppSelector((state) => state.categories.categories);
@@ -36,8 +35,7 @@ function ProjectPage() {
 
   /** The drop already shows on screen; if the server refuses it, reload the board so the screen matches the saved order. */
   const restoreBoard = () => {
-    notifications.cleanQueue();
-    notifications.show(GeneralErrorObject);
+    showGeneralError();
     dispatch(fetchBoardThunk(projectId));
   };
 

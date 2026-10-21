@@ -2,9 +2,8 @@ import React, { useEffect } from 'react';
 import { ActionIcon, Button, Group, Modal, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
 import { TbPencil } from 'react-icons/tb';
-import { GeneralErrorObject } from '../../utils/notification.utils';
+import { showGeneralError } from '../../utils/notification.utils';
 import {
   CreateGroupParams,
   Group as GroupType,
@@ -52,8 +51,7 @@ function GroupModal({ type, group, ...props }: GroupModalProps) {
       form.reset();
       close();
     } catch (err) {
-      notifications.cleanQueue();
-      notifications.show(GeneralErrorObject);
+      showGeneralError();
     }
   };
 
@@ -65,8 +63,7 @@ function GroupModal({ type, group, ...props }: GroupModalProps) {
       form.reset();
       close();
     } catch (err) {
-      notifications.cleanQueue();
-      notifications.show(GeneralErrorObject);
+      showGeneralError();
     }
   };
 

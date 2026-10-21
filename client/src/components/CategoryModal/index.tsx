@@ -7,9 +7,8 @@ import {
   UpdateCategoryParams,
 } from '../../types/category.types';
 import { useForm } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
 import { TbPencil } from 'react-icons/tb';
-import { GeneralErrorObject } from '../../utils/notification.utils';
+import { showGeneralError } from '../../utils/notification.utils';
 import {
   createCategoryThunk,
   deleteCategoryThunk,
@@ -64,8 +63,7 @@ function CategoryModal({
       form.reset();
       close();
     } catch (err) {
-      notifications.cleanQueue();
-      notifications.show(GeneralErrorObject);
+      showGeneralError();
     }
   };
 
@@ -77,8 +75,7 @@ function CategoryModal({
       form.reset();
       close();
     } catch (err) {
-      notifications.cleanQueue();
-      notifications.show(GeneralErrorObject);
+      showGeneralError();
     }
   };
 

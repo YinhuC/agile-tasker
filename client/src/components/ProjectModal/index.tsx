@@ -9,9 +9,8 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
 import { TbPencil } from 'react-icons/tb';
-import { GeneralErrorObject } from '../../utils/notification.utils';
+import { showGeneralError } from '../../utils/notification.utils';
 import {
   CreateProjectParams,
   Project,
@@ -72,8 +71,7 @@ function ProjectModal({ groupId, type, project, ...props }: ProjectModalProps) {
       form.reset();
       close();
     } catch (err) {
-      notifications.cleanQueue();
-      notifications.show(GeneralErrorObject);
+      showGeneralError();
     }
   };
 
@@ -85,8 +83,7 @@ function ProjectModal({ groupId, type, project, ...props }: ProjectModalProps) {
       form.reset();
       close();
     } catch (err) {
-      notifications.cleanQueue();
-      notifications.show(GeneralErrorObject);
+      showGeneralError();
     }
   };
 

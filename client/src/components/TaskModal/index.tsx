@@ -9,7 +9,6 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
 import { TbPencil, TbPlus } from 'react-icons/tb';
 import {
   CreateTaskParams,
@@ -21,7 +20,7 @@ import {
   deleteTaskThunk,
   updateTaskThunk,
 } from '../../store/task/task.thunks';
-import { GeneralErrorObject } from '../../utils/notification.utils';
+import { showGeneralError } from '../../utils/notification.utils';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 
 type TaskModalProps = {
@@ -78,8 +77,7 @@ function TaskModal({ categoryId, type, task, ...props }: TaskModalProps) {
       form.reset();
       close();
     } catch (err) {
-      notifications.cleanQueue();
-      notifications.show(GeneralErrorObject);
+      showGeneralError();
     }
   };
 
@@ -91,8 +89,7 @@ function TaskModal({ categoryId, type, task, ...props }: TaskModalProps) {
       form.reset();
       close();
     } catch (err) {
-      notifications.cleanQueue();
-      notifications.show(GeneralErrorObject);
+      showGeneralError();
     }
   };
 
