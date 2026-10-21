@@ -6,7 +6,6 @@ import { Repository } from 'typeorm';
 import { User } from '../../shared/interfaces/user.interface';
 import { generateMockUser } from '../../shared/mock/user.mock';
 import { NotFoundException } from '@nestjs/common';
-import { UpdateUserDto } from '../dto/update-user';
 import bcrypt from 'bcrypt';
 
 describe('UserService', () => {
@@ -127,54 +126,6 @@ describe('UserService', () => {
         lastname: 'Lee',
         password: expect.stringMatching(/^\$2b\$/),
       });
-    });
-  });
-
-  describe('updateUser', () => {
-    it('should update the user with the specified ID', async () => {
-      const userId = 1;
-      const updateUserDto: UpdateUserDto = { firstname: 'John' };
-      const user: User = generateMockUser(userId);
-      const updatedUser: User = { ...user, ...updateUserDto };
-      jest.spyOn(service, 'findUserById').mockResolvedValue(user);
-      jest.spyOn(userRepository, 'save').mockResolvedValue(updatedUser);
-
-      const result = await service.updateUser(userId, updateUserDto);
-
-      expect(result).toEqual(updatedUser);
-      expect(service.findUserById).toHaveBeenCalledWith(userId);
-      expect(userRepository.save).toHaveBeenCalledWith(user);
-    });
-
-    it('should save a new password hashed, never as plain text', async () => {
-      const userId = 1;
-      const newPassword = 'NewPassword1';
-      const user: User = generateMockUser(userId, 'old@example.com');
-      jest.spyOn(service, 'findUserById').mockResolvedValue(user);
-      jest.spyOn(userRepository, 'save').mockResolvedValue(user);
-
-      await service.updateUser(userId, { password: newPassword });
-
-      expect(service.findUserById).toHaveBeenCalledWith(userId);
-      expect(userRepository.save).toHaveBeenCalledTimes(1);
-      const savedUser = jest.mocked(userRepository.save).mock.calls[0][0];
-      expect(savedUser.email).toEqual('old@example.com');
-      expect(savedUser.password).not.toEqual(newPassword);
-      expect(await bcrypt.compare(newPassword, savedUser.password)).toBe(true);
-    });
-
-    it('should throw NotFoundException if user is not found', async () => {
-      const userId = 1;
-      const updateUserDto: UpdateUserDto = { firstname: 'John' };
-      jest
-        .spyOn(service, 'findUserById')
-        .mockRejectedValue(new NotFoundException('User not found'));
-
-      await expect(service.updateUser(userId, updateUserDto)).rejects.toThrow(
-        'User not found'
-      );
-      expect(service.findUserById).toHaveBeenCalledWith(userId);
-      expect(userRepository.save).not.toHaveBeenCalled();
     });
   });
 });

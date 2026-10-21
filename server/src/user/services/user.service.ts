@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User as UserEntity } from '../../shared/entities/user.entity';
 import { User } from '../../shared/interfaces/user.interface';
-import { UpdateUserDto } from '../dto/update-user';
 import bcrypt from 'bcrypt';
 import { hashPassword } from '../../shared/utils/password.util';
 
@@ -42,23 +41,6 @@ export class UserService {
     });
     await this.userRepository.save(user);
     return user;
-  }
-
-  async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    const user = await this.findUserById(id);
-    const { password, ...changes } = updateUserDto;
-    Object.assign(user, changes);
-    if (password) {
-      user.password = await hashPassword(password);
-    }
-    return await this.userRepository.save(user);
-  }
-
-  async deleteUser(id: number): Promise<void> {
-    const result = await this.userRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
   }
 
   async comparePassword(user: User, password: string): Promise<boolean> {
