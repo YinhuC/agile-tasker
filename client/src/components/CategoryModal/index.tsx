@@ -1,11 +1,7 @@
 import React, { useEffect } from 'react';
 import { ActionIcon, Button, Group, Modal, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import {
-  Category,
-  CreateCategoryParams,
-  UpdateCategoryParams,
-} from '../../types/category.types';
+import { Category } from '../../types/category.types';
 import { useForm } from '@mantine/form';
 import { TbPencil } from 'react-icons/tb';
 import { showGeneralError } from '../../utils/notification.utils';
@@ -42,17 +38,13 @@ function CategoryModal({ projectId, type, category }: CategoryModalProps) {
     form.setValues(initialValues);
   }, [type, category]);
 
-  const onSubmit = async (
-    values: CreateCategoryParams | UpdateCategoryParams
-  ) => {
+  const onSubmit = async (values: typeof initialValues) => {
     try {
       if (type === 'add') {
-        await dispatch(
-          createCategoryThunk(values as CreateCategoryParams)
-        ).unwrap();
+        await dispatch(createCategoryThunk({ ...values, projectId })).unwrap();
       } else {
         await dispatch(
-          updateCategoryThunk(values as UpdateCategoryParams)
+          updateCategoryThunk({ ...values, id: category?.id as number })
         ).unwrap();
       }
       form.reset();
@@ -84,11 +76,7 @@ function CategoryModal({ projectId, type, category }: CategoryModalProps) {
         centered
         size='lg'
       >
-        <form
-          onSubmit={form.onSubmit((values) =>
-            onSubmit({ ...values, projectId, id: category?.id })
-          )}
-        >
+        <form onSubmit={form.onSubmit(onSubmit)}>
           <TextInput
             mb={10}
             label='Name'

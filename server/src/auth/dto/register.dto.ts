@@ -24,6 +24,4 @@ export class RegisterDto {
   @IsNotEmpty()
   @Matches(REGEXES.PASSWORD_REGEX, { message: MESSAGES.PASSWORD_REGEX_MESSAGE })
   password: string;
-
-  authMethod?: string;
 }

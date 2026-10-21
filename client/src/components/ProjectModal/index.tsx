@@ -11,11 +11,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { TbPencil } from 'react-icons/tb';
 import { showGeneralError } from '../../utils/notification.utils';
-import {
-  CreateProjectParams,
-  Project,
-  UpdateProjectParams,
-} from '../../types/project.types';
+import { Project } from '../../types/project.types';
 import {
   createProjectThunk,
   deleteProjectThunk,
@@ -54,17 +50,13 @@ function ProjectModal({ groupId, type, project }: ProjectModalProps) {
     form.setValues(initialValues);
   }, [type, project]);
 
-  const onSubmit = async (
-    values: CreateProjectParams | UpdateProjectParams
-  ) => {
+  const onSubmit = async (values: typeof initialValues) => {
     try {
       if (type === 'add') {
-        await dispatch(
-          createProjectThunk(values as CreateProjectParams)
-        ).unwrap();
+        await dispatch(createProjectThunk({ ...values, groupId })).unwrap();
       } else {
         await dispatch(
-          updateProjectThunk(values as UpdateProjectParams)
+          updateProjectThunk({ ...values, id: project?.id as number })
         ).unwrap();
       }
       form.reset();
@@ -96,11 +88,7 @@ function ProjectModal({ groupId, type, project }: ProjectModalProps) {
         centered
         size='lg'
       >
-        <form
-          onSubmit={form.onSubmit((values) =>
-            onSubmit({ ...values, groupId, id: project?.id as number })
-          )}
-        >
+        <form onSubmit={form.onSubmit(onSubmit)}>
           <TextInput
             mb={10}
             label='Name'
