@@ -13,11 +13,7 @@ import { Project as ProjectEntity } from '../../shared/entities/project.entity';
 import { Category as CategoryEntity } from '../../shared/entities/category.entity';
 import { User } from '../../shared/interfaces/user.interface';
 import { generateMockUser } from '../../shared/mock/user.mock';
-import { GetTaskDto } from '../dto/get-task.dto';
-import {
-  generateMockTask,
-  generateMockTasks,
-} from '../../shared/mock/task.mock';
+import { generateMockTask } from '../../shared/mock/task.mock';
 import { Task } from '../../shared/interfaces/task.interface';
 import { CreateTaskDto } from '../dto/create-task.dto';
 import { UpdateTaskDto } from '../dto/update-task.dto';
@@ -66,24 +62,6 @@ describe('TaskController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('getCategoryTasks', () => {
-    it('should return an array of tasks', async () => {
-      const user: User = generateMockUser(1);
-      const getTaskDto: GetTaskDto = { categoryId: 1 };
-      const tasks: Task[] = generateMockTasks(3);
-
-      jest.spyOn(service, 'getAllTasksByCategoryId').mockResolvedValue(tasks);
-
-      const result = await controller.getCategoryTasks(user, getTaskDto);
-
-      expect(result).toEqual(tasks);
-      expect(service.getAllTasksByCategoryId).toHaveBeenCalledWith(
-        user,
-        getTaskDto.categoryId
-      );
-    });
-  });
-
   describe('getTaskById', () => {
     it('should return a task by ID', async () => {
       const taskId = 1;
@@ -115,7 +93,6 @@ describe('TaskController', () => {
 
   describe('updateTask', () => {
     it('should update a task', async () => {
-      const user: User = generateMockUser(1);
       const taskId = 1;
       const categoryId = 1;
       const updateTaskDto: UpdateTaskDto = {
@@ -129,29 +106,24 @@ describe('TaskController', () => {
 
       jest.spyOn(service, 'updateTask').mockResolvedValue(updatedTask);
 
-      const result = await controller.updateTask(user, taskId, updateTaskDto);
+      const result = await controller.updateTask(taskId, updateTaskDto);
 
       expect(result).toEqual(updatedTask);
-      expect(service.updateTask).toHaveBeenCalledWith(
-        user,
-        taskId,
-        updateTaskDto
-      );
+      expect(service.updateTask).toHaveBeenCalledWith(taskId, updateTaskDto);
     });
   });
 
   describe('deleteTask', () => {
     it('should delete a task', async () => {
-      const user: User = generateMockUser(1);
       const taskId = 1;
       const task: Task = generateMockTask(taskId);
 
       jest.spyOn(service, 'deleteTask').mockResolvedValue(task);
 
-      const result = await controller.deleteTask(user, taskId);
+      const result = await controller.deleteTask(taskId);
 
       expect(result).toEqual(task);
-      expect(service.deleteTask).toHaveBeenCalledWith(user, taskId);
+      expect(service.deleteTask).toHaveBeenCalledWith(taskId);
     });
   });
 });

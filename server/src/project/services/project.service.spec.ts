@@ -6,6 +6,7 @@ import { UserService } from '../../user/services/user.service';
 import { User as UserEntity } from '../../shared/entities/user.entity';
 import { Group as GroupEntity } from '../../shared/entities/group.entity';
 import { Project as ProjectEntity } from '../../shared/entities/project.entity';
+import { Category as CategoryEntity } from '../../shared/entities/category.entity';
 import { Repository } from 'typeorm';
 import { Project } from '../../shared/interfaces/project.interface';
 import { User } from '../../shared/interfaces/user.interface';
@@ -19,13 +20,18 @@ import {
 } from '../../shared/mock/project.mock';
 import { CreateProjectDto } from '../dto/create-project.dto';
 import { UpdateProjectDto } from '../dto/update-project.dto';
+import { generateMockQueryBuilder } from '../../shared/mock/query-builder.mock';
+import { generateMockCategory } from '../../shared/mock/category.mock';
+import { generateMockTask } from '../../shared/mock/task.mock';
 
 describe('ProjectService', () => {
   const PROJECT_REPOSITROY_TOKEN = getRepositoryToken(ProjectEntity);
+  const CATEGORY_REPOSITROY_TOKEN = getRepositoryToken(CategoryEntity);
 
   let service: ProjectService;
   let groupService: GroupService;
   let projectRepository: Repository<Project>;
+  let categoryRepository: Repository<CategoryEntity>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -46,6 +52,12 @@ describe('ProjectService', () => {
             })),
           })),
         },
+        {
+          provide: CATEGORY_REPOSITROY_TOKEN,
+          useClass: jest.fn(() => ({
+            createQueryBuilder: jest.fn(),
+          })),
+        },
         GroupService,
         {
           provide: getRepositoryToken(GroupEntity),
@@ -63,6 +75,9 @@ describe('ProjectService', () => {
     groupService = module.get<GroupService>(GroupService);
     projectRepository = module.get<Repository<Project>>(
       PROJECT_REPOSITROY_TOKEN
+    );
+    categoryRepository = module.get<Repository<CategoryEntity>>(
+      CATEGORY_REPOSITROY_TOKEN
     );
   });
 
@@ -281,47 +296,67 @@ describe('ProjectService', () => {
     });
   });
 
-  describe('isMember', () => {
-    it('should return true if the user is a member of the project group', async () => {
-      const user: User = generateMockUser(1);
-      const projectId = 1;
-      const project: Project = generateMockProject(
-        projectId,
-        generateMockGroup(1)
+  describe('getBoard', () => {
+    it('should return the lists in order with their cards in order', async () => {
+      const projectId = 2;
+      const board = [
+        { ...generateMockCategory(1), tasks: [generateMockTask(1)] },
+        { ...generateMockCategory(2), tasks: [] },
+      ];
+      const query = generateMockQueryBuilder({ getMany: board });
+      jest
+        .spyOn(categoryRepository, 'createQueryBuilder')
+        .mockReturnValue(query as any);
+
+      const result = await service.getBoard(projectId);
+
+      expect(result).toBe(board);
+      expect(categoryRepository.createQueryBuilder).toHaveBeenCalledWith(
+        'category'
       );
+      expect(query.leftJoinAndSelect).toHaveBeenCalledWith(
+        'category.tasks',
+        'task'
+      );
+      expect(query.where).toHaveBeenCalledWith(
+        'category.projectId = :projectId',
+        { projectId }
+      );
+      expect(query.orderBy).toHaveBeenCalledWith('category.index', 'ASC');
+      expect(query.addOrderBy).toHaveBeenCalledWith('task.index', 'ASC');
+    });
+  });
 
-      jest.spyOn(service, 'getProjectById').mockResolvedValue(project);
-      jest.spyOn(groupService, 'isMember').mockResolvedValue(true);
+  describe('isMember', () => {
+    it('should check the whole chain from project to the user in one query', async () => {
+      const user: User = generateMockUser(7);
+      const query = generateMockQueryBuilder({ getExists: true });
+      jest
+        .spyOn(projectRepository, 'createQueryBuilder')
+        .mockReturnValue(query as any);
 
-      const result = await service.isMember(user, projectId);
+      const result = await service.isMember(user, 3);
 
       expect(result).toBe(true);
-      expect(service.getProjectById).toHaveBeenCalledWith(projectId);
-      expect(groupService.isMember).toHaveBeenCalledWith(
-        user,
-        project.group.id
-      );
+      expect(query.innerJoin.mock.calls).toEqual([
+        ['project.group', 'group'],
+        ['group.users', 'user', 'user.id = :userId', { userId: 7 }],
+      ]);
+      expect(query.where).toHaveBeenCalledWith('project.id = :projectId', {
+        projectId: 3,
+      });
     });
 
     it('should return false if the user is not a member of the project group', async () => {
-      const user: User = generateMockUser(1);
-      const projectId = 1;
-      const project: Project = generateMockProject(
-        projectId,
-        generateMockGroup(1)
-      );
+      const user: User = generateMockUser(7);
+      const query = generateMockQueryBuilder({ getExists: false });
+      jest
+        .spyOn(projectRepository, 'createQueryBuilder')
+        .mockReturnValue(query as any);
 
-      jest.spyOn(service, 'getProjectById').mockResolvedValue(project);
-      jest.spyOn(groupService, 'isMember').mockResolvedValue(false);
-
-      const result = await service.isMember(user, projectId);
+      const result = await service.isMember(user, 3);
 
       expect(result).toBe(false);
-      expect(service.getProjectById).toHaveBeenCalledWith(projectId);
-      expect(groupService.isMember).toHaveBeenCalledWith(
-        user,
-        project.group.id
-      );
     });
   });
 });

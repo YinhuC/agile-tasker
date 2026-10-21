@@ -114,9 +114,13 @@ export class GroupService {
   }
 
   async isMember(user: Partial<User>, groupId: number): Promise<boolean> {
-    const groups = await this.userService.getUserGroups(user.id);
-    if (!groups) return false;
-    return groups.some((group) => group.id == groupId);
+    return await this.groupRepository
+      .createQueryBuilder('group')
+      .innerJoin('group.users', 'user', 'user.id = :userId', {
+        userId: user.id,
+      })
+      .where('group.id = :groupId', { groupId })
+      .getExists();
   }
 
   private async getUsersFromEmails(

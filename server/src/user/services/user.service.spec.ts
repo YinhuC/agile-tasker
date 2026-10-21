@@ -9,7 +9,6 @@ import {
   generateMockUsers,
 } from '../../shared/mock/user.mock';
 import { NotFoundException } from '@nestjs/common';
-import { generateMockGroups } from '../../shared/mock/group.mock';
 import { UpdateUserDto } from '../dto/update-user';
 
 describe('UserService', () => {
@@ -87,36 +86,6 @@ describe('UserService', () => {
     });
   });
 
-  describe('getUserGroups', () => {
-    it('should return the groups of the user with the specified ID', async () => {
-      const userId = 1;
-      const user: User = generateMockUser(userId);
-      user.groups = generateMockGroups(2);
-      jest.spyOn(userRepository, 'findOne').mockResolvedValue(user);
-
-      const result = await service.getUserGroups(userId);
-
-      expect(result).toEqual(user.groups);
-      expect(userRepository.findOne).toHaveBeenCalledWith({
-        where: { id: userId },
-        relations: { groups: true },
-      });
-    });
-
-    it('should throw NotFoundException if user is not found', async () => {
-      const userId = 1;
-      jest.spyOn(userRepository, 'findOne').mockResolvedValue(undefined);
-
-      await expect(service.getUserGroups(userId)).rejects.toThrow(
-        NotFoundException
-      );
-      expect(userRepository.findOne).toHaveBeenCalledWith({
-        where: { id: userId },
-        relations: { groups: true },
-      });
-    });
-  });
-
   describe('findUserByEmail', () => {
     it('should return the user with the specified email', async () => {
       const email = 'test@example.com';
@@ -177,9 +146,9 @@ describe('UserService', () => {
       const updateUserDto: UpdateUserDto = { firstname: 'John' };
       jest.spyOn(service, 'findUserById').mockResolvedValue(undefined);
 
-      await expect(
-        service.updateUser(userId, updateUserDto)
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.updateUser(userId, updateUserDto)).rejects.toThrow(
+        NotFoundException
+      );
       expect(service.findUserById).toHaveBeenCalledWith(userId);
       expect(userRepository.save).not.toHaveBeenCalled();
     });

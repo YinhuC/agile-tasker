@@ -20,12 +20,12 @@ import { NotFoundException } from '@nestjs/common';
 import { CreateGroupDTO } from '../dto/create-group.dto';
 import { GroupResponse } from '../utils/group.types';
 import { UpdateGroupDto } from '../dto/update-group.dto';
+import { generateMockQueryBuilder } from '../../shared/mock/query-builder.mock';
 
 describe('GroupService', () => {
   const GROUP_REPOSITROY_TOKEN = getRepositoryToken(GroupEntity);
 
   let service: GroupService;
-  let userService: UserService;
   let groupRepository: Repository<Group>;
 
   beforeEach(async () => {
@@ -56,7 +56,6 @@ describe('GroupService', () => {
     }).compile();
 
     service = module.get<GroupService>(GroupService);
-    userService = module.get<UserService>(UserService);
     groupRepository = module.get<Repository<Group>>(GROUP_REPOSITROY_TOKEN);
   });
 
@@ -239,48 +238,36 @@ describe('GroupService', () => {
 
   describe('isMember', () => {
     it('should return true if the user is a member of the group', async () => {
-      const userId = 1;
-      const groupId = 1;
-      const user: Partial<User> = { id: userId };
-      const groups: GroupEntity[] = [
-        { id: groupId, users: [{ id: userId }] } as GroupEntity,
-      ];
+      const user: Partial<User> = { id: 7 };
+      const query = generateMockQueryBuilder({ getExists: true });
+      jest
+        .spyOn(groupRepository, 'createQueryBuilder')
+        .mockReturnValue(query as any);
 
-      jest.spyOn(userService, 'getUserGroups').mockResolvedValue(groups);
-
-      const result = await service.isMember(user, groupId);
+      const result = await service.isMember(user, 3);
 
       expect(result).toBe(true);
-      expect(userService.getUserGroups).toHaveBeenCalledWith(userId);
+      expect(query.innerJoin).toHaveBeenCalledWith(
+        'group.users',
+        'user',
+        'user.id = :userId',
+        { userId: 7 }
+      );
+      expect(query.where).toHaveBeenCalledWith('group.id = :groupId', {
+        groupId: 3,
+      });
     });
 
     it('should return false if the user is not a member of the group', async () => {
-      const userId = 1;
-      const groupId = 1;
-      const user: Partial<User> = { id: userId };
-      const groups: GroupEntity[] = [
-        { id: 2, users: [{ id: 2 }] } as GroupEntity,
-      ];
+      const user: Partial<User> = { id: 7 };
+      const query = generateMockQueryBuilder({ getExists: false });
+      jest
+        .spyOn(groupRepository, 'createQueryBuilder')
+        .mockReturnValue(query as any);
 
-      jest.spyOn(userService, 'getUserGroups').mockResolvedValue(groups);
-
-      const result = await service.isMember(user, groupId);
+      const result = await service.isMember(user, 3);
 
       expect(result).toBe(false);
-      expect(userService.getUserGroups).toHaveBeenCalledWith(userId);
-    });
-
-    it('should return false if the user does not have any groups', async () => {
-      const userId = 1;
-      const groupId = 1;
-      const user: Partial<User> = { id: userId };
-
-      jest.spyOn(userService, 'getUserGroups').mockResolvedValue(null);
-
-      const result = await service.isMember(user, groupId);
-
-      expect(result).toBe(false);
-      expect(userService.getUserGroups).toHaveBeenCalledWith(userId);
     });
   });
 });

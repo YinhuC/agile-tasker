@@ -5,7 +5,6 @@ import { User as UserEntity } from '../../shared/entities/user.entity';
 import { User } from '../../shared/interfaces/user.interface';
 import { UpdateUserDto } from '../dto/update-user';
 import bcrypt from 'bcrypt';
-import { Group } from '../../shared/interfaces/group.interface';
 import { hashPassword } from '../../shared/utils/password.util';
 
 @Injectable()
@@ -25,19 +24,6 @@ export class UserService {
       throw new NotFoundException('User not found');
     }
     return user;
-  }
-
-  async getUserGroups(id: number): Promise<Group[]> {
-    const user = await this.userRepository.findOne({
-      where: { id },
-      relations: {
-        groups: true,
-      },
-    });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return user.groups;
   }
 
   async findUserByEmail(email: string): Promise<User> {

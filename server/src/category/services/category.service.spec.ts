@@ -8,31 +8,26 @@ import { User as UserEntity } from '../../shared/entities/user.entity';
 import { Group as GroupEntity } from '../../shared/entities/group.entity';
 import { Project as ProjectEntity } from '../../shared/entities/project.entity';
 import { Category as CategoryEntity } from '../../shared/entities/category.entity';
-import { DeepPartial, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Category } from '../../shared/interfaces/category.interface';
-import { User } from '../../shared/interfaces/user.interface';
 import { generateMockUser } from '../../shared/mock/user.mock';
 import {
-  generateMockCategories,
   generateMockCategory,
   generateMockCategoryDto,
 } from '../../shared/mock/category.mock';
-import {
-  BadRequestException,
-  ForbiddenException,
-  NotFoundException,
-} from '@nestjs/common';
 import { generateMockProject } from '../../shared/mock/project.mock';
 import { CreateCategoryDto } from '../dto/create-category.dto';
-import { Project } from '../../shared/interfaces/project.interface';
-import { UpdateCategoryDto } from '../dto/update-category.dto';
+import {
+  generateMockEntityManager,
+  generateMockQueryBuilder,
+} from '../../shared/mock/query-builder.mock';
 
 describe('CategoryService', () => {
   const CATEGORY_REPOSITROY_TOKEN = getRepositoryToken(CategoryEntity);
 
   let service: CategoryService;
   let projectService: ProjectService;
-  let categoryRepository: Repository<Category>;
+  let categoryRepository: Repository<CategoryEntity>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -46,16 +41,12 @@ describe('CategoryService', () => {
         {
           provide: CATEGORY_REPOSITROY_TOKEN,
           useClass: jest.fn(() => ({
-            find: jest.fn(),
-            findOne: jest.fn(),
-            create: jest.fn(),
-            save: jest.fn(),
-            delete: jest.fn(),
-            createQueryBuilder: jest.fn(() => ({
-              addSelect: jest.fn().mockReturnThis(),
-              where: jest.fn().mockReturnThis(),
-              getOne: jest.fn(),
-            })),
+            update: jest.fn(),
+            createQueryBuilder: jest.fn(),
+            manager: {
+              transaction: jest.fn(),
+              createQueryBuilder: jest.fn(),
+            },
           })),
         },
         GroupService,
@@ -73,7 +64,7 @@ describe('CategoryService', () => {
 
     service = module.get<CategoryService>(CategoryService);
     projectService = module.get<ProjectService>(ProjectService);
-    categoryRepository = module.get<Repository<Category>>(
+    categoryRepository = module.get<Repository<CategoryEntity>>(
       CATEGORY_REPOSITROY_TOKEN
     );
   });
@@ -82,261 +73,276 @@ describe('CategoryService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('getAllCategoriesByProjectId', () => {
-    it('should return the categories of a project', async () => {
-      const user: User = generateMockUser(1);
-      const projectId = 1;
-      const categories: Category[] = generateMockCategories(3);
-
-      jest.spyOn(projectService, 'isMember').mockResolvedValue(true);
-      jest.spyOn(categoryRepository, 'find').mockResolvedValue(categories);
-
-      const result = await service.getAllCategoriesByProjectId(user, projectId);
-
-      expect(result).toBe(categories);
-      expect(projectService.isMember).toHaveBeenCalledWith(user, projectId);
-      expect(categoryRepository.find).toHaveBeenCalledWith({
-        where: { project: { id: projectId } },
-        relations: { project: true },
-      });
-    });
-
-    it('should throw a ForbiddenException if the user is not a member of the project', async () => {
-      const user: User = generateMockUser(1);
-      const projectId = 1;
-
-      jest.spyOn(projectService, 'isMember').mockResolvedValue(false);
-
-      await expect(
-        service.getAllCategoriesByProjectId(user, projectId)
-      ).rejects.toThrow(ForbiddenException);
-
-      expect(projectService.isMember).toHaveBeenCalledWith(user, projectId);
-      expect(categoryRepository.find).not.toHaveBeenCalled();
-    });
-  });
-
   describe('getCategoryById', () => {
-    it('should return a category by its ID', async () => {
+    it('should return a category with its project', async () => {
       const categoryId = 1;
       const category: Category = generateMockCategory(
         categoryId,
         generateMockProject(1)
       );
-
-      jest.spyOn(categoryRepository, 'findOne').mockResolvedValue(category);
+      const query = generateMockQueryBuilder({ getOne: category });
+      jest
+        .spyOn(categoryRepository.manager, 'createQueryBuilder')
+        .mockReturnValue(query as any);
 
       const result = await service.getCategoryById(categoryId);
 
       expect(result).toBe(category);
-      expect(categoryRepository.findOne).toHaveBeenCalledWith({
-        where: { id: categoryId },
-        relations: { project: true },
+      expect(
+        categoryRepository.manager.createQueryBuilder
+      ).toHaveBeenCalledWith(CategoryEntity, 'category');
+      expect(query.leftJoinAndSelect).toHaveBeenCalledWith(
+        'category.project',
+        'project'
+      );
+      expect(query.where).toHaveBeenCalledWith('category.id = :categoryId', {
+        categoryId,
       });
     });
 
     it('should throw a NotFoundException if the category is not found', async () => {
       const categoryId = 1;
-
-      jest.spyOn(categoryRepository, 'findOne').mockResolvedValue(undefined);
+      const query = generateMockQueryBuilder({ getOne: null });
+      jest
+        .spyOn(categoryRepository.manager, 'createQueryBuilder')
+        .mockReturnValue(query as any);
 
       await expect(service.getCategoryById(categoryId)).rejects.toThrow(
-        NotFoundException
+        `Category with ID ${categoryId} not found`
       );
-
-      expect(categoryRepository.findOne).toHaveBeenCalledWith({
-        where: { id: categoryId },
-        relations: { project: true },
-      });
     });
   });
 
   describe('createCategory', () => {
-    it('should create a new category', async () => {
-      const user: User = generateMockUser(1);
-      const createCategoryDto: CreateCategoryDto = generateMockCategoryDto(1);
-      const { projectId, ...projectData } = createCategoryDto;
-      const category: Category = generateMockCategory(
-        1,
-        generateMockProject(projectId)
-      );
-
+    it('should create a category at the end of its board', async () => {
+      const user = generateMockUser(1);
+      const createCategoryDto: CreateCategoryDto = generateMockCategoryDto(5);
+      const { projectId, ...categoryData } = createCategoryDto;
+      const lock = generateMockQueryBuilder();
+      const count = generateMockQueryBuilder({ getCount: 3 });
+      const manager = generateMockEntityManager([lock, count]);
       jest.spyOn(projectService, 'isMember').mockResolvedValue(true);
-      jest.spyOn(service, 'getAllCategoriesByProjectId').mockResolvedValue([]);
-      jest
-        .spyOn(projectService, 'getProjectById')
-        .mockResolvedValue(category.project);
-      jest.spyOn(categoryRepository, 'create').mockReturnValue(category);
-      jest.spyOn(categoryRepository, 'save').mockResolvedValue(category);
+      (categoryRepository.manager.transaction as jest.Mock).mockImplementation(
+        async (run) => await run(manager)
+      );
 
       const result = await service.createCategory(user, createCategoryDto);
 
-      expect(result).toBe(category);
-      expect(projectService.isMember).toHaveBeenCalledWith(user, projectId);
-      expect(service.getAllCategoriesByProjectId).toHaveBeenCalledWith(
-        user,
-        projectId
-      );
-      expect(projectService.getProjectById).toHaveBeenCalledWith(projectId);
-      expect(categoryRepository.create).toHaveBeenCalledWith({
-        ...projectData,
-        project: category.project,
-        index: 0,
-      });
-      expect(categoryRepository.save).toHaveBeenCalledWith(category);
-    });
-
-    it('should index a new category after the existing ones', async () => {
-      const user: User = generateMockUser(1);
-      const createCategoryDto: CreateCategoryDto = generateMockCategoryDto(1);
-      const { projectId, ...projectData } = createCategoryDto;
-      const category: Category = generateMockCategory(
-        4,
-        generateMockProject(projectId)
-      );
-
-      jest.spyOn(projectService, 'isMember').mockResolvedValue(true);
-      jest
-        .spyOn(service, 'getAllCategoriesByProjectId')
-        .mockResolvedValue(generateMockCategories(3));
-      jest
-        .spyOn(projectService, 'getProjectById')
-        .mockResolvedValue(category.project);
-      jest.spyOn(categoryRepository, 'create').mockReturnValue(category);
-      jest.spyOn(categoryRepository, 'save').mockResolvedValue(category);
-
-      const result = await service.createCategory(user, createCategoryDto);
-
-      expect(result).toBe(category);
-      expect(categoryRepository.create).toHaveBeenCalledWith({
-        ...projectData,
-        project: category.project,
+      const expectedCategory = {
+        ...categoryData,
+        project: { id: projectId },
         index: 3,
+      };
+      expect(result).toEqual(expectedCategory);
+      expect(projectService.isMember).toHaveBeenCalledWith(user, projectId);
+      expect(lock.where).toHaveBeenCalledWith('project.id = :projectId', {
+        projectId,
       });
-      expect(categoryRepository.save).toHaveBeenCalledWith(category);
+      expect(lock.setLock).toHaveBeenCalledWith('pessimistic_write');
+      expect(count.where).toHaveBeenCalledWith(
+        'category.projectId = :projectId',
+        { projectId }
+      );
+      expect(manager.create).toHaveBeenCalledWith(
+        CategoryEntity,
+        expectedCategory
+      );
+      expect(manager.save).toHaveBeenCalledWith(expectedCategory);
     });
 
     it('should throw a ForbiddenException if the user is not a member of the project', async () => {
-      const user: User = generateMockUser(1);
-      const projectId = 1;
+      const user = generateMockUser(1);
       const createCategoryDto: CreateCategoryDto = generateMockCategoryDto(1);
-
       jest.spyOn(projectService, 'isMember').mockResolvedValue(false);
 
       await expect(
         service.createCategory(user, createCategoryDto)
-      ).rejects.toThrow(ForbiddenException);
+      ).rejects.toThrow(
+        'You have rights to create a category for this project'
+      );
 
-      expect(projectService.isMember).toHaveBeenCalledWith(user, projectId);
-      expect(categoryRepository.create).not.toHaveBeenCalled();
-      expect(categoryRepository.save).not.toHaveBeenCalled();
+      expect(categoryRepository.manager.transaction).not.toHaveBeenCalled();
     });
   });
 
   describe('updateCategory', () => {
-    it('should update a category', async () => {
-      const user: User = generateMockUser(1);
+    it('should rename a category without touching the order', async () => {
       const categoryId = 1;
-      const updateCategoryDto: UpdateCategoryDto = { name: 'Updated Category' };
-      const category: Category = {
-        ...generateMockCategory(categoryId, generateMockProject(1)),
-        ...updateCategoryDto,
-      };
-      const categories = [category];
-
-      jest.spyOn(service, 'getCategoryById').mockResolvedValue(category);
-      jest
-        .spyOn(service, 'getAllCategoriesByProjectId')
-        .mockResolvedValue(categories);
-      jest.spyOn(categoryRepository, 'save').mockResolvedValue(category);
-
-      const result = await service.updateCategory(
-        user,
-        categoryId,
-        updateCategoryDto
-      );
-
-      expect(result).toBe(category);
-      expect(service.getCategoryById).toHaveBeenCalledWith(categoryId);
-      expect(service.getAllCategoriesByProjectId).toHaveBeenCalledWith(
-        user,
-        category.project.id
-      );
-      expect(categoryRepository.save).toHaveBeenCalledWith(category);
-    });
-
-    it('should throw a BadRequestException if the updated index is bigger than the current length of categories', async () => {
-      const user: User = generateMockUser(1);
-      const categoryId = 1;
-      const updateCategoryDto: UpdateCategoryDto = { index: 2 };
       const category: Category = generateMockCategory(
         categoryId,
         generateMockProject(1)
       );
-      const categories = [category];
-
       jest.spyOn(service, 'getCategoryById').mockResolvedValue(category);
-      jest
-        .spyOn(service, 'getAllCategoriesByProjectId')
-        .mockResolvedValue(categories);
+
+      const result = await service.updateCategory(categoryId, {
+        name: 'New name',
+      });
+
+      expect(result).toEqual({ ...category, name: 'New name' });
+      expect(categoryRepository.update).toHaveBeenCalledWith(categoryId, {
+        name: 'New name',
+      });
+      expect(categoryRepository.manager.transaction).not.toHaveBeenCalled();
+    });
+
+    it('should shift the lists between the old and new index left when moving a list right', async () => {
+      const categoryId = 1;
+      const category: Category = {
+        ...generateMockCategory(categoryId, generateMockProject(4)),
+        index: 0,
+      };
+      const lock = generateMockQueryBuilder();
+      const read = generateMockQueryBuilder({ getOne: category });
+      const count = generateMockQueryBuilder({ getCount: 3 });
+      const shift = generateMockQueryBuilder();
+      const manager = generateMockEntityManager([lock, read, count, shift]);
+      (categoryRepository.manager.transaction as jest.Mock).mockImplementation(
+        async (run) => await run(manager)
+      );
+
+      const result = await service.updateCategory(categoryId, { index: 2 });
+
+      expect(result).toEqual({ ...category, index: 2 });
+      expect(lock.where).toHaveBeenCalledWith('category.id = :categoryId', {
+        categoryId,
+      });
+      expect(shift.set.mock.calls[0][0].index()).toBe('"index" + -1');
+      expect(shift.where).toHaveBeenCalledWith('"projectId" = :projectId', {
+        projectId: 4,
+      });
+      expect(shift.andWhere.mock.calls).toEqual([
+        ['"index" >= :from', { from: 1 }],
+        ['"index" <= :to', { to: 2 }],
+      ]);
+      expect(manager.update).toHaveBeenCalledWith(CategoryEntity, categoryId, {
+        index: 2,
+      });
+    });
+
+    it('should shift the lists between the new and old index right when moving a list left', async () => {
+      const categoryId = 1;
+      const category: Category = {
+        ...generateMockCategory(categoryId, generateMockProject(4)),
+        index: 2,
+      };
+      const lock = generateMockQueryBuilder();
+      const read = generateMockQueryBuilder({ getOne: category });
+      const count = generateMockQueryBuilder({ getCount: 3 });
+      const shift = generateMockQueryBuilder();
+      const manager = generateMockEntityManager([lock, read, count, shift]);
+      (categoryRepository.manager.transaction as jest.Mock).mockImplementation(
+        async (run) => await run(manager)
+      );
+
+      await service.updateCategory(categoryId, { index: 0 });
+
+      expect(shift.set.mock.calls[0][0].index()).toBe('"index" + 1');
+      expect(shift.andWhere.mock.calls).toEqual([
+        ['"index" >= :from', { from: 0 }],
+        ['"index" <= :to', { to: 1 }],
+      ]);
+    });
+
+    it('should throw a BadRequestException if the updated index is past the end of the board', async () => {
+      const categoryId = 1;
+      const category: Category = generateMockCategory(
+        categoryId,
+        generateMockProject(1)
+      );
+      const lock = generateMockQueryBuilder();
+      const read = generateMockQueryBuilder({ getOne: category });
+      const count = generateMockQueryBuilder({ getCount: 3 });
+      const manager = generateMockEntityManager([lock, read, count]);
+      (categoryRepository.manager.transaction as jest.Mock).mockImplementation(
+        async (run) => await run(manager)
+      );
 
       await expect(
-        service.updateCategory(user, categoryId, updateCategoryDto)
-      ).rejects.toThrow(BadRequestException);
-
-      expect(service.getCategoryById).toHaveBeenCalledWith(categoryId);
-      expect(service.getAllCategoriesByProjectId).toHaveBeenCalledWith(
-        user,
-        category.project.id
+        service.updateCategory(categoryId, { index: 3 })
+      ).rejects.toThrow(
+        'Index cannot be bigger than the current length of categories'
       );
-      expect(categoryRepository.save).not.toHaveBeenCalled();
+
+      expect(manager.update).not.toHaveBeenCalled();
     });
   });
 
   describe('deleteCategory', () => {
-    it('should delete a category', async () => {
-      const user: User = generateMockUser(1);
+    it('should delete a category and close the gap it leaves', async () => {
       const categoryId = 1;
-      const category: Category = generateMockCategory(
-        categoryId,
-        generateMockProject(1)
+      const category: Category = {
+        ...generateMockCategory(categoryId, generateMockProject(4)),
+        index: 1,
+      };
+      const lock = generateMockQueryBuilder();
+      const read = generateMockQueryBuilder({ getOne: category });
+      const shift = generateMockQueryBuilder();
+      const manager = generateMockEntityManager([lock, read, shift]);
+      (categoryRepository.manager.transaction as jest.Mock).mockImplementation(
+        async (run) => await run(manager)
       );
-      const categories = [category];
 
-      jest.spyOn(service, 'getCategoryById').mockResolvedValue(category);
-      jest
-        .spyOn(service, 'getAllCategoriesByProjectId')
-        .mockResolvedValue(categories);
-      jest.spyOn(categoryRepository, 'save').mockResolvedValue(category);
-      jest
-        .spyOn(categoryRepository, 'delete')
-        .mockResolvedValue({ affected: 1, raw: undefined });
-
-      const result = await service.deleteCategory(user, categoryId);
+      const result = await service.deleteCategory(categoryId);
 
       expect(result).toBe(category);
-      expect(service.getCategoryById).toHaveBeenCalledWith(categoryId);
-      expect(service.getAllCategoriesByProjectId).toHaveBeenCalledWith(
-        user,
-        category.project.id
-      );
-      expect(categoryRepository.save).toHaveBeenCalledWith(categories);
-      expect(categoryRepository.delete).toHaveBeenCalledWith(categoryId);
+      expect(manager.delete).toHaveBeenCalledWith(CategoryEntity, categoryId);
+      expect(shift.set.mock.calls[0][0].index()).toBe('"index" + -1');
+      expect(shift.where).toHaveBeenCalledWith('"projectId" = :projectId', {
+        projectId: 4,
+      });
+      expect(shift.andWhere.mock.calls).toEqual([
+        ['"index" >= :from', { from: 2 }],
+      ]);
     });
 
     it('should throw a NotFoundException if the category is not found', async () => {
-      const user: User = generateMockUser(1);
       const categoryId = 1;
+      const lock = generateMockQueryBuilder();
+      const read = generateMockQueryBuilder({ getOne: null });
+      const manager = generateMockEntityManager([lock, read]);
+      (categoryRepository.manager.transaction as jest.Mock).mockImplementation(
+        async (run) => await run(manager)
+      );
 
-      jest.spyOn(service, 'getCategoryById').mockResolvedValue(undefined);
+      await expect(service.deleteCategory(categoryId)).rejects.toThrow(
+        `Category with ID ${categoryId} not found`
+      );
 
-      await expect(
-        service.deleteCategory(user, categoryId)
-      ).rejects.toThrow(NotFoundException);
+      expect(manager.delete).not.toHaveBeenCalled();
+    });
+  });
 
-      expect(service.getCategoryById).toHaveBeenCalledWith(categoryId);
-      expect(categoryRepository.save).not.toHaveBeenCalled();
-      expect(categoryRepository.delete).not.toHaveBeenCalled();
+  describe('isMember', () => {
+    it('should check the whole chain from list to the user in one query', async () => {
+      const user = generateMockUser(7);
+      const query = generateMockQueryBuilder({ getExists: true });
+      jest
+        .spyOn(categoryRepository, 'createQueryBuilder')
+        .mockReturnValue(query as any);
+
+      const result = await service.isMember(user, 3);
+
+      expect(result).toBe(true);
+      expect(query.innerJoin.mock.calls).toEqual([
+        ['category.project', 'project'],
+        ['project.group', 'group'],
+        ['group.users', 'user', 'user.id = :userId', { userId: 7 }],
+      ]);
+      expect(query.where).toHaveBeenCalledWith('category.id = :categoryId', {
+        categoryId: 3,
+      });
+    });
+
+    it('should return false when the user is not in the workspace', async () => {
+      const user = generateMockUser(7);
+      const query = generateMockQueryBuilder({ getExists: false });
+      jest
+        .spyOn(categoryRepository, 'createQueryBuilder')
+        .mockReturnValue(query as any);
+
+      const result = await service.isMember(user, 3);
+
+      expect(result).toBe(false);
     });
   });
 });

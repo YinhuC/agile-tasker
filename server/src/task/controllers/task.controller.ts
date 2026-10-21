@@ -16,23 +16,11 @@ import { AuthUser } from '../../user/decorators/user.decorator';
 import { User } from '../../shared/interfaces/user.interface';
 import { AuthenticatedGuard } from '../../auth/guards/auth.guard';
 import { TaskMemberGuard } from '../guards/task-member.guard';
-import { GetTaskDto } from '../dto/get-task.dto';
 
 @UseGuards(AuthenticatedGuard)
 @Controller('tasks')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
-
-  @Post('all')
-  async getCategoryTasks(
-    @AuthUser() user: User,
-    @Body() getTaskDto: GetTaskDto
-  ): Promise<Task[]> {
-    return await this.taskService.getAllTasksByCategoryId(
-      user,
-      getTaskDto.categoryId
-    );
-  }
 
   @Get(':id')
   @UseGuards(TaskMemberGuard)
@@ -51,19 +39,15 @@ export class TaskController {
   @Put(':id')
   @UseGuards(TaskMemberGuard)
   async updateTask(
-    @AuthUser() user: User,
     @Param('id') id: number,
     @Body() updateTaskDto: UpdateTaskDto
   ): Promise<Task> {
-    return await this.taskService.updateTask(user, id, updateTaskDto);
+    return await this.taskService.updateTask(id, updateTaskDto);
   }
 
   @Delete(':id')
   @UseGuards(TaskMemberGuard)
-  async deleteTask(
-    @AuthUser() user: User,
-    @Param('id') id: number
-  ): Promise<Task> {
-    return await this.taskService.deleteTask(user, id);
+  async deleteTask(@Param('id') id: number): Promise<Task> {
+    return await this.taskService.deleteTask(id);
   }
 }

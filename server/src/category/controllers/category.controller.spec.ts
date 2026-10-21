@@ -12,7 +12,6 @@ import { Category as CategoryEntity } from '../../shared/entities/category.entit
 import { Category } from '../../shared/interfaces/category.interface';
 import { generateMockUser } from '../../shared/mock/user.mock';
 import {
-  generateMockCategories,
   generateMockCategory,
   generateMockCategoryDto,
 } from '../../shared/mock/category.mock';
@@ -59,33 +58,6 @@ describe('CategoryController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('getProjectCategories', () => {
-    it('should return an array of categories', async () => {
-      const user = generateMockUser(1);
-      const projectId = 1;
-      const categories: Category[] = generateMockCategories(
-        3,
-        generateMockProject(projectId)
-      );
-      const getCategoryDto = { projectId };
-
-      jest
-        .spyOn(service, 'getAllCategoriesByProjectId')
-        .mockResolvedValue(categories);
-
-      const result = await controller.getProjectCategories(
-        user,
-        getCategoryDto
-      );
-
-      expect(result).toBe(categories);
-      expect(service.getAllCategoriesByProjectId).toHaveBeenCalledWith(
-        user,
-        projectId
-      );
-    });
-  });
-
   describe('getCategoryById', () => {
     it('should return a category', async () => {
       const categoryId = 1;
@@ -125,7 +97,6 @@ describe('CategoryController', () => {
 
   describe('updateCategory', () => {
     it('should update a category', async () => {
-      const user = generateMockUser(1);
       const categoryId = 1;
       const updateCategoryDto: UpdateCategoryDto = { name: 'Updated Category' };
       const category: Category = generateMockCategory(
@@ -135,14 +106,12 @@ describe('CategoryController', () => {
       jest.spyOn(service, 'updateCategory').mockResolvedValue(category);
 
       const result = await controller.updateCategory(
-        user,
         categoryId,
         updateCategoryDto
       );
 
       expect(result).toBe(category);
       expect(service.updateCategory).toHaveBeenCalledWith(
-        user,
         categoryId,
         updateCategoryDto
       );
@@ -151,7 +120,6 @@ describe('CategoryController', () => {
 
   describe('deleteCategory', () => {
     it('should delete a category', async () => {
-      const user = generateMockUser(1);
       const categoryId = 1;
       const category: Category = generateMockCategory(
         categoryId,
@@ -159,10 +127,10 @@ describe('CategoryController', () => {
       );
       jest.spyOn(service, 'deleteCategory').mockResolvedValue(category);
 
-      const result = await controller.deleteCategory(user, categoryId);
+      const result = await controller.deleteCategory(categoryId);
 
       expect(result).toBe(category);
-      expect(service.deleteCategory).toHaveBeenCalledWith(user, categoryId);
+      expect(service.deleteCategory).toHaveBeenCalledWith(categoryId);
     });
   });
 });

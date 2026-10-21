@@ -15,22 +15,22 @@ import { Task } from '../../shared/interfaces/task.interface';
 import {
   generateMockTask,
   generateMockTaskDto,
-  generateMockTasks,
 } from '../../shared/mock/task.mock';
 import { generateMockUser } from '../../shared/mock/user.mock';
 import { CreateTaskDto } from '../dto/create-task.dto';
-import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { generateMockCategory } from '../../shared/mock/category.mock';
-import { Category } from '../../shared/interfaces/category.interface';
-import { generateMockProject } from '../../shared/mock/project.mock';
 import { UpdateTaskDto } from '../dto/update-task.dto';
+import {
+  generateMockEntityManager,
+  generateMockQueryBuilder,
+} from '../../shared/mock/query-builder.mock';
 
 describe('TaskService', () => {
   const TASK_REPOSITROY_TOKEN = getRepositoryToken(TaskEntity);
 
   let service: TaskService;
   let categoryService: CategoryService;
-  let taskRepository: Repository<Task>;
+  let taskRepository: Repository<TaskEntity>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -39,16 +39,12 @@ describe('TaskService', () => {
         {
           provide: TASK_REPOSITROY_TOKEN,
           useClass: jest.fn(() => ({
-            find: jest.fn(),
-            findOne: jest.fn(),
-            create: jest.fn(),
-            save: jest.fn(),
-            delete: jest.fn(),
-            createQueryBuilder: jest.fn(() => ({
-              addSelect: jest.fn().mockReturnThis(),
-              where: jest.fn().mockReturnThis(),
-              getOne: jest.fn(),
-            })),
+            update: jest.fn(),
+            createQueryBuilder: jest.fn(),
+            manager: {
+              transaction: jest.fn(),
+              createQueryBuilder: jest.fn(),
+            },
           })),
         },
         CategoryService,
@@ -76,256 +72,383 @@ describe('TaskService', () => {
 
     service = module.get<TaskService>(TaskService);
     categoryService = module.get<CategoryService>(CategoryService);
-    taskRepository = module.get<Repository<Task>>(TASK_REPOSITROY_TOKEN);
+    taskRepository = module.get<Repository<TaskEntity>>(TASK_REPOSITROY_TOKEN);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  describe('getAllTasksByCategoryId', () => {
-    it('should return an array of tasks', async () => {
-      const user = generateMockUser(1);
-      const categoryId = 1;
-      const tasks: Task[] = generateMockTasks(3);
-
-      jest.spyOn(categoryService, 'isMember').mockResolvedValue(true);
-      jest.spyOn(taskRepository, 'find').mockResolvedValue(tasks);
-
-      const result = await service.getAllTasksByCategoryId(user, categoryId);
-
-      expect(result).toBe(tasks);
-      expect(categoryService.isMember).toHaveBeenCalledWith(user, categoryId);
-      expect(taskRepository.find).toHaveBeenCalledWith({
-        where: { category: { id: categoryId } },
-        relations: { category: true },
-      });
-    });
-
-    it('should throw a ForbiddenException if user is not a member', async () => {
-      const user = generateMockUser(1);
-      const categoryId = 1;
-
-      jest.spyOn(categoryService, 'isMember').mockResolvedValue(false);
-
-      await expect(
-        service.getAllTasksByCategoryId(user, categoryId)
-      ).rejects.toThrow('You have no access to projects from this group');
-
-      expect(categoryService.isMember).toHaveBeenCalledWith(user, categoryId);
-    });
-  });
-
   describe('getTaskById', () => {
-    it('should return a task', async () => {
+    it('should return a task with its category', async () => {
       const taskId = 1;
-      const task: Task = generateMockTask(taskId);
-
-      jest.spyOn(taskRepository, 'findOne').mockResolvedValue(task);
+      const task: Task = generateMockTask(taskId, generateMockCategory(1));
+      const query = generateMockQueryBuilder({ getOne: task });
+      jest
+        .spyOn(taskRepository.manager, 'createQueryBuilder')
+        .mockReturnValue(query as any);
 
       const result = await service.getTaskById(taskId);
 
       expect(result).toBe(task);
-      expect(taskRepository.findOne).toHaveBeenCalledWith({
-        where: { id: taskId },
-        relations: { category: true },
+      expect(taskRepository.manager.createQueryBuilder).toHaveBeenCalledWith(
+        TaskEntity,
+        'task'
+      );
+      expect(query.leftJoinAndSelect).toHaveBeenCalledWith(
+        'task.category',
+        'category'
+      );
+      expect(query.where).toHaveBeenCalledWith('task.id = :taskId', {
+        taskId,
       });
     });
 
     it('should throw a NotFoundException if task is not found', async () => {
       const taskId = 1;
-
-      jest.spyOn(taskRepository, 'findOne').mockResolvedValue(undefined);
+      const query = generateMockQueryBuilder({ getOne: null });
+      jest
+        .spyOn(taskRepository.manager, 'createQueryBuilder')
+        .mockReturnValue(query as any);
 
       await expect(service.getTaskById(taskId)).rejects.toThrow(
         `Task with ID ${taskId} not found`
       );
-
-      expect(taskRepository.findOne).toHaveBeenCalledWith({
-        where: { id: taskId },
-        relations: { category: true },
-      });
     });
   });
 
   describe('createTask', () => {
-    it('should create a task', async () => {
+    it('should create a task at the end of its list', async () => {
       const user = generateMockUser(1);
-      const projectId = 1;
-      const createTaskDto: CreateTaskDto = generateMockTaskDto(1);
-      const { categoryId, ...categoryData } = createTaskDto;
-      const existingTasks: Task[] = generateMockTasks(
-        3,
-        generateMockCategory(categoryId)
-      );
-
-      const category: Category = generateMockCategory(
-        categoryId,
-        generateMockProject(projectId)
-      );
-      const task: Task = generateMockTask(1);
-
+      const createTaskDto: CreateTaskDto = generateMockTaskDto(4);
+      const { categoryId, ...taskData } = createTaskDto;
+      const lock = generateMockQueryBuilder();
+      const count = generateMockQueryBuilder({ getCount: 3 });
+      const manager = generateMockEntityManager([lock, count]);
       jest.spyOn(categoryService, 'isMember').mockResolvedValue(true);
-      jest
-        .spyOn(service, 'getAllTasksByCategoryId')
-        .mockResolvedValue(existingTasks);
-      jest
-        .spyOn(categoryService, 'getCategoryById')
-        .mockResolvedValue(category);
-      jest.spyOn(taskRepository, 'create').mockReturnValue(task);
-      jest.spyOn(taskRepository, 'save').mockResolvedValue(task);
+      (taskRepository.manager.transaction as jest.Mock).mockImplementation(
+        async (run) => await run(manager)
+      );
 
       const result = await service.createTask(user, createTaskDto);
 
-      expect(result).toBe(task);
-      expect(categoryService.isMember).toHaveBeenCalledWith(
-        user,
-        createTaskDto.categoryId
-      );
-      expect(service.getAllTasksByCategoryId).toHaveBeenCalledWith(
-        user,
-        createTaskDto.categoryId
-      );
-      expect(categoryService.getCategoryById).toHaveBeenCalledWith(
-        createTaskDto.categoryId
-      );
-      expect(taskRepository.create).toHaveBeenCalledWith({
-        ...categoryData,
-        category,
+      const expectedTask = {
+        ...taskData,
+        category: { id: categoryId },
         index: 3,
+      };
+      expect(result).toEqual(expectedTask);
+      expect(categoryService.isMember).toHaveBeenCalledWith(user, categoryId);
+      expect(lock.setLock).toHaveBeenCalledWith(
+        'pessimistic_write',
+        undefined,
+        ['project']
+      );
+      expect(lock.where).toHaveBeenCalledWith('category.id = :categoryId', {
+        categoryId,
       });
-      expect(taskRepository.save).toHaveBeenCalledWith(task);
+      expect(count.where).toHaveBeenCalledWith(
+        'task.categoryId = :categoryId',
+        { categoryId }
+      );
+      expect(manager.create).toHaveBeenCalledWith(TaskEntity, expectedTask);
+      expect(manager.save).toHaveBeenCalledWith(expectedTask);
     });
 
     it('should throw ForbiddenException if the user is not a member of the category', async () => {
       const user = generateMockUser(1);
-      const categoryId = 1;
-      const createTaskDto: CreateTaskDto = generateMockTaskDto(categoryId);
-
+      const createTaskDto: CreateTaskDto = generateMockTaskDto(1);
       jest.spyOn(categoryService, 'isMember').mockResolvedValue(false);
 
-      await expect(
-        service.createTask(user, createTaskDto)
-      ).rejects.toThrow(ForbiddenException);
+      await expect(service.createTask(user, createTaskDto)).rejects.toThrow(
+        'You have rights to create a task for this category'
+      );
 
       expect(categoryService.isMember).toHaveBeenCalledWith(
         user,
         createTaskDto.categoryId
       );
+      expect(taskRepository.manager.transaction).not.toHaveBeenCalled();
     });
   });
 
   describe('updateTask', () => {
-    it('should update a task within the same category', async () => {
-      const user = generateMockUser(1);
+    it('should rename a task without touching the order', async () => {
       const taskId = 1;
-      const categoryId = 1;
-      const updateTaskDto: UpdateTaskDto = { index: 1, categoryId };
-      const category: Category = generateMockCategory(categoryId);
-      const task: Task = generateMockTask(taskId, category);
-      const tasks: Task[] = generateMockTasks(3, category);
-      const updatedTask: Task = { ...task, ...updateTaskDto };
-
+      const task: Task = generateMockTask(taskId, generateMockCategory(1));
+      const updateTaskDto: UpdateTaskDto = {
+        name: 'New name',
+        categoryId: 1,
+      };
       jest.spyOn(service, 'getTaskById').mockResolvedValue(task);
-      jest.spyOn(service, 'getAllTasksByCategoryId').mockResolvedValue(tasks);
-      jest.spyOn(taskRepository, 'save').mockResolvedValue(updatedTask);
 
-      const result = await service.updateTask(user, taskId, updateTaskDto);
+      const result = await service.updateTask(taskId, updateTaskDto);
 
-      expect(result).toBe(updatedTask);
-      expect(service.getTaskById).toHaveBeenCalledWith(taskId);
-      expect(service.getAllTasksByCategoryId).toHaveBeenCalledWith(
-        user,
-        task.category.id
-      );
-      expect(taskRepository.save).toHaveBeenCalledWith(tasks);
+      expect(result).toEqual({ ...task, name: 'New name' });
+      expect(taskRepository.update).toHaveBeenCalledWith(taskId, {
+        name: 'New name',
+      });
+      expect(taskRepository.manager.transaction).not.toHaveBeenCalled();
     });
 
-    it('should throw BadRequestException if the index is bigger than the current length of tasks', async () => {
-      const user = generateMockUser(1);
+    it('should shift the cards between the old and new index up when moving a card down its list', async () => {
       const taskId = 1;
-      const categoryId = 1;
-      const updateTaskDto: UpdateTaskDto = { index: 3, categoryId };
-      const category: Category = generateMockCategory(categoryId);
-      const task: Task = generateMockTask(taskId, category);
-      const tasks: Task[] = generateMockTasks(3, category);
-
-      jest.spyOn(service, 'getTaskById').mockResolvedValue(task);
-      jest.spyOn(service, 'getAllTasksByCategoryId').mockResolvedValue(tasks);
-
-      await expect(
-        service.updateTask(user, taskId, updateTaskDto)
-      ).rejects.toThrow(BadRequestException);
-
-      expect(service.getTaskById).toHaveBeenCalledWith(taskId);
-      expect(service.getAllTasksByCategoryId).toHaveBeenCalledWith(
-        user,
-        task.category.id
+      const category = generateMockCategory(1);
+      const task: Task = { ...generateMockTask(taskId, category), index: 0 };
+      const lock = generateMockQueryBuilder();
+      const read = generateMockQueryBuilder({ getOne: task });
+      const count = generateMockQueryBuilder({ getCount: 3 });
+      const shift = generateMockQueryBuilder();
+      const manager = generateMockEntityManager([lock, read, count, shift]);
+      (taskRepository.manager.transaction as jest.Mock).mockImplementation(
+        async (run) => await run(manager)
       );
+
+      const result = await service.updateTask(taskId, {
+        index: 2,
+        categoryId: 1,
+      });
+
+      expect(result).toEqual({ ...task, index: 2, category });
+      expect(lock.where).toHaveBeenCalledWith('task.id = :taskId', { taskId });
+      expect(shift.set.mock.calls[0][0].index()).toBe('"index" + -1');
+      expect(shift.where).toHaveBeenCalledWith('"categoryId" = :categoryId', {
+        categoryId: 1,
+      });
+      expect(shift.andWhere.mock.calls).toEqual([
+        ['"index" >= :from', { from: 1 }],
+        ['"index" <= :to', { to: 2 }],
+      ]);
+      expect(manager.update).toHaveBeenCalledWith(TaskEntity, taskId, {
+        index: 2,
+        category: { id: 1 },
+      });
     });
 
-    it('should throw ForbiddenException if the user is not a member of the category', async () => {
-      const user = generateMockUser(1);
+    it('should shift the cards between the new and old index down when moving a card up its list', async () => {
       const taskId = 1;
-      const categoryId = 2;
-      const category: Category = generateMockCategory(categoryId);
-      const updateTaskDto: UpdateTaskDto = { index: 1, categoryId };
-      const task: Task = generateMockTask(taskId, category);
+      const category = generateMockCategory(1);
+      const task: Task = { ...generateMockTask(taskId, category), index: 2 };
+      const lock = generateMockQueryBuilder();
+      const read = generateMockQueryBuilder({ getOne: task });
+      const count = generateMockQueryBuilder({ getCount: 3 });
+      const shift = generateMockQueryBuilder();
+      const manager = generateMockEntityManager([lock, read, count, shift]);
+      (taskRepository.manager.transaction as jest.Mock).mockImplementation(
+        async (run) => await run(manager)
+      );
 
-      jest.spyOn(service, 'getTaskById').mockResolvedValue(task);
-      jest.spyOn(categoryService, 'isMember').mockResolvedValue(false);
+      await service.updateTask(taskId, { index: 0, categoryId: 1 });
+
+      expect(shift.set.mock.calls[0][0].index()).toBe('"index" + 1');
+      expect(shift.andWhere.mock.calls).toEqual([
+        ['"index" >= :from', { from: 0 }],
+        ['"index" <= :to', { to: 1 }],
+      ]);
+      expect(manager.update).toHaveBeenCalledWith(TaskEntity, taskId, {
+        index: 0,
+        category: { id: 1 },
+      });
+    });
+
+    it('should throw BadRequestException if the index is past the end of the list', async () => {
+      const taskId = 1;
+      const task: Task = generateMockTask(taskId, generateMockCategory(1));
+      const lock = generateMockQueryBuilder();
+      const read = generateMockQueryBuilder({ getOne: task });
+      const count = generateMockQueryBuilder({ getCount: 3 });
+      const manager = generateMockEntityManager([lock, read, count]);
+      (taskRepository.manager.transaction as jest.Mock).mockImplementation(
+        async (run) => await run(manager)
+      );
 
       await expect(
-        service.updateTask(user, taskId, updateTaskDto)
-      ).rejects.toThrow(ForbiddenException);
-
-      expect(service.getTaskById).toHaveBeenCalledWith(taskId);
-      expect(categoryService.isMember).toHaveBeenCalledWith(
-        user,
-        updateTaskDto.categoryId
+        service.updateTask(taskId, { index: 3, categoryId: 1 })
+      ).rejects.toThrow(
+        'Index cannot be bigger than the current length of tasks'
       );
+
+      expect(manager.update).not.toHaveBeenCalled();
+    });
+
+    it('should close the gap in the old list and open one in the new list when moving a card across lists', async () => {
+      const taskId = 1;
+      const fromCategory = generateMockCategory(1);
+      const toCategory = generateMockCategory(2);
+      const task: Task = {
+        ...generateMockTask(taskId, fromCategory),
+        index: 1,
+      };
+      const lock = generateMockQueryBuilder();
+      const read = generateMockQueryBuilder({ getOne: task });
+      const target = generateMockQueryBuilder({ getOne: toCategory });
+      const count = generateMockQueryBuilder({ getCount: 2 });
+      const closeGap = generateMockQueryBuilder();
+      const openGap = generateMockQueryBuilder();
+      const manager = generateMockEntityManager([
+        lock,
+        read,
+        target,
+        count,
+        closeGap,
+        openGap,
+      ]);
+      (taskRepository.manager.transaction as jest.Mock).mockImplementation(
+        async (run) => await run(manager)
+      );
+
+      const result = await service.updateTask(taskId, {
+        index: 0,
+        categoryId: 2,
+      });
+
+      expect(result).toEqual({ ...task, index: 0, category: toCategory });
+      expect(target.andWhere).toHaveBeenCalledWith(
+        'source.id = :fromCategoryId',
+        { fromCategoryId: 1 }
+      );
+      expect(closeGap.set.mock.calls[0][0].index()).toBe('"index" + -1');
+      expect(closeGap.where).toHaveBeenCalledWith(
+        '"categoryId" = :categoryId',
+        { categoryId: 1 }
+      );
+      expect(closeGap.andWhere.mock.calls).toEqual([
+        ['"index" >= :from', { from: 2 }],
+      ]);
+      expect(openGap.set.mock.calls[0][0].index()).toBe('"index" + 1');
+      expect(openGap.where).toHaveBeenCalledWith('"categoryId" = :categoryId', {
+        categoryId: 2,
+      });
+      expect(openGap.andWhere.mock.calls).toEqual([
+        ['"index" >= :from', { from: 0 }],
+      ]);
+      expect(manager.update).toHaveBeenCalledWith(TaskEntity, taskId, {
+        index: 0,
+        category: { id: 2 },
+      });
+    });
+
+    it('should throw BadRequestException when moving a card to a list on another board', async () => {
+      const taskId = 1;
+      const task: Task = generateMockTask(taskId, generateMockCategory(1));
+      const lock = generateMockQueryBuilder();
+      const read = generateMockQueryBuilder({ getOne: task });
+      const target = generateMockQueryBuilder({ getOne: null });
+      const manager = generateMockEntityManager([lock, read, target]);
+      (taskRepository.manager.transaction as jest.Mock).mockImplementation(
+        async (run) => await run(manager)
+      );
+
+      await expect(
+        service.updateTask(taskId, { index: 0, categoryId: 9 })
+      ).rejects.toThrow(
+        'Cannot move to different to category in different project'
+      );
+
+      expect(manager.update).not.toHaveBeenCalled();
+    });
+
+    it('should throw BadRequestException if the index is past the end of the new list', async () => {
+      const taskId = 1;
+      const task: Task = generateMockTask(taskId, generateMockCategory(1));
+      const lock = generateMockQueryBuilder();
+      const read = generateMockQueryBuilder({ getOne: task });
+      const target = generateMockQueryBuilder({
+        getOne: generateMockCategory(2),
+      });
+      const count = generateMockQueryBuilder({ getCount: 2 });
+      const manager = generateMockEntityManager([lock, read, target, count]);
+      (taskRepository.manager.transaction as jest.Mock).mockImplementation(
+        async (run) => await run(manager)
+      );
+
+      await expect(
+        service.updateTask(taskId, { index: 3, categoryId: 2 })
+      ).rejects.toThrow(
+        'Index cannot be bigger than the current length of tasks'
+      );
+
+      expect(manager.update).not.toHaveBeenCalled();
     });
   });
 
   describe('deleteTask', () => {
-    it('should delete a task', async () => {
-      const user = generateMockUser(1);
+    it('should delete a task and close the gap it leaves', async () => {
       const taskId = 1;
-      const task: Task = generateMockTask(taskId, generateMockCategory(1));
-
-      jest.spyOn(service, 'getTaskById').mockResolvedValue(task);
-      jest.spyOn(service, 'getAllTasksByCategoryId').mockResolvedValue([]);
-      jest
-        .spyOn(taskRepository, 'delete')
-        .mockResolvedValue({ affected: 1, raw: undefined });
-
-      await service.deleteTask(user, taskId);
-
-      expect(service.getTaskById).toHaveBeenCalledWith(taskId);
-      expect(service.getAllTasksByCategoryId).toHaveBeenCalledWith(
-        user,
-        task.category.id
+      const task: Task = {
+        ...generateMockTask(taskId, generateMockCategory(3)),
+        index: 1,
+      };
+      const lock = generateMockQueryBuilder();
+      const read = generateMockQueryBuilder({ getOne: task });
+      const shift = generateMockQueryBuilder();
+      const manager = generateMockEntityManager([lock, read, shift]);
+      (taskRepository.manager.transaction as jest.Mock).mockImplementation(
+        async (run) => await run(manager)
       );
-      expect(taskRepository.delete).toHaveBeenCalledWith(taskId);
+
+      const result = await service.deleteTask(taskId);
+
+      expect(result).toBe(task);
+      expect(manager.delete).toHaveBeenCalledWith(TaskEntity, taskId);
+      expect(shift.set.mock.calls[0][0].index()).toBe('"index" + -1');
+      expect(shift.where).toHaveBeenCalledWith('"categoryId" = :categoryId', {
+        categoryId: 3,
+      });
+      expect(shift.andWhere.mock.calls).toEqual([
+        ['"index" >= :from', { from: 2 }],
+      ]);
     });
 
-    it('should throw ForbiddenException if the user is not a member of the category', async () => {
-      const user = generateMockUser(1);
+    it('should throw NotFoundException if the task is not found', async () => {
       const taskId = 1;
-      const task: Task = generateMockTask(taskId, generateMockCategory(1));
-
-      jest.spyOn(service, 'getTaskById').mockResolvedValue(task);
-      jest.spyOn(categoryService, 'isMember').mockResolvedValue(false);
-
-      await expect(service.deleteTask(user, taskId)).rejects.toThrow(
-        ForbiddenException
+      const lock = generateMockQueryBuilder();
+      const read = generateMockQueryBuilder({ getOne: null });
+      const manager = generateMockEntityManager([lock, read]);
+      (taskRepository.manager.transaction as jest.Mock).mockImplementation(
+        async (run) => await run(manager)
       );
 
-      expect(service.getTaskById).toHaveBeenCalledWith(taskId);
-      expect(categoryService.isMember).toHaveBeenCalledWith(
-        user,
-        task.category.id
+      await expect(service.deleteTask(taskId)).rejects.toThrow(
+        `Task with ID ${taskId} not found`
       );
+
+      expect(manager.delete).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('isMember', () => {
+    it('should check the whole chain from task to the user in one query', async () => {
+      const user = generateMockUser(7);
+      const query = generateMockQueryBuilder({ getExists: true });
+      jest
+        .spyOn(taskRepository, 'createQueryBuilder')
+        .mockReturnValue(query as any);
+
+      const result = await service.isMember(user, 3);
+
+      expect(result).toBe(true);
+      expect(query.innerJoin.mock.calls).toEqual([
+        ['task.category', 'category'],
+        ['category.project', 'project'],
+        ['project.group', 'group'],
+        ['group.users', 'user', 'user.id = :userId', { userId: 7 }],
+      ]);
+      expect(query.where).toHaveBeenCalledWith('task.id = :taskId', {
+        taskId: 3,
+      });
+    });
+
+    it('should return false when the user is not in the workspace', async () => {
+      const user = generateMockUser(7);
+      const query = generateMockQueryBuilder({ getExists: false });
+      jest
+        .spyOn(taskRepository, 'createQueryBuilder')
+        .mockReturnValue(query as any);
+
+      const result = await service.isMember(user, 3);
+
+      expect(result).toBe(false);
     });
   });
 });

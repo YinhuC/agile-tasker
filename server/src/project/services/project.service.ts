@@ -8,7 +8,9 @@ import { Repository } from 'typeorm';
 import { CreateProjectDto } from '../dto/create-project.dto';
 import { UpdateProjectDto } from '../dto/update-project.dto';
 import { Project as ProjectEntity } from '../../shared/entities/project.entity';
+import { Category as CategoryEntity } from '../../shared/entities/category.entity';
 import { Project } from '../../shared/interfaces/project.interface';
+import { Category } from '../../shared/interfaces/category.interface';
 import { GroupService } from '../../group/services/group.service';
 import { User } from '../../shared/interfaces/user.interface';
 
@@ -17,6 +19,8 @@ export class ProjectService {
   constructor(
     @InjectRepository(ProjectEntity)
     private readonly projectRepository: Repository<ProjectEntity>,
+    @InjectRepository(CategoryEntity)
+    private readonly categoryRepository: Repository<CategoryEntity>,
     private readonly groupService: GroupService
   ) {}
 
@@ -48,6 +52,17 @@ export class ProjectService {
       throw new NotFoundException(`Project with ID ${projectId} not found`);
     }
     return project;
+  }
+
+  /** The project's lists in board order, each with its cards in order, in one query. */
+  async getBoard(projectId: number): Promise<Category[]> {
+    return await this.categoryRepository
+      .createQueryBuilder('category')
+      .leftJoinAndSelect('category.tasks', 'task')
+      .where('category.projectId = :projectId', { projectId })
+      .orderBy('category.index', 'ASC')
+      .addOrderBy('task.index', 'ASC')
+      .getMany();
   }
 
   async createProject(
@@ -91,7 +106,13 @@ export class ProjectService {
   }
 
   async isMember(user: Partial<User>, projectId: number): Promise<boolean> {
-    const project = await this.getProjectById(projectId);
-    return await this.groupService.isMember(user, project.group.id);
+    return await this.projectRepository
+      .createQueryBuilder('project')
+      .innerJoin('project.group', 'group')
+      .innerJoin('group.users', 'user', 'user.id = :userId', {
+        userId: user.id,
+      })
+      .where('project.id = :projectId', { projectId })
+      .getExists();
   }
 }

@@ -7,6 +7,8 @@ import { UserService } from '../../user/services/user.service';
 import { User as UserEntity } from '../../shared/entities/user.entity';
 import { Group as GroupEntity } from '../../shared/entities/group.entity';
 import { Project as ProjectEntity } from '../../shared/entities/project.entity';
+import { Category as CategoryEntity } from '../../shared/entities/category.entity';
+import { generateMockCategory } from '../../shared/mock/category.mock';
 import { User } from '../../shared/interfaces/user.interface';
 import { GetProjectDto } from '../dto/get-project.dto';
 import { Project } from '../../shared/interfaces/project.interface';
@@ -30,6 +32,10 @@ describe('ProjectController', () => {
         ProjectService,
         {
           provide: getRepositoryToken(ProjectEntity),
+          useValue: {},
+        },
+        {
+          provide: getRepositoryToken(CategoryEntity),
           useValue: {},
         },
         GroupService,
@@ -85,6 +91,20 @@ describe('ProjectController', () => {
 
       expect(result).toBe(project);
       expect(projectService.getProjectById).toHaveBeenCalledWith(projectId);
+    });
+  });
+
+  describe('getBoard', () => {
+    it('should return the board of a project', async () => {
+      const projectId = 1;
+      const board = [{ ...generateMockCategory(1), tasks: [] }];
+
+      jest.spyOn(projectService, 'getBoard').mockResolvedValue(board);
+
+      const result = await controller.getBoard(projectId);
+
+      expect(result).toBe(board);
+      expect(projectService.getBoard).toHaveBeenCalledWith(projectId);
     });
   });
 
