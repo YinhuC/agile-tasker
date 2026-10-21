@@ -9,7 +9,10 @@ import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    bodyParser: false,
+  });
+  app.useBodyParser('json');
   const configService = app.get(ConfigService);
   const isProd: boolean =
     configService.get<string>('REACT_APP_NODE_ENV') === 'production';
