@@ -8,6 +8,7 @@ import { store } from '..';
 import {
   fetchAllProjectsThunk,
   fetchProjectThunk,
+  fetchBoardThunk,
   createProjectThunk,
   updateProjectThunk,
   deleteProjectThunk,
@@ -19,6 +20,7 @@ vi.mock('../../api', () => ({
     project: {
       getAllProjects: vi.fn(),
       getProject: vi.fn(),
+      getBoard: vi.fn(),
       createProject: vi.fn(),
       updateProject: vi.fn(),
       deleteProject: vi.fn(),
@@ -124,5 +126,18 @@ describe('Project Thunks', () => {
     expect(store.getState().projects).toEqual({
       projects: [],
     });
+  });
+
+  it('rejects fetchBoardThunk with the response status', async () => {
+    vi.mocked(API.project).getBoard.mockRejectedValue({
+      response: { status: 404 },
+    });
+
+    const result = await store.dispatch(fetchBoardThunk('99'));
+
+    expect([result.type, result.payload]).toEqual([
+      'projects/fetch/board/rejected',
+      404,
+    ]);
   });
 });

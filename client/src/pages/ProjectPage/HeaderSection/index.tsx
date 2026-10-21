@@ -11,9 +11,10 @@ import classes from './HeaderSection.module.css';
 
 type HeaderSectionProps = ContainerProps & {
   projectId: string;
+  missing: boolean;
 };
 
-function HeaderSection({ projectId, ...props }: HeaderSectionProps) {
+function HeaderSection({ projectId, missing, ...props }: HeaderSectionProps) {
   const dispatch = useAppDispatch();
   const { user } = useAuth();
   const projects = useAppSelector((state) => state.projects.projects);
@@ -38,9 +39,14 @@ function HeaderSection({ projectId, ...props }: HeaderSectionProps) {
       <div className={classes.row}>
         <Box>
           <Title order={1} className={classes.title}>
-            {project?.name}
+            {missing ? 'Project not found.' : project?.name}
           </Title>
-          {project?.description && (
+          {missing && (
+            <Text className={classes.description}>
+              It was deleted, or it belongs to another account.
+            </Text>
+          )}
+          {!missing && project?.description && (
             <Text className={classes.description}>{project.description}</Text>
           )}
         </Box>

@@ -1,4 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { AxiosError } from 'axios';
 import API from '../../api';
 import {
   BoardList,
@@ -32,9 +33,15 @@ export interface FetchBoardPayload {
   data: BoardList[];
 }
 
-export const fetchBoardThunk = createAsyncThunk<FetchBoardPayload, string>(
-  'projects/fetch/board',
-  (id: string) => API.project.getBoard(id)
+/** Rejects with the response status, so the board page can tell a missing project from a failed request. */
+export const fetchBoardThunk = createAsyncThunk<
+  FetchBoardPayload,
+  string,
+  { rejectValue: number | undefined }
+>('projects/fetch/board', (id: string, { rejectWithValue }) =>
+  API.project
+    .getBoard(id)
+    .catch((err: AxiosError) => rejectWithValue(err.response?.status))
 );
 
 export const createProjectThunk = createAsyncThunk(

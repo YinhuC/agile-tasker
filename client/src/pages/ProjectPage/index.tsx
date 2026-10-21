@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Flex, Text } from '@mantine/core';
 import { updateCategoryThunk } from '../../store/category/category.thunks';
 import { fetchBoardThunk } from '../../store/project/project.thunks';
@@ -38,9 +38,19 @@ function ProjectPage() {
   const path = location.pathname.split('/');
   const projectId = path[path.length - 1];
   const dispatch = useAppDispatch();
+  const [missingProjectId, setMissingProjectId] = useState<string>();
+  const missing = missingProjectId === projectId;
 
   useEffect(() => {
-    dispatch(fetchBoardThunk(projectId));
+    dispatch(fetchBoardThunk(projectId))
+      .unwrap()
+      .catch((status) => {
+        if (status === 404) {
+          setMissingProjectId(projectId);
+        } else {
+          showGeneralError();
+        }
+      });
   }, [dispatch, projectId]);
 
   /** The drop already shows on screen; if the server refuses it, reload the board so the screen matches the saved order. */
@@ -149,31 +159,37 @@ function ProjectPage() {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <HeaderSection projectId={projectId} />
-      <Droppable droppableId='cat-drop' direction='horizontal' type='CATEGORY'>
-        {(provided) => (
-          <Flex
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-            className={classes.rack}
-          >
-            {categories.map((category, index) => (
-              <CategoryGrid
-                projectId={parseInt(projectId)}
-                category={category}
-                index={index}
-                key={`category-grid-${category.id}`}
-              />
-            ))}
-            {provided.placeholder}
-            {categories.length === 0 && (
-              <Text className={classes.empty}>
-                No lists yet. Add one to start placing cards.
-              </Text>
-            )}
-          </Flex>
-        )}
-      </Droppable>
+      <HeaderSection projectId={projectId} missing={missing} />
+      {!missing && (
+        <Droppable
+          droppableId='cat-drop'
+          direction='horizontal'
+          type='CATEGORY'
+        >
+          {(provided) => (
+            <Flex
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className={classes.rack}
+            >
+              {categories.map((category, index) => (
+                <CategoryGrid
+                  projectId={parseInt(projectId)}
+                  category={category}
+                  index={index}
+                  key={`category-grid-${category.id}`}
+                />
+              ))}
+              {provided.placeholder}
+              {categories.length === 0 && (
+                <Text className={classes.empty}>
+                  No lists yet. Add one to start placing cards.
+                </Text>
+              )}
+            </Flex>
+          )}
+        </Droppable>
+      )}
     </DragDropContext>
   );
 }
