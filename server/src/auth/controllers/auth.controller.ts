@@ -16,19 +16,21 @@ import { RegisterDto } from '../dto/register.dto';
 import { AuthUser } from '../../user/decorators/user.decorator';
 import { AuthenticatedGuard } from '../guards/auth.guard';
 import { Request, Response } from 'express';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
+  @UseGuards(ThrottlerGuard)
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() registerDto: RegisterDto): Promise<User> {
     return await this.authService.register(registerDto);
   }
 
   @Post('login')
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(ThrottlerGuard, LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   async login(@AuthUser() user: User): Promise<User> {
     return user;

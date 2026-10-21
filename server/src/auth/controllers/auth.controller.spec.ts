@@ -13,6 +13,7 @@ import {
   generateMockUserDto,
 } from '../../shared/mock/user.mock';
 import { Request, Response } from 'express';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -33,6 +34,8 @@ describe('AuthController', () => {
       .overrideGuard(LocalAuthGuard)
       .useValue({ canActivate: () => true })
       .overrideGuard(AuthenticatedGuard)
+      .useValue({ canActivate: () => true })
+      .overrideGuard(ThrottlerGuard)
       .useValue({ canActivate: () => true })
       .compile();
     controller = module.get<AuthController>(AuthController);

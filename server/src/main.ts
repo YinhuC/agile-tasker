@@ -22,6 +22,9 @@ async function bootstrap() {
     .split(',');
   const PgSessionStore = connectPgSimple(session);
 
+  if (isProd) {
+    app.set('trust proxy', 1);
+  }
   app.enableCors({
     origin: corsWhitelist,
     credentials: true,
