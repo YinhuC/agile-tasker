@@ -7,6 +7,8 @@ import { UserService } from '../../user/services/user.service';
 import { User } from '../../shared/interfaces/user.interface';
 import { RegisterDto } from '../dto/register.dto';
 
+const INVALID_LOGIN_MESSAGE = 'Invalid email or password';
+
 @Injectable()
 export class AuthService {
   constructor(private readonly userService: UserService) {}
@@ -25,21 +27,18 @@ export class AuthService {
     return user;
   }
 
+  /** Fails with the same message for an unknown email and a wrong password. */
   async login(email: string, password: string): Promise<User> {
     let user: User;
 
     try {
       user = await this.userService.findUserByEmail(email);
     } catch (err) {
-      throw new UnauthorizedException(
-        `There isn't any user with email: ${email}`
-      );
+      throw new UnauthorizedException(INVALID_LOGIN_MESSAGE);
     }
 
     if (!(await this.userService.comparePassword(user, password))) {
-      throw new UnauthorizedException(
-        `Wrong password for user with email: ${email}`
-      );
+      throw new UnauthorizedException(INVALID_LOGIN_MESSAGE);
     }
 
     return user;

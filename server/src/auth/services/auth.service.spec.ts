@@ -112,10 +112,12 @@ describe('AuthService', () => {
       const email = 'test@example.com';
       const password = 'password';
 
-      jest.spyOn(userService, 'findUserByEmail').mockResolvedValue(undefined);
+      jest
+        .spyOn(userService, 'findUserByEmail')
+        .mockRejectedValue(new NotFoundException('User not found'));
 
       await expect(service.login(email, password)).rejects.toThrow(
-        NotFoundException
+        new UnauthorizedException('Invalid email or password')
       );
       expect(userService.findUserByEmail).toHaveBeenCalledWith(email);
     });
@@ -129,7 +131,7 @@ describe('AuthService', () => {
       jest.spyOn(userService, 'comparePassword').mockResolvedValue(false);
 
       await expect(service.login(email, password)).rejects.toThrow(
-        UnauthorizedException
+        new UnauthorizedException('Invalid email or password')
       );
       expect(userService.findUserByEmail).toHaveBeenCalledWith(email);
       expect(userService.comparePassword).toHaveBeenCalledWith(user, password);
