@@ -3,9 +3,9 @@ import { Group } from './group.types';
 export type User = {
   id: number;
   email: string;
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   createdAt: string;
   updatedAt: string;
-  Groups?: Group[];
+  groups?: Group[];
 };
