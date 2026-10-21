@@ -22,7 +22,7 @@ export class GroupMemberGuard implements CanActivate {
       parseInt(request.params.id)
     );
     if (!isMember) {
-      throw new ForbiddenException('You have no access to this project');
+      throw new ForbiddenException('You have no access to this group');
     }
     return isMember;
   }
