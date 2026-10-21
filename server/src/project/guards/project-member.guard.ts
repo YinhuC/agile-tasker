@@ -13,7 +13,9 @@ export class ProjectMemberGuard implements CanActivate {
   constructor(private projectService: ProjectService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request: Request<{ id: string }> = context.switchToHttp().getRequest();
+    const request: Request<{ id: string }> = context
+      .switchToHttp()
+      .getRequest();
     const user: Partial<User> = request.user;
     const isMember = await this.projectService.isMember(
       user,
