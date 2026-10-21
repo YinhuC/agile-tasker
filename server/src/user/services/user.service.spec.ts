@@ -4,10 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { User as UserEntity } from '../../shared/entities/user.entity';
 import { Repository } from 'typeorm';
 import { User } from '../../shared/interfaces/user.interface';
-import {
-  generateMockUser,
-  generateMockUsers,
-} from '../../shared/mock/user.mock';
+import { generateMockUser } from '../../shared/mock/user.mock';
 import { NotFoundException } from '@nestjs/common';
 import { UpdateUserDto } from '../dto/update-user';
 
@@ -24,7 +21,6 @@ describe('UserService', () => {
         {
           provide: USER_REPOSITROY_TOKEN,
           useClass: jest.fn(() => ({
-            find: jest.fn(),
             findOne: jest.fn(),
             create: jest.fn(),
             save: jest.fn(),
@@ -45,18 +41,6 @@ describe('UserService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
-  });
-
-  describe('findAllUsers', () => {
-    it('should return an array of users', async () => {
-      const users: User[] = generateMockUsers(8);
-      jest.spyOn(userRepository, 'find').mockResolvedValue(users);
-
-      const result = await service.findAllUsers();
-
-      expect(result).toEqual(users);
-      expect(userRepository.find).toHaveBeenCalled();
-    });
   });
 
   describe('findUserById', () => {
@@ -120,8 +104,6 @@ describe('UserService', () => {
       const result = await service.create(userData);
 
       expect(result).toEqual(createdUser);
-      // expect(userRepository.create).toHaveBeenCalledWith(createdUser);
-      // expect(userRepository.save).toHaveBeenCalledWith(createdUser);
     });
   });
 

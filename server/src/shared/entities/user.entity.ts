@@ -1,4 +1,3 @@
-import bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
 import { Group } from './group.entity';
 import {

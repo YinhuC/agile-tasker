@@ -11,17 +11,6 @@ export const generateMockTask = (i: number, category?: Category): Task => ({
   category,
 });
 
-export const generateMockTasks = (
-  count: number,
-  category?: Category
-): Task[] => {
-  const tasks: Task[] = [];
-  for (let i = 0; i < count; i++) {
-    tasks.push(generateMockTask(i, category));
-  }
-  return tasks;
-};
-
 export const generateMockTaskDto = (categoryId: number): CreateTaskDto => ({
   name: faker.lorem.words({ min: 2, max: 5 }),
   description: faker.lorem.lines(2),

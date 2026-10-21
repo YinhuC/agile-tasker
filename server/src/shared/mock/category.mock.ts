@@ -13,17 +13,6 @@ export const generateMockCategory = (
   project,
 });
 
-export const generateMockCategories = (
-  count: number,
-  project?: Project
-): Category[] => {
-  const cateogories: Category[] = [];
-  for (let i = 0; i < count; i++) {
-    cateogories.push(generateMockCategory(i, project));
-  }
-  return cateogories;
-};
-
 export const generateMockCategoryDto = (
   projectId: number
 ): CreateCategoryDto => ({

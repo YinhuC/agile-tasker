@@ -10,5 +10,4 @@ export interface User {
   createdAt?: Date;
   updatedAt?: Date;
   groups?: Group[];
-  setPassword?: (password: string) => Promise<void>;
 }
