@@ -8,10 +8,15 @@ import { ProjectModule } from './project/project.module';
 import { CategoryModule } from './category/category.module';
 import { TaskModule } from './task/task.module';
 import { ConfigModule } from '@nestjs/config';
+import { validateEnv } from './shared/utils/env.utils';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: ['../.env', '.env'] }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['../.env', '.env'],
+      validate: validateEnv,
+    }),
     PassportModule.register({
       session: true,
     }),

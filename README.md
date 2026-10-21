@@ -60,7 +60,7 @@ To run the Agile Task App locally, follow these steps:
    - `REACT_APP_DB_PASSWORD`: This should be set to the password you set when you first started PostgreSQL.
    - `REACT_APP_DB_HOST`: This should be set to the hostname for your PostgreSQL database server.
    - `REACT_APP_DB_PORT`: This should be set to the port number on which your PostgreSQL database server is running. By default, PostgreSQL uses port 5432.
-   - `REACT_APP_SECRET`: This should be set to a secret key used for authentication and session management. Just any random string will do.
+   - `REACT_APP_SECRET`: This should be set to a secret key used for authentication and session management. Generate one with `openssl rand -hex 64`; the server refuses to start with a secret shorter than 32 characters or with any of the database, secret or client URL settings missing.
    - `REACT_APP_API_PORT`: This should be set to the port number on which your Node.js server will run. It can be any available port number of your choice.
    - `REACT_APP_API_URL`: This should be set to the URL of your Node.js server. In a local development environment, it can be set to `http://localhost:<port>`, where `<port>` is the value you set for `REACT_APP_API_PORT`.
    - `REACT_APP_CLIENT_URL`: The URL the client runs on, allowed through CORS by the server. Locally this is `http://localhost:3000`; separate several URLs with commas.
