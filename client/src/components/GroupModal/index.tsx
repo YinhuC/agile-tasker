@@ -21,14 +21,16 @@ type GroupModalProps = {
   group?: GroupType;
 };
 
-function GroupModal({ type, group, ...props }: GroupModalProps) {
+function GroupModal({ type, group }: GroupModalProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const dispatch = useAppDispatch();
 
+  const initialValues = {
+    name: type === 'edit' && group?.name ? group.name : '',
+  };
+
   const form = useForm({
-    initialValues: {
-      name: type === 'edit' && group?.name ? group.name : '',
-    },
+    initialValues,
     validate: {
       name: (value) =>
         value.length > 30 ? 'Keep the name to 30 characters or fewer.' : null,
@@ -36,9 +38,7 @@ function GroupModal({ type, group, ...props }: GroupModalProps) {
   });
 
   useEffect(() => {
-    form.setValues({
-      name: type === 'edit' && group?.name ? group.name : '',
-    });
+    form.setValues(initialValues);
   }, [type, group]);
 
   const onSubmit = async (values: CreateGroupParams | UpdateGroupParams) => {
@@ -76,7 +76,6 @@ function GroupModal({ type, group, ...props }: GroupModalProps) {
         title={type === 'add' ? 'New workspace' : 'Edit workspace'}
         centered
         size='lg'
-        {...props}
       >
         <form
           onSubmit={form.onSubmit((values) =>

@@ -22,19 +22,16 @@ type CategoryModalProps = {
   category?: Category;
 };
 
-function CategoryModal({
-  projectId,
-  type,
-  category,
-  ...props
-}: CategoryModalProps) {
+function CategoryModal({ projectId, type, category }: CategoryModalProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const dispatch = useAppDispatch();
 
+  const initialValues = {
+    name: type === 'edit' && category?.name ? category.name : '',
+  };
+
   const form = useForm({
-    initialValues: {
-      name: type === 'edit' && category?.name ? category.name : '',
-    },
+    initialValues,
     validate: {
       name: (value) =>
         value.length > 30 ? 'Keep the name to 30 characters or fewer.' : null,
@@ -42,9 +39,7 @@ function CategoryModal({
   });
 
   useEffect(() => {
-    form.setValues({
-      name: type === 'edit' && category?.name ? category.name : '',
-    });
+    form.setValues(initialValues);
   }, [type, category]);
 
   const onSubmit = async (
@@ -88,7 +83,6 @@ function CategoryModal({
         title={type === 'add' ? 'New list' : 'Edit list'}
         centered
         size='lg'
-        {...props}
       >
         <form
           onSubmit={form.onSubmit((values) =>

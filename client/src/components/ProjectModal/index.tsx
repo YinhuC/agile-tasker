@@ -29,15 +29,17 @@ type ProjectModalProps = {
   project?: Project;
 };
 
-function ProjectModal({ groupId, type, project, ...props }: ProjectModalProps) {
+function ProjectModal({ groupId, type, project }: ProjectModalProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const dispatch = useAppDispatch();
 
+  const initialValues = {
+    name: type === 'edit' && project ? project.name : '',
+    description: type === 'edit' && project ? project.description : '',
+  };
+
   const form = useForm({
-    initialValues: {
-      name: type === 'edit' && project ? project.name : '',
-      description: type === 'edit' && project ? project.description : '',
-    },
+    initialValues,
     validate: {
       name: (value) =>
         value.length > 30 ? 'Keep the name to 30 characters or fewer.' : null,
@@ -49,10 +51,7 @@ function ProjectModal({ groupId, type, project, ...props }: ProjectModalProps) {
   });
 
   useEffect(() => {
-    form.setValues({
-      name: type === 'edit' && project ? project.name : '',
-      description: type === 'edit' && project ? project.description : '',
-    });
+    form.setValues(initialValues);
   }, [type, project]);
 
   const onSubmit = async (
@@ -96,7 +95,6 @@ function ProjectModal({ groupId, type, project, ...props }: ProjectModalProps) {
         title={type === 'add' ? 'New project' : 'Edit project'}
         centered
         size='lg'
-        {...props}
       >
         <form
           onSubmit={form.onSubmit((values) =>

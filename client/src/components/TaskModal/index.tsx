@@ -29,20 +29,17 @@ type TaskModalProps = {
   task?: Task;
 };
 
-function TaskModal({ categoryId, type, task, ...props }: TaskModalProps) {
+function TaskModal({ categoryId, type, task }: TaskModalProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const dispatch = useAppDispatch();
 
+  const initialValues = {
+    name: type === 'edit' && task ? task.name : '',
+    description: type === 'edit' && task?.description ? task.description : '',
+  };
+
   const form = useForm({
-    initialValues: {
-      name: type === 'edit' && task ? task.name : '',
-      description:
-        type === 'edit' && task?.description
-          ? task.description === null
-            ? ''
-            : task.description
-          : '',
-    },
+    initialValues,
     validate: {
       name: (value) =>
         value.length > 50
@@ -56,15 +53,7 @@ function TaskModal({ categoryId, type, task, ...props }: TaskModalProps) {
   });
 
   useEffect(() => {
-    form.setValues({
-      name: type === 'edit' && task ? task.name : '',
-      description:
-        type === 'edit' && task?.description
-          ? task.description === null
-            ? ''
-            : task.description
-          : '',
-    });
+    form.setValues(initialValues);
   }, [type, task]);
 
   const onSubmit = async (values: CreateTaskParams | UpdateTaskParams) => {
@@ -102,7 +91,6 @@ function TaskModal({ categoryId, type, task, ...props }: TaskModalProps) {
         title={type === 'add' ? 'New card' : 'Edit card'}
         centered
         size='lg'
-        {...props}
       >
         <form
           onSubmit={form.onSubmit((values) =>
