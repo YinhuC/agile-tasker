@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { Box, Container, Title, Text } from '@mantine/core';
 import ProjectGrid from '../../components/ProjectGrid';
 import { fetchAllGroupsThunk } from '../../store/group/group.thunks';
@@ -15,18 +15,6 @@ function BoardPage() {
     dispatch(fetchAllGroupsThunk());
   }, [dispatch]);
 
-  const grids = useMemo(
-    () =>
-      groups ? (
-        groups.map((group, index) => (
-          <ProjectGrid group={group} key={`project-grid-${index}`} />
-        ))
-      ) : (
-        <></>
-      ),
-    [groups]
-  );
-
   return (
     <Box className={classes.root}>
       <Container size='xl'>
@@ -38,12 +26,14 @@ function BoardPage() {
           </div>
           <GroupModal type='add' />
         </header>
-        {groups?.length === 0 && (
+        {groups.length === 0 && (
           <Text className={classes.empty}>
             No workspaces yet. Make one to start adding projects.
           </Text>
         )}
-        {grids}
+        {groups.map((group, index) => (
+          <ProjectGrid group={group} key={`project-grid-${index}`} />
+        ))}
       </Container>
     </Box>
   );
